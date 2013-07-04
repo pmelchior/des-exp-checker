@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DES exposure checker</title>
+  <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
+  <meta charset="utf-8">
+  <meta name="author" content="Peter Melchior, Erin Sheldon">
+  <link rel="icon" href="assets/DES_logo_trans.png" type="image/png">
+  <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <script type="text/javascript" src="assets/fits.js"></script>
+  <script type="text/javascript" src="assets/webfits-canvas.0.3.1.js"></script>
+  <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript" src="assets/jquery.cookie.js"></script>
+  <script type="text/javascript">
+  var webfits = null;
+  var extent = null;
+  var dataextent = null;
+  var stretch = "arcsinh";
+  var spinner;
+  var marks = [];
+  var problem = null;
+  var fileid = null;
+  
+  function checkSessionCookie() {
+    return ($.cookie('sid') != null);    
+  }
+
+  if (!checkSessionCookie())
+    window.location.href = "index.html";
+ 
+  function overlayCallback(_this, opts, evt) {
+    if (problem !== null) {
+      // add circle around dbl-clicked location
+      var ctx = _this.overlayCtx;
+      var rect = _this.canvas.getBoundingClientRect();
+      var prob = {
+        x: (evt.clientX - rect.left + 0.5), // for unknown reasons, there is a 0.5 pixel shift in rect.left/right
+        y: (evt.clientY - rect.top),
+        problem: problem,
+        detail: $('#problem-text').val() == "" ? null : $('#problem-text').val()
+      };
+      marks.push(prob);
+      ctx.beginPath();
+      ctx.arc(prob.x, prob.y, 50, 0, 2*Math.PI, true);
+      ctx.lineWidth=2;
+      ctx.strokeStyle='#FF0000';
+      ctx.stroke();
+      
+      ctx.font = '12pt Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#FF0000';
+      ctx.fillText(prob.problem, prob.x, prob.y);
+    }
+  }
+  
+  function clearMarks() {
+    webfits.overlayCtx.clearRect(0,0,webfits.canvas.width, webfits.canvas.height);
+    marks = [];
+  }
+
+  // Define callback to be executed after image is received from the server
+  function getImage(f, opts) {
+    // Get image data unit
+    var dataunit = f.getDataUnit(2);
+    // Set options to pass to the next callback
+    opts["dataunit"] = dataunit;
+    // Asynchronously get pixels representing the image passing a callback and options
+    dataunit.getFrameAsync(0, createVisualization, opts);
+
+    /*
+    // add weight/bad-pixel map
+    var dataunit = f.getDataUnit(3);
+    // Set options to pass to the next callback
+    opts["dataunit"] = dataunit;
+    // Asynchronously get pixels representing the image passing a callback and options
+    dataunit.getFrameAsync(0, addMaskLayer, opts);
+    */
+  }
+  
+  // Define callback for when pixels have been read from file
+  function createVisualization(arr, opts) {
+    
+    var dataunit = opts.dataunit;
+    
+    //var dataunit = opts.dataunit;
+    var width = dataunit.width;
+    var height = dataunit.height;
+    dataextent = dataunit.getExtent(arr);
+    
+    // Get the DOM element
+    var el = $('#' + opts.el).get(0);
+    
+    var callbacks = {
+      onclick: overlayCallback
+    };
+    // Initialize the WebFITS context with a viewer of size width
+    if (webfits === null) {
+      webfits = new astro.WebFITS(el,width, height);
+      // Add pan and zoom controls
+      webfits.setupControls(callbacks, opts);
+      extent = $.extend(true, [], dataextent); // fancy for: deep copy of dataextent
+      
+      // set the vmin, vmax from extent
+      $('#vmin-input').val(extent[0]);
+      $('#vmax-input').val(extent[1]);
+    }
+    
+    // Load array representation of image
+    webfits.loadImage('exposure', arr, width, height);
+    
+    // Set the intensity range and stretch
+    webfits.setExtent(extent[0], extent[1]);
+    webfits.setStretch(stretch);
+    $('#loading').addClass('hide');
+  }
+  
+  function addMaskLayer(arr, opts) {
+    webfits.loadImage('bpm', arr, 1024, 512);
+    webfits.drawAsinh();
+  }
+
+  function renderImage(name) {
+    $('#loading').removeClass('hide');
+    if (marks.length)
+      clearMarks();
+    if (name === undefined) {
+      // Initialize the FITS file, passing the function getImage as a callback
+      $.get('db.php')
+      .done(function(data) {
+        var response = $.parseJSON(data);
+        fileid = response.rowid;
+        var opts = {
+          el: 'wicked-science-visualization'
+        };
+        var f = new astro.FITS.File(response.name, getImage, opts);
+        $('#image_name').html(response.expname + ', CCD ' + response.ccd + ", " + response.band + "-band");
+        })
+      .fail(function() {alert('Failure when loading image');});
+    } else {
+      var opts = {
+        el: 'wicked-science-visualization'
+        };
+      var f = new astro.FITS.File(name, getImage, opts);
+    }
+  }
+  
+  function sendResponse(rating) {
+    // update counters
+    var number = parseInt($('#total-files').html());
+    number += 1;
+    $('#total-files').html(number);
+    if (rating != "fine") {
+      number = parseInt($('#flagged-files').html());
+      number += 1;
+      $('#flagged-files').html(number);
+    }
+    
+    // post to DB
+    $.post('db.php',
+           {'fileid': fileid, 'problems': marks},
+           function(data) {
+            var response = $.parseJSON(data);
+            renderImage(response.name);
+            fileid = response.rowid;
+            clearMarks();
+            $('#image_name').html(response.expname + ', CCD ' + response.ccd + ", " + response.band + "-band");
+          }
+    )
+    .fail(function() {
+      alert('Failure when saving response');
+      clearMarks();
+    });
+    
+    // clear UI
+    $("#problem-dialogue").addClass("hide");
+    $("#display-dialogue").removeClass("hide");
+    $('#problem-text').val('');
+    $('#problem-name').html('Problem');
+    problem = null;
+  }
+  
+  function getMyData() {
+    $.get('mydata.php', function(response) {
+      $('#username').html(response.username);
+      $('#userrank').html(response.rank);
+      if (response.rank < 5) {
+        $('#userrank').addClass('badge-success');
+      }
+      $('#total-files').html(response.total_files);
+      $('#flagged-files').html(response.flagged_files);
+      $('#user-menu').removeClass('hide');
+    }, 'json');
+  }
+  </script>
+</head>
+
+<body>
+  <div class='container' style="width:1024px;">
+    <div class="navbar">
+      <div class="navbar-inner">
+	<a class="brand" href="#">DES exposure checker</a>
+	<ul class="nav">
+	  <li><a href="tutorial.html">Tutorial</a></li>
+	  <li><a href="#" id="leaderboard-anchor">Leaderboard</a></li>
+	</ul>
+        <ul class="nav pull-right hide" id="user-menu" style="margin-right:-20px">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <span id="username">Username</span> <span class="badge" id="userrank">1</span>
+            <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a tabindex="-1" href="#">Total <span id="total-files"></span></a></li>
+              <li><a tabindex="-1" href="#">Flagged <span id="flagged-files"></span></a></li>
+              <li class="divider"></li>
+              <li><a tabindex="-1" id="logout" href="#">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div> 
+    </div>
+    
+    <div style="margin-top:20px; position:relative;">
+      <button id="fine-button" class="btn btn-success send">Fine</button>
+      <div class="btn-group">
+        <button id="problem-button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><span id="problem-name">Problem</span>
+        <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+          <li><a class="problem" tabindex="-1" href="#">Cosmic ray</a></li>
+          <li><a class="problem" tabindex="-1" href="#">Ghost</a></li>
+          <li><a class="problem" tabindex="-1" href="#">Cross-talk</a></li>
+          <li><a class="problem" tabindex="-1" href="#">Satellite track</a></li>
+          <li><a class="problem" tabindex="-1" href="#">Readout artifact</a></li>
+          <li class="divider"></li>
+          <li><a tabindex="-1" class="problem" id="other-problem" href="#">Other...</a></li>
+        </ul>
+      </div>
+      <span id="display-dialogue" style="margin-left: 50px;"> 
+        <span class="muted" id="image_name"></span>
+        <button style="position:absolute; right: 0px; top:0px;" class="btn btn-info" href="#" id="option-button">Display options</button>
+      </span>
+      <span id="problem-dialogue" class="hide" style="margin-left: 50px; font-weight:bold;">
+        Please click to mark problem(s) on the image
+        <div style="position:absolute; right: 0px; top:0px;">
+          <button class="btn btn-info" id="clear-button">Clear</button>
+          <button class="btn btn-info send" id="save-button">Save</button>
+        </div>
+      </span>
+    </div>
+    <div id="loading" class="hide" style="position:relative; left:512px; top:266px; z-index:1000;"></div>
+    <div id="wicked-science-visualization" style="margin: 10px 0px; height:512px; width: 1024px; background-color:#CCCCCC;"></div>
+    <div class="modal hide" id="problem-modal">
+      <div class="modal-header">
+        <h3>Describe the problem</h3>
+      </div>
+      <div class="modal-body">
+        <textarea style="width:516px;" type="text" id="problem-text" placeholder="Describe in your own words"></textarea>
+      </div>
+      <div class="modal-footer">
+        <span style="padding-right:20px">When done, double-click on the image to mark the problematic area</span>
+        <button id="problem-text-button" class="btn btn-primary">Done</button>
+      </div>
+    </div>
+    <div class="modal hide" id="control-modal">
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <form class="form-horizontal">
+          <fieldset>
+            <legend>Scaling</legend>
+            <button id="linear-button" class="btn btn-small stretch">Linear</button>
+            <button id="sqrt-button" class="btn btn-small stretch">Sqrt</button>
+            <button id="logarithm-button" class="btn btn-small stretch">Logarithmic</button>
+            <button id="arcsinh-button" class="btn btn-small stretch">ArcSinh</button>
+            <button id="peter-button" class="btn btn-small stretch">Peter's presets</button>
+          </fieldset>
+          <fieldset>
+            <legend>Visible data range</legend>
+            <input type="text" class="input-small range" placeholder="Minimum" id="vmin-input">
+            <input type="text" class="input-small range" placeholder="Maximum" id="vmax-input">
+            <button id="vmin-max-button" class="btn btn-small range">Update</button>
+            <button id="vmin-max-reset-button" class="btn btn-small range">Reset</button>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+    <div class="modal hide" id="rank-modal">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Leaderboard</h3>
+      </div>
+      <div class="modal-body"></div>
+    </div>
+    
+    <div class="muted" style="text-align: right;">Created by Peter Melchior and Erin Sheldon at the Aspen Center for Physics</div>
+  </div>
+  </body>
+<script type="text/javascript" src="assets/spin.min.js"></script>
+<script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function(){
+    spinner = new Spinner({color: "#049cdb"}).spin();
+    $('#loading').append(spinner.el);
+    renderImage();
+    $('#' + stretch + "-button").addClass('btn-primary');
+    getMyData();
+    setInterval(getMyData, 300000);
+  });
+  $('button[class*="send"]').on('click', function(evt) {
+    var rating = evt.target.id.split("-").shift();
+    sendResponse(rating);
+  });
+  $('button[class*="stretch"]').on('click', function(evt) {
+    // toggle primary class as indicator for current stretch
+    $('#' + stretch + "-button").removeClass('btn-primary');
+    stretch = evt.target.id.split("-").shift();
+    $('#' + stretch + "-button").addClass('btn-primary');
+    if (stretch == "peter") {
+      extent[0] = 1;
+      extent[1] = dataextent[1];
+      $('#vmin-input').val(extent[0]);
+      $('#vmax-input').val(extent[1]);
+      webfits.setExtent(extent[0], extent[1]);
+      webfits.setStretch("arcsinh");
+    }
+    else
+      webfits.setStretch(stretch);
+  });
+  $('#vmin-max-button').on('click', function() {
+    extent = [$('#vmin-input').val(), $('#vmax-input').val()];
+    webfits.setExtent(extent[0], extent[1]);
+  });
+  $('#vmin-max-reset-button').on('click', function() {
+    extent[0] = dataextent[0];
+    extent[1] = dataextent[1];
+    $('#vmin-input').val(extent[0]);
+    $('#vmax-input').val(extent[1]);
+    webfits.setExtent(extent[0], extent[1]);
+  });
+  $('form').submit(function() {
+    return false;
+  });
+  $('#control-modal').modal({"backdrop": false, "show": false });
+  $('#problem-modal').modal({"backdrop": false, "show": false });
+  $('#option-button').on('click', function() {
+    $('#control-modal').modal('show');
+  });
+  $('#problem-text-button').on('click', function() {
+    $('#problem-modal').modal('hide');
+    var problemName = $('#problem-text').val();
+    if (problemName.length > 11)
+      problemName = problemName.substring(0,8) + "...";
+    $('#problem-name').html(problemName);
+  });
+  $('a[class*="problem"]').on('click', function(evt) {
+    problem = evt.target.innerHTML;
+    $('#problem-name').html(problem);
+    if (problem == "Other...") {
+      $('#problem-modal').modal('show');
+    } else {
+      $('#problem-text').val('');
+    }
+    $("#display-dialogue").addClass("hide");
+    $("#problem-dialogue").removeClass("hide");
+  });
+  $('#clear-button').on('click', clearMarks);
+  $('#rank-modal').modal({"backdrop": false, "show":false});
+  $('#leaderboard-anchor').on('click', function() {
+    $.get('ranking.php', {'output': 'html'}, function(response) {
+      $('#rank-modal').find('[class*="modal-body"]').html(response);
+      $('#rank-modal').modal('show');
+    });
+  });
+  $('#logout').on('click', function() {
+    $.post('login.php',{'logout':true}, function() {
+      window.location.href="index.html";
+      });
+  });
+</script>
+</html>

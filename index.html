@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DES exposure checker</title>
+  <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
+  <meta charset="utf-8">
+  <meta name="author" content="Peter Melchior, Erin Sheldon">
+  <link rel="icon" href="assets/DES_logo_trans.png" type="image/png">
+  <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <script>
+  var email = "???";
+  var domain = "???";
+  </script>
+  <style>
+  #logo { zoom: 2; height: 128px; width: 128px; position: absolute; top: 1%; left: 68%; background-image: url(assets/DES_logo_trans.png); opacity: 0.1; }
+  </style>
+</head>
+
+<body>
+  <div class='container' style="width:980px">
+    <div class="hero-unit">
+    <h1>DES exposure checker</h1>
+    <p>See how DES images actually look like. Discover flaws we would otherwise have missed. Make our data better.</p>
+    <p><button class="btn btn-primary btn-large" id="open-login-button">Log in</button></p>
+    </div>
+    <div class="span4">
+      <h4>For DES users only</h4>
+      <p>This website is accessible to registered DES users only.
+      If you think you should be one of them, but can't log in, send an email
+      with your name and affiliation to
+      <script>
+	document.write('<a href="mailto:' + email + '@' + domain + '?subject=Account%20for%20DES%20exposure%20checker">' + email + '@' + domain +'</a>');
+      </script>
+      to get your
+      request reviewed.</p>
+    </div>
+    <div class="span4">
+      <h4>Tutorial</h4>
+      <p>See what kind of flaws we expect in our data and how some of the really
+      interesting artifacts look like.<br />
+      <a href="tutorial.html">Start tutorial</a>
+      </p>
+    </div>
+    <div class="span4">
+      <h4>Leaderboard</h4>
+      <div id="leaderboard"></div>
+    </div>
+  </div>
+  
+  <!-- Login modal -->
+  <div class="modal hide" id="logIn">
+      <div class="modal-header">
+	<a class="close" data-dismiss="modal">x</a>
+	<h3>Log in</h3>
+      </div>
+      <div class="modal-body">
+	<form id="log-in-form" class="form-horizontal" style="margin-bottom: 0px;">
+	  <fieldset>
+	    <div class="control-group">
+	      <label class="control-label" for="username">Account name</label>
+	      <div class="controls">
+		<input type="text" class="input" id="username" name="username" style="background-color: rgb(255, 255, 204);">
+	      </div>
+            </div>
+	    <div class="control-group">
+	      <label class="control-label" for="hash">Password</label>
+	      <div class="controls">
+		<input type="password" class="input" name="hash" style="background-color: rgb(255, 255, 204);">
+	      </div>
+	    </div>
+	  </fieldset>
+	</form>
+      </div>
+      <div class="modal-footer">
+        <!--div class="form-actions" style="margin-bottom: 0px;"-->
+          <button class="btn btn-success" id="login_button" data-toggle="button" data-loading-text="Authenticating...">Log in</button>
+          &nbsp;&nbsp;
+          <script>
+          document.write('<a title="How to get your password resetted" href="mailto:' + email + '@' + domain + '?subject=Please%20reset%20my%20password&body=To%20get%20your%20password%20resetted,%20simply%20send%20this%20email%20from%20the%20email%20account%20you%20used%20when%20signing%20up.">Forgot password?</a>');
+          </script>
+        <!--/div-->
+      </div>
+  </div>
+</body>
+<script src="assets/sha1.js"></script>
+<script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="assets/jquery.cookie.js"></script>
+<script src="assets/login.js" type="text/javascript"></script>
+<script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $.get('ranking.php', {'limit': 5, 'output': 'html', 'short':true}, function(response) {
+      $('#leaderboard').html(response);
+    });
+  });
+  $('#logIn').modal({"show": false });
+  $('#login_button').on('click', logIn).button();
+  
+  function checkSessionCookie() {
+    return ($.cookie('sid') != null);    
+  }
+  $('#open-login-button').on('click', function() {
+      if (checkSessionCookie())
+        window.location.href = "viewer.html";
+      else
+        $('#logIn').modal('show');
+  });
+</script>
+</html>

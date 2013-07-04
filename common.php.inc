@@ -1,0 +1,81 @@
+<?php
+
+include_once("config.php.inc");
+
+function getDBHandle() {
+    global $config;
+    $dbh = new PDO('sqlite:'. $config['filedb']);
+    // create the associated qa table. as it uses fileid = files.rowid, this
+    // needs to stay in the same DB file
+    $dbh->query('CREATE TABLE IF NOT EXISTS qa (userid INT NOT NULL, fileid INT NOT NULL, problem INT NOT NULL, comment TEXT, timestamp TEXT NOT NULL DEFAULT current_timestamp);');
+    $dbh->query('ATTACH DATABASE "' . $config['userdb'].'" AS users');
+    return $dbh;
+}
+
+function getNextImage($dbh) {
+    global $config;
+    return $dbh->query('SELECT rowid, expname, ccd, band, "' . $config['version'] .'" || substr(field, 3) as name FROM files ORDER BY RANDOM() LIMIT 1');
+}
+
+function getUIDFromSID($dbh) {
+  global $config;
+  if (in_array('sid',array_keys($_COOKIE))) {
+    $stmt = $dbh->prepare("SELECT uid FROM `sessions` WHERE sid = ?");
+    $stmt->bindParam(1, $_COOKIE['sid'], PDO::PARAM_STR, 40);
+    $stmt->execute();
+    $result = FALSE;
+    if ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+      $result = $row['uid'];
+    else // CAVEAT: this can be used to guess SID by polling the server with a crafted cookie
+       setcookie("sid", "", time() - 3600, "/", $config['domain']);
+    $stmt->closeCursor();
+    return $result;
+  } else
+    return FALSE;
+}
+
+function getUserData($dbh, $uid) {
+    $stmt = $dbh->prepare("SELECT username, total_files, flagged_files, (SELECT COUNT(*)+1 from users.users WHERE total_files > (SELECT total_files FROM users.users WHERE rowid = ?)) as rank FROM  users.users WHERE rowid = ?");
+    $stmt->bindParam(1, $uid, PDO::PARAM_INT);
+    $stmt->bindParam(2, $uid, PDO::PARAM_INT);
+    $stmt->execute();
+    if ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+        return $row;
+    else {
+        return FALSE;
+    }
+}
+
+// mimics json formatting
+function json_output($data) {
+    if (gettype($data) == "string")
+        return "\"". $data . "\"";
+    if (gettype($data) == "array") {
+        $chunks = array();
+        // from http://stackoverflow.com/questions/5996749/determine-whether-an-array-is-associative-hash-or-not
+        // finding a indexed = non-associative array
+        if (array_keys($data) === range(0, count($data) - 1)) {
+            foreach ($data as $d)
+                array_push($chunks, json_output($d));
+            return "[" . implode(",", $chunks) . "]";
+        } else {
+            foreach ($data as $k => $v)
+                array_push($chunks, "\"" . $k . "\":" . json_output($v));
+            return "{" . implode(",", $chunks) . "}";
+        }
+    }
+    else return $data;
+}
+
+function getProblemCodes() {
+    return array(
+      "Fine" => 0,
+      "Cosmic ray" => 1,
+      "Ghost" => 2,
+      "Cross-talk" => 3,
+      "Satellite track" => 4,
+      "Readout artifact" => 5,
+      "Other..." => 255
+    );
+}
+?>

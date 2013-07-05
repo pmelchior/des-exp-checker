@@ -72,17 +72,9 @@
     var dataunit = f.getDataUnit(2);
     // Set options to pass to the next callback
     opts["dataunit"] = dataunit;
+    opts["f"] = f;
     // Asynchronously get pixels representing the image passing a callback and options
     dataunit.getFrameAsync(0, createVisualization, opts);
-
-    /*
-    // add weight/bad-pixel map
-    var dataunit = f.getDataUnit(3);
-    // Set options to pass to the next callback
-    opts["dataunit"] = dataunit;
-    // Asynchronously get pixels representing the image passing a callback and options
-    dataunit.getFrameAsync(0, addMaskLayer, opts);
-    */
   }
   
   // Define callback for when pixels have been read from file
@@ -119,12 +111,20 @@
     // Set the intensity range and stretch
     webfits.setExtent(extent[0], extent[1]);
     webfits.setStretch(stretch);
-    $('#loading').addClass('hide');
+    
+    // add weight/bad-pixel map
+    var dataunit = opts.f.getDataUnit(3);
+    // Set options to pass to the next callback
+    opts["dataunit"] = dataunit;
+    // Asynchronously get pixels representing the image passing a callback and options
+    dataunit.getFrameAsync(0, addMaskLayer, opts);
+
   }
   
   function addMaskLayer(arr, opts) {
     webfits.loadImage('bpm', arr, 1024, 512);
-    webfits.drawAsinh();
+    webfits.draw();
+    $('#loading').addClass('hide');
   }
 
   function renderImage(name) {
@@ -253,7 +253,8 @@
       </span>
       <span style="position:absolute; right: 0px; top:0px;">
         <span class="muted" id="image_name"></span>
-        <button style="margin-left:20px;" class="btn btn-info" href="#" id="option-button">Display options</button>
+        <button style="margin-left:20px;" class="btn btn-info" href="#" id="toggle-mask-button">Toggle mask</button>
+        <button class="btn btn-info" href="#" id="option-button">Display options</button>
       </span>
     </div>
     <div id="loading" class="hide" style="position:relative; left:512px; top:266px; z-index:1000;"></div>
@@ -266,7 +267,7 @@
         <textarea style="width:516px;" type="text" id="problem-text" placeholder="Describe in your own words"></textarea>
       </div>
       <div class="modal-footer">
-        <span style="padding-right:20px">When done, double-click on the image to mark the problematic area</span>
+        <span style="padding-right:20px">When done, click on the image to mark the problematic area</span>
         <button id="problem-text-button" class="btn btn-primary">Done</button>
       </div>
     </div>
@@ -341,6 +342,10 @@
   });
   $('#control-modal').modal({"backdrop": false, "show": false });
   $('#problem-modal').modal({"backdrop": false, "show": false });
+  $('#toggle-mask-button').on('click', function() {
+    webfits.showMask = !webfits.showMask;
+    webfits.draw();
+  });
   $('#option-button').on('click', function() {
     $('#control-modal').modal('show');
   });
@@ -352,6 +357,8 @@
     $('#problem-name').html(problemName);
   });
   $('a[class*="problem"]').on('click', function(evt) {
+    if (problem === null)
+      $("#problem-dialogue").removeClass("hide");
     problem = evt.target.innerHTML;
     $('#problem-name').html(problem);
     if (problem == "Other...") {
@@ -359,8 +366,6 @@
     } else {
       $('#problem-text').val('');
     }
-    if (problem === null)
-      $("#problem-dialogue").removeClass("hide");
   });
   $('#clear-button').on('click', function() {
     clearMarks();

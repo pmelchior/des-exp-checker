@@ -42,6 +42,7 @@
       }
       this.offsetLeft = this.canvas.offsetLeft;
       this.offsetTop = this.canvas.offsetTop;
+      this.showMask = true;
       parentStyle = this.canvas.parentElement.style;
       parentStyle.width = "" + this.canvas.width + "px";
       parentStyle.height = "" + this.canvas.height + "px";
@@ -185,6 +186,16 @@
       return this.draw();
     };
 
+    // color all masked pixels blue
+    Api.prototype.addMask = function(arr) {
+      var data = this.images.bpm.arr;
+      var length = arr.length;
+      while (length -= 4) {
+        if (data[length / 4] != 65536) // issue with fits.js, compression and Uint16
+          arr[length+2] = 255;
+      }
+    };
+
     Api.prototype.drawLinear = function() {
       var arr, data, height, imgData, length, max, min, range, value, width;
       data = this.images[this.currentImage].arr;
@@ -203,6 +214,8 @@
         arr[length + 2] = value;
         arr[length + 3] = 255;
       }
+      if (this.showMask && this.nImages % 2 == 0)
+        this.addMask(arr);
       imgData.data = arr;
       this.ctx.putImageData(imgData, 0, 0);
       return this._applyTransforms();
@@ -228,6 +241,8 @@
         arr[length + 2] = value;
         arr[length + 3] = 255;
       }
+      if (this.showMask && this.nImages % 2 == 0)
+        this.addMask(arr);
       imgData.data = arr;
       this.ctx.putImageData(imgData, 0, 0);
       return this._applyTransforms();
@@ -251,6 +266,8 @@
         arr[length + 2] = value;
         arr[length + 3] = 255;
       }
+      if (this.showMask && this.nImages % 2 == 0)
+        this.addMask(arr);
       imgData.data = arr;
       this.ctx.putImageData(imgData, 0, 0);
       return this._applyTransforms();
@@ -277,15 +294,8 @@
         arr[length + 2] = value;
         arr[length + 3] = 255;
       }
-      /*
-      if (this.nImages % 2 == 0) {
-        data = this.images.bpm.arr;
-        length = arr.length;
-        while (length -= 4) {
-          if (data[length / 4] > 32768) //32768 && data[length / 4] < 65536)
-            arr[length+2] = 255;
-        }
-      }*/
+      if (this.showMask && this.nImages % 2 == 0)
+        this.addMask(arr);
       imgData.data = arr;
       this.ctx.putImageData(imgData, 0, 0);
       return this._applyTransforms();
@@ -313,6 +323,8 @@
         arr[length + 2] = value;
         arr[length + 3] = 255;
       }
+      if (this.showMask && this.nImages % 2 == 0)
+        this.addMask(arr);
       imgData.data = arr;
       this.ctx.putImageData(imgData, 0, 0);
       return this._applyTransforms();

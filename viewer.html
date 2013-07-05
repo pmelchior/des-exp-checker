@@ -276,7 +276,7 @@
             <button id="sqrt-button" class="btn btn-small stretch">Sqrt</button>
             <button id="logarithm-button" class="btn btn-small stretch">Logarithmic</button>
             <button id="arcsinh-button" class="btn btn-small stretch">ArcSinh</button>
-            <button id="peter-button" class="btn btn-small stretch">Peter's presets</button>
+            <button id="peter-button" class="btn btn-small stretch">Peter's</button>
           </fieldset>
           <fieldset>
             <legend>Visible data range</legend>
@@ -308,7 +308,7 @@
     renderImage();
     $('#' + stretch + "-button").addClass('btn-primary');
     getMyData();
-    setInterval(getMyData, 300000);
+    setInterval(getMyData, 600000);
   });
   $('button[class*="send"]').on('click', function(evt) {
     var rating = evt.target.id.split("-").shift();
@@ -319,16 +319,7 @@
     $('#' + stretch + "-button").removeClass('btn-primary');
     stretch = evt.target.id.split("-").shift();
     $('#' + stretch + "-button").addClass('btn-primary');
-    if (stretch == "peter") {
-      extent[0] = 1;
-      extent[1] = dataextent[1];
-      $('#vmin-input').val(extent[0]);
-      $('#vmax-input').val(extent[1]);
-      webfits.setExtent(extent[0], extent[1]);
-      webfits.setStretch("arcsinh");
-    }
-    else
-      webfits.setStretch(stretch);
+    webfits.setStretch(stretch);
   });
   $('#vmin-max-button').on('click', function() {
     extent = [$('#vmin-input').val(), $('#vmax-input').val()];

@@ -143,6 +143,9 @@
         case 'arcsinh':
           this.draw = this.drawAsinh;
           break;
+        case 'peter':
+          this.draw = this.drawPeter;
+          break;
         case 'power':
           this.draw = this.drawPower;
           break;
@@ -252,14 +255,17 @@
       this.ctx.putImageData(imgData, 0, 0);
       return this._applyTransforms();
     };
-    Api.prototype.drawAsinh = function() {
+    Api.prototype.drawAsinh = function(minval) {
       var arr, data, height, imgData, length, max, min, pixel, range, value, width;
       data = this.images[this.currentImage].arr;
       width = this.images[this.currentImage].width;
       height = this.images[this.currentImage].height;
       imgData = this.ctx.getImageData(0, 0, width, height);
       arr = imgData.data;
-      min = this.scaledArcsinh(this.minimum);
+      if (minval === undefined)
+        min = this.scaledArcsinh(this.minimum);
+      else
+        min = this.scaledArcsinh(minval);
       max = this.scaledArcsinh(this.maximum);
       range = max - min;
       length = arr.length;
@@ -284,7 +290,11 @@
       this.ctx.putImageData(imgData, 0, 0);
       return this._applyTransforms();
     };
-
+    
+    Api.prototype.drawPeter = function() {
+      return this.drawAsinh(1);
+    };
+    
     Api.prototype.drawPower = function() {
       var arr, data, height, imgData, length, max, min, pixel, value, width;
       data = this.images[this.currentImage].arr;

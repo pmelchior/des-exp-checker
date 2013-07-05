@@ -54,6 +54,10 @@
       ctx.textBaseline = 'middle';
       ctx.fillStyle = '#FF0000';
       ctx.fillText(prob.problem, prob.x, prob.y);
+      
+      // remove "mark the image" text and show the save/clear buttons instead
+      $('#problem-dialogue').addClass('hide');
+      $('#mark-buttons').removeClass('hide');
     }
   }
   
@@ -177,7 +181,7 @@
     
     // clear UI
     $("#problem-dialogue").addClass("hide");
-    $("#display-dialogue").removeClass("hide");
+    $('#mark-buttons').addClass('hide');
     $('#problem-text').val('');
     $('#problem-name').html('Problem');
     problem = null;
@@ -240,16 +244,16 @@
           <li><a tabindex="-1" class="problem" id="other-problem" href="#">Other...</a></li>
         </ul>
       </div>
-      <span id="display-dialogue" style="margin-left: 50px;"> 
-        <span class="muted" id="image_name"></span>
-        <button style="position:absolute; right: 0px; top:0px;" class="btn btn-info" href="#" id="option-button">Display options</button>
-      </span>
-      <span id="problem-dialogue" class="hide" style="margin-left: 50px; font-weight:bold;">
+      <span id="problem-dialogue" class="hide" style="margin-left: 20px;font-weight:bold;">
         Please click to mark problem(s) on the image
-        <div style="position:absolute; right: 0px; top:0px;">
-          <button class="btn btn-info" id="clear-button">Clear</button>
-          <button class="btn btn-info send" id="save-button">Save</button>
-        </div>
+      </span>
+      <span id="mark-buttons" class="hide" style="margin-left: 20px;">
+        <button class="btn btn-info" id="clear-button">Clear</button>
+        <button class="btn btn-info send" id="save-button">Save</button>
+      </span>
+      <span style="position:absolute; right: 0px; top:0px;">
+        <span class="muted" id="image_name"></span>
+        <button style="margin-left:20px;" class="btn btn-info" href="#" id="option-button">Display options</button>
       </span>
     </div>
     <div id="loading" class="hide" style="position:relative; left:512px; top:266px; z-index:1000;"></div>
@@ -355,10 +359,14 @@
     } else {
       $('#problem-text').val('');
     }
-    $("#display-dialogue").addClass("hide");
-    $("#problem-dialogue").removeClass("hide");
+    if (problem === null)
+      $("#problem-dialogue").removeClass("hide");
   });
-  $('#clear-button').on('click', clearMarks);
+  $('#clear-button').on('click', function() {
+    clearMarks();
+    $('#mark-buttons').addClass('hide');
+    $('#problem-dialogue').removeClass('hide');
+  });
   $('#rank-modal').modal({"backdrop": false, "show":false});
   $('#leaderboard-anchor').on('click', function() {
     $.get('ranking.php', {'output': 'html'}, function(response) {

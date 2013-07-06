@@ -191,8 +191,16 @@
     $.get('mydata.php', function(response) {
       $('#username').html(response.username);
       $('#userrank').html(response.rank);
-      if (response.rank < 5) {
+      if (response.rank == 1) {
         $('#userrank').addClass('badge-success');
+      } else {
+        if (response.rank <= 5) {
+          $('#userrank').addClass('badge-warning');
+        } else {
+          if (response.rank <= 10) {
+            $('#userrank').addClass('badge-important');
+          }
+        }
       }
       $('#total-files').html(response.total_files);
       $('#flagged-files').html(response.flagged_files);

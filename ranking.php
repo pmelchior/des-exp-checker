@@ -15,7 +15,7 @@ if (isset($_GET)) {
     }
     
     else {
-        $query = 'SELECT username, total_files, flagged_files FROM users.users WHERE total_files > 0 ORDER BY total_files DESC';
+        $query = 'SELECT username, total_files, flagged_files FROM users WHERE total_files > 0 ORDER BY total_files DESC';
         if (isset($_GET['limit'])) {
             if (is_numeric($_GET['limit'])) {
                 $query .= ' LIMIT ?';

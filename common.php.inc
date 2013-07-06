@@ -4,17 +4,14 @@ include_once("config.php.inc");
 
 function getDBHandle() {
     global $config;
-    $dbh = new PDO('sqlite:'. $config['filedb']);
-    // create the associated qa table. as it uses fileid = files.rowid, this
-    // needs to stay in the same DB file
-    $dbh->query('CREATE TABLE IF NOT EXISTS qa (userid INT NOT NULL, fileid INT NOT NULL, problem INT NOT NULL, comment TEXT, timestamp TEXT NOT NULL DEFAULT current_timestamp);');
-    $dbh->query('ATTACH DATABASE "' . $config['userdb'].'" AS users');
+    $dbh = new PDO('sqlite:'. $config['userdb']);
+    $dbh->query('ATTACH DATABASE "' . $config['filedb'].'" AS files');
     return $dbh;
 }
 
 function getNextImage($dbh) {
     global $config;
-    return $dbh->query('SELECT rowid, expname, ccd, band, "' . $config['version'] .'" || substr(field, 3) as name FROM files ORDER BY RANDOM() LIMIT 1');
+    return $dbh->query('SELECT rowid, expname, ccd, band, "' . $config['version'] .'" || substr(field, 3) as name FROM files.files ORDER BY RANDOM() LIMIT 1');
 }
 
 function getUIDFromSID($dbh) {
@@ -35,7 +32,7 @@ function getUIDFromSID($dbh) {
 }
 
 function getUserData($dbh, $uid) {
-    $stmt = $dbh->prepare("SELECT username, total_files, flagged_files, (SELECT COUNT(*)+1 from users.users WHERE total_files > (SELECT total_files FROM users.users WHERE rowid = ?)) as rank FROM  users.users WHERE rowid = ?");
+    $stmt = $dbh->prepare("SELECT username, total_files, flagged_files, (SELECT COUNT(*)+1 from users WHERE total_files > (SELECT total_files FROM users WHERE rowid = ?)) as rank FROM  users WHERE rowid = ?");
     $stmt->bindParam(1, $uid, PDO::PARAM_INT);
     $stmt->bindParam(2, $uid, PDO::PARAM_INT);
     $stmt->execute();

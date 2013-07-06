@@ -13,6 +13,7 @@
   <style>
   .img-polaroid {width: 300px !important;}
   .span4 { padding-top:20px; }
+  body { margin-bottom: 20px; }
   </style>
 </head>
 
@@ -20,40 +21,15 @@
   <div class='container' style="width:1024px;">
     <div class="navbar">
       <div class="navbar-inner">
-	<a class="brand" href="viewer.html">DES exposure checker</a>
+	<a class="brand" href="index.html">DES exposure checker</a>
 	<ul class="nav">
-	  <li class="active"><a href="tutorial.html">Tutorial</a></li>
+          <li><a href="viewer.html">Viewer</a></li>
+	  <li class="active"><a href="#">Tutorial</a></li>
 	</ul>
       </div> 
     </div>
     
     <!-- content area -->
-    <div class="span7">
-      <h1>Introduction</h1>
-      <p>The purpose of the application is to provide easy access to the DES firstcut
-      images. Well, not exactly the firstcut images. What you see here are factor 4
-      downsampled versions of the actual images just to keep the loading times
-      tolerable &mdash; the same goes for the image size, unless you are working
-      on a 4096 pixel wide monitor.</p>
-      <h3>What's the goal of this?</h3>
-      <p>We all want to conduct a science analysis based on the DES data. However,
-      no data is perfect, so we need to know what kinds of image artifacts are
-      in our data because, ultimatively, all of them need  to be accounted for
-      in one way or another. This application helps in two ways:</p>
-      <ul>
-        <li>It gives a convenient visual impression of the actual DES data and
-        some of the processing steps that have already attempted to identify and
-        mask artifacts.</li>
-        <li>It enables everyone to search for undetected artifacts. We gather your
-        submissions, analyze them, and feed them back to the science working groups
-        and DESDM. This way, we can train the processing pipelines on flaws, of
-        which we know they are there.</li>
-      </ul>
-    </div>
-    <div class="span4 offset1">
-      <img src="assets/DES_logo_trans.png" />
-    </div>
-    
     <div class="span7">
       <h1>Tutorial</h1>
       <p>The <a href="viewer.html">Viewer</a> automatically pulls an image,

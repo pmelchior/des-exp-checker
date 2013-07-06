@@ -72,6 +72,7 @@ function getProblemCodes() {
       "Cross-talk" => 3,
       "Satellite track" => 4,
       "Readout artifact" => 5,
+      "Catastrophic failure" => 128,
       "Other..." => 255
     );
 }

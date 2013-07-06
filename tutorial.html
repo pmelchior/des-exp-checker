@@ -10,11 +10,213 @@
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
+  <style>
+  .img-polaroid {width: 300px !important;}
+  .span4 { padding-top:20px; }
+  </style>
 </head>
 
 <body>
-  <div class='container' style="width:980px">
-    <h2>Coming soon...</h2>
+  <div class='container' style="width:1024px;">
+    <div class="navbar">
+      <div class="navbar-inner">
+	<a class="brand" href="viewer.html">DES exposure checker</a>
+	<ul class="nav">
+	  <li class="active"><a href="tutorial.html">Tutorial</a></li>
+	</ul>
+      </div> 
+    </div>
+    
+    <!-- content area -->
+    <div class="span7">
+      <h1>Introduction</h1>
+      <p>The purpose of the application is to provide easy access to the DES firstcut
+      images. Well, not exactly the firstcut images. What you see here are factor 4
+      downsampled versions of the actual images just to keep the loading times
+      tolerable &mdash; the same goes for the image size, unless you are working
+      on a 4096 pixel wide monitor.</p>
+      <h3>What's the goal of this?</h3>
+      <p>We all want to conduct a science analysis based on the DES data. However,
+      no data is perfect, so we need to know what kinds of image artifacts are
+      in our data because, ultimatively, all of them need  to be accounted for
+      in one way or another. This application helps in two ways:</p>
+      <ul>
+        <li>It gives a convenient visual impression of the actual DES data and
+        some of the processing steps that have already attempted to identify and
+        mask artifacts.</li>
+        <li>It enables everyone to search for undetected artifacts. We gather your
+        submissions, analyze them, and feed them back to the science working groups
+        and DESDM. This way, we can train the processing pipelines on flaws, of
+        which we know they are there.</li>
+      </ul>
+    </div>
+    <div class="span4 offset1">
+      <img src="assets/DES_logo_trans.png" />
+    </div>
+    
+    <div class="span7">
+      <h1>Tutorial</h1>
+      <p>The <a href="viewer.html">Viewer</a> automatically pulls an image,
+      which you should inspect and determine if it's fine. If not, select one of the
+      predefined artifacts from the Problem button:
+      </p>
+      <button id="fine-button" class="btn btn-success">Fine</button>
+      <div class="btn-group">
+        <button id="problem-button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><span id="problem-name">Problem</span>
+        <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+          <li><a class="problem" tabindex="-1" href="#">Cosmic ray</a></li>
+          <li><a class="problem" tabindex="-1" href="#">Ghost</a></li>
+          <li><a class="problem" tabindex="-1" href="#">Cross-talk</a></li>
+          <li><a class="problem" tabindex="-1" href="#">Satellite track</a></li>
+          <li><a class="problem" tabindex="-1" href="#">Readout artifact</a></li>
+          <li><a class="problem" tabindex="-1" href="#">Catastrophic failure</a></li>
+          <li class="divider"></li>
+          <li><a tabindex="-1" class="problem" id="other-problem" href="#">Other...</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="span7">
+      <h3>Cosmic rays</h3>
+      <p>They are an inevitable contaminant to images from our deep red-sensitive CCDs, so the
+      problem is not that they are there. It's when they are not properly masked.
+      The good thing about them: they are easy to spot. Use the display options
+      to select of fairly bright setting,
+      e.g. <button id="peter-button" class="btn btn-primary btn-mini">Peter's</button>,
+      and they will be very apparent. Toggle the mask to find out if all have been
+      found and whether they are entirely masked.
+      </p>
+      <p>
+        <button class="btn btn-info" href="#" id="toggle-mask-button">Toggle mask</button>
+        <button class="btn btn-info" href="#" id="option-button">Display options</button>
+      </p>
+      <p>It's perfectly fine to mark multiple cosmic rays per image, or
+      multiple different problems on the same image. If you want to redo your selection,
+      simply clear the markings from the image. If you're satisfied, save it and move
+      on the the next image.
+      <p>
+        <button class="btn btn-info" href="#" id="toggle-mask-button">Clear</button>
+        <button class="btn btn-info" href="#" id="option-button">Save</button>
+      </p>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+        <img src="tutorial/cosmic_partial.png" />
+        <small>Partially masked cosmic ray (center)</small>
+      </p>
+    </div>
+    
+    <div class="span7">
+      <h3>Ghosts</h3>
+      <p>Ghost are reflections of the optics, basically an undesired additional path
+      from the outside of the telescope to CCD. They occur all the time,
+      but only show up if a bright object provides enough illumination for this
+      extra optical path. Then, often very large areas (from parts of a chip to the
+      entire focal plane) show ring-like features, which are brighter than the
+      surrounding sky. Whether ghosts are of concern depends strongly on the kind
+      of science analysis you're after. In either case, we need to know where they are.
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+        <!--img src="" />
+        <small>Partially masked cosmic ray (center)</small-->
+      </p>
+    </div>
+    
+    <div class="span7">
+      <h3>Cross-talk</h3>
+      <p>Cross-talk is a readout issue, which occurs in the electronics.
+      <span style="color:red">More detail here...</span>
+      The visual imprint of cross-talk is a long, horizontal excess of counts,
+      typically several pixels wide and often widest in the middle section.
+      When the cross-talk
+      occurs on a single chip, there should be a bright object on the other side
+      of the horizontal A/B transition.
+      </p>
+      <p>Since cross-talk scales with the brightness of the object that
+      cause it, only the brightest objects (typically stars) will leave a clearly
+      visible imprint. Switch to <button class="btn btn-primary btn-mini">Arcsinh</button>
+      scaling, and potentially <button class="btn btn-primary btn-mini">Reset</button> the
+      visible range, to dig deeper into noise. Since the feature can be very extended,
+      mark the region where it has it's largest vertical extension: the knot in the middle.
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+        <img src="tutorial/cross_talk.png" />
+        <small>Cross-talk from the bright star in the bottom onto the top amplifier.</small>
+      </p>
+    </div>
+    
+    <div class="span7">
+      <h3>Satellite tracks</h3>
+      <p>Satellite or planes are expected to cross our focal plane several times per hour.
+      They create long streaks on the images, much longer and wider than cosmic rays. Since they are so
+      large, you can mark the track whereever you want. Sometimes, however, 
+      the tracks are broken into segments (remember: planes have blinking lights), in which
+      case we'd like to have marks on each of the segments.
+      </p>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+        <!--img src="" />
+        <small>Partially masked cosmic ray (center)</small-->
+      </p>
+    </div>
+      
+    <div class="span7">
+      <h3>Readout artifact</h3>
+      <p>There are additional readout glitches, which can simply be found by looking
+      for horizontal (= readout direction) features, almost always exactly one pixel
+      wide. Mark it where it is most evident on the image.
+      <span style="color:red">More detail here...</span>
+      </p>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+        <img src="tutorial/readout_with_benefits.png" />
+        <small>Unmasked readout glitch (top). In addition, there is also a cosmic ray hit and a fainter cross-talk.</small>
+      </p>
+    </div>
+    
+    <div class="span7">
+      <h3>Catastrophic failures</h3>
+      <p>Sometimes a large portion of the entire image is affected by, well, something.
+      It would be too bothersome to mark each single feature on such an image, and
+      even if, it would probably be hard to train a piece of software to distinguish between
+      the contaminated parts and the usable rest. So, we'll settle for finding them first.
+      </p>
+      <p>Before marking an image as catastrophic failure, please make sure that it is not just
+      a conincidence of several other features. As a guideline, estimate the remaining usable
+      area after everything problematic has been masked (which may or may not be the case in
+      the image you're are looking at). If this remainder is less than 50%, mark the image
+      as catastrophic.</p>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+        <img src="tutorial/catastrophic.png" />
+        <small>Multiple streaks (in pairs of two stacked vertically) scattered across the image.</small>
+      </p>
+    </div>
+    
+    <div class="span7">
+      <h3>Other...</h3>
+      <p>Sometimes, none of the other categories fit. In this case, you can
+      describe the problem in your own words. Please do so in a way that is understandable inasmuch
+      as possible. We will attempt to categorize the problems you have identified later, and incorporate
+      reocurring issues for later versions of this application.
+      </p>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+        <!--img src="" />
+        <small>Partially masked cosmic ray (center)</small-->
+      </p>
+    </div>
   </div>
+   
 </body>
+<script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 </html>

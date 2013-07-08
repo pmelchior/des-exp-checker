@@ -14,6 +14,7 @@
   <script type="text/javascript" src="assets/webfits-canvas.0.3.1.js"></script>
   <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
   <script type="text/javascript" src="assets/jquery.cookie.js"></script>
+  <script type="text/javascript" src="assets/purl.js"></script>
   <script type="text/javascript">
   var webfits = null;
   var extent = null;
@@ -133,7 +134,7 @@
       clearMarks();
     if (name === undefined) {
       // Initialize the FITS file, passing the function getImage as a callback
-      $.get('db.php')
+      $.get('db.php', $.url().param())
       .done(function(data) {
         var response = $.parseJSON(data);
         fileid = response.rowid;

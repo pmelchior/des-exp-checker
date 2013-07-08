@@ -11,7 +11,15 @@ function getDBHandle() {
 
 function getNextImage($dbh) {
     global $config;
-    return $dbh->query('SELECT rowid, expname, ccd, band, "' . $config['version'] .'" || substr(field, 3) as name FROM files.files ORDER BY RANDOM() LIMIT 1');
+    if (isset($_GET['expname']) && isset($_GET['ccd']) && isset($_GET['band'])) {
+        $stmt = $dbh->prepare('SELECT rowid, expname, ccd, band, "' . $config['version'] .'" || substr(field, 3) as name FROM files.files WHERE expname = ? AND ccd = ? AND band = ? LIMIT 1;');
+        $stmt->bindParam(1, $_GET['expname'], PDO::PARAM_STR, 14);
+        $stmt->bindParam(2, $_GET['ccd'], PDO::PARAM_INT);
+        $stmt->bindParam(3, $_GET['band'], PDO::PARAM_STR, 1);
+        $stmt->execute();
+        return $stmt;
+    } else
+        return $dbh->query('SELECT rowid, expname, ccd, band, "' . $config['version'] .'" || substr(field, 3) as name FROM files.files ORDER BY RANDOM() LIMIT 1');
 }
 
 function getUIDFromSID($dbh) {

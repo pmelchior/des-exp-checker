@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Tutorial</title>
+  <title>DES exposure checker | Tutorial</title>
   <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
   <meta name="author" content="Peter Melchior, Erin Sheldon">
@@ -25,6 +25,7 @@
 	<ul class="nav">
           <li><a href="viewer.html">Viewer</a></li>
 	  <li class="active"><a href="#">Tutorial</a></li>
+          <li><a href="statistics.html">Statistics</a></li>
 	</ul>
       </div> 
     </div>
@@ -45,9 +46,9 @@
           <li><a class="problem" tabindex="-1" href="#">Cosmic ray</a></li>
           <li><a class="problem" tabindex="-1" href="#">Ghost</a></li>
           <li><a class="problem" tabindex="-1" href="#">Cross-talk</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Satellite track</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Readout artifact</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Catastrophic failure</a></li>
+          <li><a class="problem" tabindex="-1" href="#">Satellite</a></li>
+          <li><a class="problem" tabindex="-1" href="#">Readout</a></li>
+          <li><a class="problem" tabindex="-1" href="#">Failure</a></li>
           <li class="divider"></li>
           <li><a tabindex="-1" class="problem" id="other-problem" href="#">Other...</a></li>
         </ul>
@@ -126,7 +127,7 @@
     </div>
     
     <div class="span7">
-      <h3>Satellite tracks</h3>
+      <h3>Satellite</h3>
       <p>Satellite or planes are expected to cross our focal plane several times per hour. <span style="color:red">[Check numbers]</span>
       They create long streaks on the images, much longer and wider than cosmic rays. Since they are so
       large, you can mark the track whereever you want. Sometimes, however, 
@@ -142,7 +143,7 @@
     </div>
       
     <div class="span7">
-      <h3>Readout artifact</h3>
+      <h3>Readout</h3>
       <p>There are additional readout glitches, which can simply be found by looking
       for horizontal (= readout direction) features, almost always exactly one pixel
       wide. Mark it where it is most evident on the image.
@@ -157,7 +158,7 @@
     </div>
     
     <div class="span7">
-      <h3>Catastrophic failures</h3>
+      <h3>Failures</h3>
       <p>Sometimes a large portion of the entire image is affected by, well, something.
       It would be too bothersome to mark each single feature on such an image, and
       even if, it would probably be hard to train a piece of software to distinguish between

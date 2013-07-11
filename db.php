@@ -40,9 +40,6 @@ $res = getNextImage($dbh);
 if ($res === False)
     header('HTTP/1.0 500 Internal Server Error');
 $row = $res->fetch(PDO::FETCH_ASSOC);
-
-// normally we'd do a print json_encode($row)
-// but there are no JSON functions on this server...
 echo json_encode($row);
 
 ?>

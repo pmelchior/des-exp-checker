@@ -11,15 +11,25 @@ function getDBHandle() {
 
 function getNextImage($dbh) {
     global $config;
+    $sql = 'SELECT files.files.rowid, expname, ccd, band, "' . $config['version'] .'" || substr(field, 3) as name FROM files.files';
     if (isset($_GET['expname']) && isset($_GET['ccd']) && isset($_GET['band'])) {
-        $stmt = $dbh->prepare('SELECT rowid, expname, ccd, band, "' . $config['version'] .'" || substr(field, 3) as name FROM files.files WHERE expname = ? AND ccd = ? AND band = ? LIMIT 1;');
+        $sql .= ' WHERE expname = ? AND ccd = ? AND band = ? LIMIT 1;';
+        $stmt = $dbh->prepare($sql);
         $stmt->bindParam(1, $_GET['expname'], PDO::PARAM_STR, 14);
         $stmt->bindParam(2, $_GET['ccd'], PDO::PARAM_INT);
         $stmt->bindParam(3, $_GET['band'], PDO::PARAM_STR, 1);
         $stmt->execute();
         return $stmt;
-    } else
-        return $dbh->query('SELECT rowid, expname, ccd, band, "' . $config['version'] .'" || substr(field, 3) as name FROM files.files ORDER BY RANDOM() LIMIT 1');
+    }
+    if (isset($_GET['problem'])) {
+        $sql .= ' JOIN qa ON (files.rowid = qa.fileid) WHERE qa.version = "'. $config['version'] .'" AND qa.problem = ? ORDER BY RANDOM() LIMIT 1;';
+        $stmt = $dbh->prepare($sql);
+        $codes = getProblemCodes();
+        $stmt->bindParam(1, $codes[$_GET['problem']], PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt;
+    }
+    return $dbh->query('SELECT rowid, expname, ccd, band, "' . $config['version'] .'" || substr(field, 3) as name FROM files.files ORDER BY RANDOM() LIMIT 1');
 }
 
 function getUIDFromSID($dbh) {
@@ -78,9 +88,9 @@ function getProblemCodes() {
       "Cosmic ray" => 1,
       "Ghost" => 2,
       "Cross-talk" => 3,
-      "Satellite track" => 4,
-      "Readout artifact" => 5,
-      "Catastrophic failure" => 128,
+      "Satellite" => 4,
+      "Readout" => 5,
+      "Failure" => 128,
       "Other..." => 255
     );
 }

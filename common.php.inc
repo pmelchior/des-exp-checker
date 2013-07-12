@@ -10,8 +10,7 @@ function getDBHandle() {
 }
 
 function getNextImage($dbh) {
-    global $config;
-    $sql = 'SELECT files.files.rowid, expname, ccd, band, "' . $config['version'] .'" || substr(field, 3) as name FROM files.files';
+    $sql = 'SELECT files.files.rowid, expname, ccd, band, name FROM files.files';
     if (isset($_GET['expname']) && isset($_GET['ccd']) && isset($_GET['band'])) {
         $sql .= ' WHERE expname = ? AND ccd = ? AND band = ? LIMIT 1;';
         $stmt = $dbh->prepare($sql);
@@ -22,14 +21,14 @@ function getNextImage($dbh) {
         return $stmt;
     }
     if (isset($_GET['problem'])) {
-        $sql .= ' JOIN qa ON (files.rowid = qa.fileid) WHERE qa.version = "'. $config['version'] .'" AND qa.problem = ? ORDER BY RANDOM() LIMIT 1;';
+        $sql .= ' JOIN qa ON (files.rowid = qa.fileid) WHERE qa.problem = ? ORDER BY RANDOM() LIMIT 1;';
         $stmt = $dbh->prepare($sql);
         $codes = getProblemCodes();
         $stmt->bindParam(1, $codes[$_GET['problem']], PDO::PARAM_INT);
         $stmt->execute();
         return $stmt;
     }
-    return $dbh->query('SELECT rowid, expname, ccd, band, "' . $config['version'] .'" || substr(field, 3) as name FROM files.files ORDER BY RANDOM() LIMIT 1');
+    return $dbh->query($sql.' ORDER BY RANDOM() LIMIT 1');
 }
 
 function getUIDFromSID($dbh) {

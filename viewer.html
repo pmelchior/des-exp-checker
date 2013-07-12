@@ -24,6 +24,7 @@
   var marks = [];
   var problem = null;
   var fileid = null;
+  var images_per_fp = 61;
   
   function checkSessionCookie() {
     return ($.cookie('sid') != null);    
@@ -155,22 +156,27 @@
   
   function userClass(total_files) {
     // frequent users: color badge acording to # of focal planes done
-    if (total_files / 61 >= 100) {
+    if (total_files / images_per_fp >= 100)
       return {class: 5, style: 'badge-inverse', title: 'Chief inspector'};
-    }
-    if (total_files / 61 >= 10) {
+    if (total_files / images_per_fp >= 10)
       return {class: 4, style: 'badge-info', title: 'Veteran'};
-    }
-    if (total_files / 61 >= 5) {
+    if (total_files / images_per_fp >= 5)
       return {class: 3, style: 'badge-important', title: 'Top performer'};
-    }
-    if (total_files / 61 >= 2) {
+    if (total_files / images_per_fp >= 2)
       return {class: 2, style: 'badge-warning', title: 'Frequent checker'};
-    }
-    if (total_files / 61 >= 1) {
+    if (total_files / images_per_fp >= 1)
       return {class: 1, style: 'badge-success', title: 'Rookie'};
-    }
     return {class: 0};
+  }
+  
+  function missingFilesForNextClass(total_files, userclass) {
+    switch(userclass.class) {
+      case 0: return images_per_fp - total_files;
+      case 1: return 2*images_per_fp - total_files;
+      case 2: return 5*images_per_fp - total_files;
+      case 3: return 10*images_per_fp - total_files;
+      case 4: return 100*images_per_fp - total_files;
+    }
   }
   
   function setBadgeColor(userClass) {
@@ -191,8 +197,8 @@
   function checkFileCount(total_files) {
     var uc = userClass(total_files);
     setBadgeColor(uc);
-    if (total_files % 61 == 0) {
-      var fps = total_files/61;
+    if (total_files % images_per_fp == 0) {
+      var fps = total_files/images_per_fp;
       $('#fp_number').html(numberSuffix(fps));
       var old_uc = userClass(total_files-1);
       if (uc.class > old_uc.class) {
@@ -246,10 +252,21 @@
     $.get('mydata.php', function(response) {
       $('#username').html(response.username);
       $('#userrank').html("#"+response.rank);
+      $('#user-rank').html("#"+response.rank);
       setBadgeColor(userClass(response.total_files));
       $('#total-files').html(response.total_files);
       $('#flagged-files').html(response.flagged_files);
       $('#user-menu').removeClass('hide');
+      var uc = userClass(response.total_files);
+      var rankDetails = "";
+      if (uc.class > 0)
+        rankDetails += "You have the rank of a <span class='badge " + uc.style + "'>" + uc.title + "</span>.<br />";
+      if (uc.class < 5) {
+        var missing = missingFilesForNextClass(response.total_files, uc);
+        var next_uc = userClass(parseInt(response.total_files) + missing);
+        rankDetails += "You need another <strong>" + missing + "</strong> images to reach the rank of a <span class='badge " + next_uc.style + "'>" + next_uc.title + "</span>.";
+      }
+      $('#user_rank_details').html(rankDetails);
     }, 'json');
   }
   </script>
@@ -264,7 +281,6 @@
           <li class="active"><a href="#">Viewer</a></li>
 	  <li><a href="tutorial.html">Tutorial</a></li>
           <li><a href="statistics.html">Statistics</a></li>
-	  <li><a href="#" id="leaderboard-anchor">Leaderboard</a></li>
 	</ul>
         <ul class="nav pull-right hide" id="user-menu" style="margin-right:-20px">
           <li class="dropdown">
@@ -273,8 +289,8 @@
             <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-              <li><a tabindex="-1" href="#">Total <span id="total-files"></span></a></li>
-              <li><a tabindex="-1" href="#">Flagged <span id="flagged-files"></span></a></li>
+              <li><a tabindex="-1" href="#" id="mystats-anchor">My statistics</a></li>
+              <li><a tabindex="-1" href="#" id="leaderboard-anchor">Leaderboard</a></li>
               <li class="divider"></li>
               <li><a tabindex="-1" id="logout" href="#">Logout</a></li>
             </ul>
@@ -351,6 +367,21 @@
         </form>
       </div>
     </div>
+    
+    <div class="modal hide" id="mystats-modal">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>My statistics</h3>
+      </div>
+      <div class="modal-body">
+        <p>You've checked a total of <strong id="total-files"></strong> images
+        and found <strong id="flagged-files"></strong> of them problematic.<br />
+        You are currently at position <strong id="user-rank"></strong> of the leaderboard.
+        </p>
+        <p id="user_rank_details"></p>
+      </div>
+    </div>
+
     <div class="modal hide" id="rank-modal">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -443,7 +474,12 @@
     $('#mark-buttons').addClass('hide');
     $('#problem-dialogue').removeClass('hide');
   });
+  
   $('#rank-modal').modal({"backdrop": false, "show":false});
+  $('#mystats-modal').modal({"backdrop": false, "show":false});
+  $('#mystats-anchor').on('click', function() {
+    $('#mystats-modal').modal('show');
+  });
   $('#congrats-modal').modal({"backdrop": false, "show":false});
   $('#leaderboard-anchor').on('click', function() {
     $.get('ranking.php', {'output': 'html'}, function(response) {

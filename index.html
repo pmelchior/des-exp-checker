@@ -15,12 +15,17 @@
   var domain = "???";
   </script>
   <style>
-  body { margin-bottom: 20px; }
+  .container {width: 980px; }
+  body,html { height: 100%; }
+  #wrapper {min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -60px;}
+  #foot, #push { height: 60px; clear: both; }
   </style>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 </head>
 
 <body>
-  <div class='container' style="width:980px">
+  <div id="wrapper">
+  <div class='container'>
     <div class="hero-unit">
     <h1>DES exposure checker</h1>
     <p>See how DES images actually look like. Discover flaws we would otherwise have missed. Make our data better.</p>
@@ -49,10 +54,15 @@
       </ul>
       <h4>How can I start?</h4>
       Check out our <a href="tutorial.html">Tutorial</a> and you'll know what to do in no time.
+      <h4>How are we doing so far?</h4>
+      The basic <a href="statistics.html">statistics</a> are computed in real time. More
+      detailed analyses will become available once we have gathered enough submissions.
     </div>
     <div class="span4">
       <h4>Leaderboard</h4>
       <div id="leaderboard"></div>
+      <h4>Progress to date</h4>
+      <div style="text-align: center"><div id="basic_stats"></div></div>
     </div>
   </div>
   
@@ -90,6 +100,13 @@
         <!--/div-->
       </div>
   </div>
+    <div id="push"></div>
+  </div>
+  <div id="foot">
+    <div class="container" style="text-align:right">
+      <div class="breadcrumb muted" style="margin: 24px 0 0 0;">Created by Peter Melchior and Erin Sheldon</div>
+    </div>
+  </div>
 </body>
 <script src="assets/sha1.js"></script>
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
@@ -115,4 +132,42 @@
         $('#logIn').modal('show');
   });
 </script>
+
+<script>      
+var radius1 = 100;
+var arc1 = d3.svg.arc()
+    .outerRadius(radius1)
+    .innerRadius(radius1 - 40);
+var pie = d3.layout.pie();
+
+d3.json("stats.php", function(error, response) {
+  
+  // checked chart
+  var svg = d3.select("#basic_stats").append("svg")
+    .attr("width", radius1*2)
+    .attr("height", radius1*2);
+    
+  var g = svg.selectAll(".arc")
+    .data(pie([response.done/response.total, (response.total - response.done)/response.total]))
+    .enter().append("g")
+      .attr("transform", "translate(" + radius1 + "," + radius1 + ")");
+  g.append("path")
+    .attr("class", "arc")
+    .attr("d", arc1)
+    .style("fill", function(d, i) { if (i == 0) return '#000'; else return '#eee'; });
+  g.append("text")
+    .attr("transform", function(d) { return "translate(" + arc1.centroid(d) + ")"; })
+    .attr("dy", ".35em")
+    .style("text-anchor", "middle")
+    .style("fill", "#fff")
+    .style("font-size", "10px")
+    .text(function(d, i) { if (i==0 && d.data > 0.05) return (100*d.data).toString().split(".").shift() + '%'; else return null; });
+  svg.append("text")
+    .attr("dy", ".35em")
+    .attr("transform", "translate(" + radius1 + "," + radius1 + ")")
+    .style("text-anchor", "middle")
+    .text("Checked");
+});
+</script>
+
 </html>

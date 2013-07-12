@@ -13,12 +13,16 @@
   <style>
   .img-polaroid {width: 300px !important;}
   .span4 { padding-top:20px; }
-  body { margin-bottom: 20px; }
+  .container {width: 1024px; }
+  body,html { height: 100%; }
+  #wrapper {min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -60px;}
+  #foot, #push { height: 60px; clear: both; }
   </style>
 </head>
 
 <body>
-  <div class='container' style="width:1024px;">
+  <div id="wrapper">
+  <div class='container'>
     <div class="navbar">
       <div class="navbar-inner">
 	<a class="brand" href="index.html">DES exposure checker</a>
@@ -192,7 +196,13 @@
       </p>
     </div>
   </div>
-   
+  <div id="push"></div>
+  </div>
+  <div id="foot">
+    <div class="container" style="text-align:right">
+      <div class="breadcrumb muted" style="margin: 24px 0 0 0;">Created by Peter Melchior and Erin Sheldon</div>
+    </div>
+  </div>
 </body>
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>

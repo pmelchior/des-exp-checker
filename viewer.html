@@ -10,6 +10,12 @@
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
+  <style>
+  .container {width: 1024px; }
+  body,html { height: 100%; }
+  #wrapper {min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -60px;}
+  #foot, #push { height: 60px; clear: both; }
+  </style>
   <script type="text/javascript" src="assets/fits.js"></script>
   <script type="text/javascript" src="assets/webfits-canvas.0.3.1.js"></script>
   <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
@@ -273,7 +279,8 @@
 </head>
 
 <body>
-  <div class='container' style="width:1024px;">
+  <div id="wrapper">
+  <div class='container'>
     <div class="navbar">
       <div class="navbar-inner">
 	<a class="brand" href="index.html">DES exposure checker</a>
@@ -403,9 +410,15 @@
       </div>
     </div>
     
-    <div class="muted" style="text-align: right;">Created by Peter Melchior and Erin Sheldon at the Aspen Center for Physics</div>
   </div>
-  </body>
+  <div id="push"></div>
+  </div>
+  <div id="foot">
+    <div class="container" style="text-align:right">
+      <div class="breadcrumb muted" style="margin: 24px 0 0 0;">Created by Peter Melchior and Erin Sheldon</div>
+    </div>
+  </div>
+</body>
 <script type="text/javascript" src="assets/spin.min.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script>

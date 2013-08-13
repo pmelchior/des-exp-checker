@@ -115,7 +115,7 @@
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script>
   $(document).ready(function () {
-    $.get('ranking.php', {'limit': 5, 'output': 'html', 'short':true}, function(response) {
+    $.get('ranking.php', {'limit': 10, 'output': 'html', 'short':true}, function(response) {
       $('#leaderboard').html(response);
     });
   });

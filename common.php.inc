@@ -83,7 +83,7 @@ function json_output($data) {
 
 function getProblemCodes() {
     return array(
-      "Fine" => 0,
+      "OK" => 0,
       "Cosmic ray" => 1,
       "Ghost" => 2,
       "Cross-talk" => 3,

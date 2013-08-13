@@ -28,7 +28,7 @@ if ($_POST) {
             $sth2 = $dbh->prepare('UPDATE users SET total_files = total_files + 1, flagged_files = flagged_files + 1 WHERE rowid = ?');
             $sth2->execute(array($uid));
         } else {
-            $sth->execute(array($config['version'], $_POST['fileid'], $uid, 0, null));
+            $sth->execute(array($_POST['fileid'], $uid, 0, null));
             $sth2 = $dbh->prepare('UPDATE users SET total_files = total_files + 1 WHERE rowid = ?');
             $sth2->execute(array($uid));
         }

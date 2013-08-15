@@ -22,7 +22,7 @@ class UserManagement {
     return $seed;
   }
   public function login($seed,$username,$userhash) {
-    global $domain;
+    global $config;
     $answer = array();
     $stmt = $this->conn->prepare("SELECT COUNT(`seed`) FROM `seeds` WHERE `seed` = ?");
     $stmt->bindParam(1, $seed, PDO::PARAM_STR, 40);
@@ -34,7 +34,6 @@ class UserManagement {
       $stmt = $this->conn->prepare("SELECT `password` FROM `users` WHERE `username` = ? LIMIT 1");
       $stmt->bindParam(1, $username, PDO::PARAM_STR);
       $stmt->execute();
-      //$stmt->bind_result($password);
       if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 	$password = $row["password"];
 	$stmt->closeCursor();
@@ -42,7 +41,7 @@ class UserManagement {
 	if ($userhash == $dbhash) {
 	  // set cookies for sid and username, valid for 30 days
 	  $now = time();
-	  setcookie("sid", $dbhash, $now + 3600*24*30, "/", $domain);
+	  setcookie("sid", $dbhash, $now + 3600*24*30, "/", $config['domain']);
 	  
 	  // set session_id to track user: username seems OK, so use simple query
 	  $query = "INSERT INTO `sessions` (sid, uid, ip) VALUES ('". $dbhash ."', (SELECT rowid FROM `users` WHERE username = '". $username ."'), '" . $_SERVER['REMOTE_ADDR']."')";
@@ -72,9 +71,20 @@ class UserManagement {
     }
     return $answer;
   }
-  
+  public function direct_login($uid) {
+    global $config;
+    // create new session for a newly registered user
+    // set cookies for sid and username, valid for 30 days
+    $now = time();
+    $sid = sha1(strval($now).$uid);
+    setcookie("sid", $sid, $now + 3600*24*30, "/", $config['domain']);
+
+    // set session_id to track user: username seems OK, so use simple query
+    $query = "INSERT INTO `sessions` (sid, uid, ip) VALUES ('". $sid ."', " . $uid . ", '" . $_SERVER['REMOTE_ADDR']."')";
+    $this->conn->query($query);
+  }
   public function logout() {
-    global $domain;
+    global $config;
     $answer = array();
     $stmt = $this->conn->prepare("DELETE FROM `sessions` WHERE sid = ?");
     if (in_array('sid',array_keys($_COOKIE))) {
@@ -82,7 +92,7 @@ class UserManagement {
       $stmt->execute();
       $stmt->closeCursor();
       // clear cookies
-      setcookie("sid", "", time() - 3600, "/", $domain);
+      setcookie("sid", "", time() - 3600, "/", $config['domain']);
     }
     return $answer;
   }

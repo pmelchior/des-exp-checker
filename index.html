@@ -14,13 +14,13 @@
   var email = "???";
   var domain = "???";
   </script>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <style>
   .container {width: 980px; }
   body,html { height: 100%; }
   #wrapper {min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -60px;}
   #foot, #push { height: 60px; clear: both; }
   </style>
-  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 </head>
 
 <body>
@@ -29,7 +29,10 @@
     <div class="hero-unit">
     <h1>DES exposure checker</h1>
     <p>See how DES images actually look like. Discover flaws we would otherwise have missed. Make our data better.</p>
-    <p><button class="btn btn-primary btn-large" id="open-login-button">Log in</button></p>
+    <p>
+      <button class="btn btn-primary btn-large" id="open-login-button">Log in</button>
+      <button class="btn btn-primary btn-large" id="open-signup-button">Sign up</button>
+    </p>
     </div>
     <div class="span8">
       <h4>Introduction</h4>
@@ -66,8 +69,8 @@
     </div>
   </div>
   
-  <!-- Login modal -->
-  <div class="modal hide" id="logIn">
+    <!-- Login modal -->
+    <div class="modal hide" id="logIn">
       <div class="modal-header">
 	<a class="close" data-dismiss="modal">x</a>
 	<h3>Log in</h3>
@@ -78,13 +81,13 @@
 	    <div class="control-group">
 	      <label class="control-label" for="username">Account name</label>
 	      <div class="controls">
-		<input type="text" class="input" id="username" name="username" style="background-color: rgb(255, 255, 204);">
+		<input type="text" class="input" id="username" name="username">
 	      </div>
             </div>
 	    <div class="control-group">
 	      <label class="control-label" for="hash">Password</label>
 	      <div class="controls">
-		<input type="password" class="input" name="hash" style="background-color: rgb(255, 255, 204);">
+		<input type="password" class="input" name="hash">
 	      </div>
 	    </div>
 	  </fieldset>
@@ -99,7 +102,49 @@
           </script>
         <!--/div-->
       </div>
-  </div>
+    </div>
+    
+    <div class="modal hide" id="signUp">
+      <div class="modal-header">
+	<a class="close" data-dismiss="modal">x</a>
+	<h3>Sign up as new user</h3>
+      </div>
+      <div class="modal-body">
+	<form id="sign-up-form" class="form-horizontal" style="margin-bottom: 0px;">
+	  <fieldset>
+	    <div class="control-group">
+	      <label class="control-label" for="name">Your name</label>
+	      <div class="controls">
+		<input id="signup-name" type="text" class="input" name="name" required="required" minlength="6" placeholder="Firstname Lastname">
+              </div>
+	    </div>
+	    <div class="control-group">
+	      <label class="control-label" for="username">Your username</label>
+	      <div class="controls">
+		<input id="signup-username" type="text" class="input " name="username" placeholder="flastname">
+              </div>
+	    </div>
+	    <div class="control-group">
+	      <label class="control-label" for="email">Your email</label>
+	      <div class="controls">
+		<input type="email" class="input" name="email" required="required">
+              </div>
+	    </div>
+	    <div class="control-group">
+	      <label class="control-label" for="password">Pick a password</label>
+	      <div class="controls">
+		<input type="password" class="input" name="password" required="required" minlength="8">
+              </div>
+	    </div>
+	    <div class="form-actions" style="margin-bottom: 0px;">
+	      <button class="btn btn-success" id="signup_button" data-toggle="button" data-loading-text="Transmitting...">Sign up</button>
+	    </div>
+	  </fieldset>
+	</form>
+	<div class="alert alert-success hide" id="signup_message"></div>
+      </div>
+    </div>
+    
     <div id="push"></div>
   </div>
   <div id="foot">
@@ -111,7 +156,7 @@
 <script src="assets/sha1.js"></script>
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="assets/jquery.cookie.js"></script>
-<script src="assets/login.js" type="text/javascript"></script>
+<script type="text/javascript" src="assets/login.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script>
   $(document).ready(function () {
@@ -121,7 +166,8 @@
   });
   $('#logIn').modal({"show": false });
   $('#login_button').on('click', logIn).button();
-  
+  $('#signup_button').on('click', signUp).button();
+  $('#signUp').modal({"show": false });
   function checkSessionCookie() {
     return ($.cookie('sid') != null);    
   }
@@ -130,6 +176,21 @@
         window.location.href = "viewer.html";
       else
         $('#logIn').modal('show');
+  });
+  $('#open-signup-button').on('click', function() {
+    $('#signUp').modal('show');
+  });
+  $('#signup-name').on('input', function(evt) {
+    var name = $(evt.target).val();
+    if (name.length) {
+      var chunks = name.split(" ");
+      name = chunks[0][0].toLowerCase();
+      if (chunks.length > 1)
+        name += chunks[1].toLowerCase();
+      $('#signup-username').val(name);
+    } else {
+      $('#signup-username').val('');
+    }
   });
 </script>
 

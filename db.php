@@ -2,9 +2,6 @@
 
 include "common.php.inc";
 $dbh = getDBHandle();
-if (!$dbh) {
-    header('HTTP/1.0 500 Internal Server Error');
-}
 
 // check if POST data is present
 if ($_POST) {
@@ -37,8 +34,10 @@ if ($_POST) {
 
 // return the next image
 $res = getNextImage($dbh);
-if ($res === False)
+if ($res === False) {
     header('HTTP/1.0 500 Internal Server Error');
+    exit(0);
+}
 $row = $res->fetch(PDO::FETCH_ASSOC);
 echo json_encode($row);
 

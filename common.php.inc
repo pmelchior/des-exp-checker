@@ -6,6 +6,10 @@ function getDBHandle() {
     global $config;
     $dbh = new PDO('sqlite:'. $config['userdb']);
     $dbh->query('ATTACH DATABASE "' . $config['filedb'].'" AS files');
+    if (!$dbh) {
+        header('HTTP/1.0 500 Internal Server Error');
+        exit(0);
+    }
     return $dbh;
 }
 

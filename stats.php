@@ -2,9 +2,6 @@
 
 include "common.php.inc";
 $dbh = getDBHandle();
-if (!$dbh) {
-    header('HTTP/1.0 500 Internal Server Error');
-}
 
 // basic stats: how many total files, how many done
 $stats = array();

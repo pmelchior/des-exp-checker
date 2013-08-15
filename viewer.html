@@ -18,9 +18,6 @@
   </style>
   <script type="text/javascript" src="assets/fits.js"></script>
   <script type="text/javascript" src="assets/webfits-canvas.0.3.1.js"></script>
-  <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
-  <script type="text/javascript" src="assets/jquery.cookie.js"></script>
-  <script type="text/javascript" src="assets/purl.js"></script>
   <script type="text/javascript">
   var webfits = null;
   var extent = null;
@@ -32,13 +29,6 @@
   var fileid = null;
   var images_per_fp = 61;
   
-  function checkSessionCookie() {
-    return ($.cookie('sid') != null);    
-  }
-
-  if (!checkSessionCookie())
-    window.location.href = "index.html";
- 
   function overlayCallback(_this, opts, evt) {
     if (problem !== null) {
       // add circle around dbl-clicked location
@@ -254,8 +244,24 @@
     problem = null;
   }
   
+  function checkSessionCookie() {
+    return ($.cookie('sid') != null);    
+  }
+
+  function kickOut() {
+    $('#session-modal').modal('show');
+    setTimeout(function() {
+      // kick out
+      window.location.href = "index.html";
+    }, 3000);
+  }
+  
   function getMyData() {
     $.get('mydata.php', function(response) {
+      // check if server has just invalidated session
+      if (!checkSessionCookie())
+        kickOut();
+      
       $('#username').html(response.username);
       $('#userrank').html("#"+response.rank);
       $('#user-rank').html("#"+response.rank);
@@ -410,6 +416,17 @@
       </div>
     </div>
     
+    <div class="modal hide" id="session-modal">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Login required</h3>
+      </div>
+      <div class="modal-body">
+        <p>To view this page, you need to log in. If you've done that, your session
+        may be expired. Either way, please log in (again)...</p>
+      </div>
+    </div>
+    
   </div>
   <div id="push"></div>
   </div>
@@ -419,10 +436,16 @@
     </div>
   </div>
 </body>
+<script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="assets/jquery.cookie.js"></script>
+<script type="text/javascript" src="assets/purl.js"></script>
 <script type="text/javascript" src="assets/spin.min.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script>
   $(document).ready(function(){
+    if (!checkSessionCookie())
+        kickOut();
+        
     spinner = new Spinner({color: "#049cdb"}).spin();
     $('#loading').append(spinner.el);
     renderImage();
@@ -505,5 +528,6 @@
       window.location.href="index.html";
       });
   });
+  $('#session-modal').modal({"backdrop": true, "show":false});
 </script>
 </html>

@@ -56,10 +56,10 @@ if ($_POST['action'] == "signup" && (isset($_POST['username']) && isset($_POST['
       $header .= "Content-Transfer-Encoding: 8bit\n";
       $subject = "Welcome to the DES exposure checker website";
       $message = "Dear " . array_shift(split(" ",$_POST['name'])) . " (" . $_POST['username'] ."),\n\n";
-      $message .= "Thanks for volunteering as an early contributor to this new webapp. ";
-      $message .= "Some problems are still possible, but most of the pieces should be in place. ";
+      $message .= "Thanks for participating in the quest for beautiful, flawless DES images. ";
+      $message .= "Your submissions will help us diagnose problems that would otherwise remain unnoticed.\n\n";
       $message .= "We are very interested in the experience you have as user, ";
-      $message .= "so please tell us if you like it, if something isn't working as expected, ";
+      $message .= "so please tell us if you like the website, if something isn't working as expected, ";
       $message .= "how we can improve it, what feature we should add ...\n\n";
       $message .= "Peter & Erin --\nhttp://" . $config['domain'];
       mail($_POST['email'],$subject,$message,$header);

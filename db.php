@@ -39,6 +39,7 @@ if ($res === False) {
     exit(0);
 }
 $row = $res->fetch(PDO::FETCH_ASSOC);
+$row['name'] = "getImage.php?name=".$row['name'];
 echo json_encode($row);
 
 ?>

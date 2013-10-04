@@ -158,17 +158,17 @@
       return {class: 4, style: 'badge-info', title: 'Veteran'};
     if (total_files / images_per_fp >= 5)
       return {class: 3, style: 'badge-important', title: 'Top performer'};
-    if (total_files / images_per_fp >= 2)
-      return {class: 2, style: 'badge-warning', title: 'Frequent checker'};
     if (total_files / images_per_fp >= 1)
+      return {class: 2, style: 'badge-warning', title: 'Frequent checker'};
+    if (total_files >= 10)
       return {class: 1, style: 'badge-success', title: 'Rookie'};
     return {class: 0};
   }
   
   function missingFilesForNextClass(total_files, userclass) {
     switch(userclass.class) {
-      case 0: return images_per_fp - total_files;
-      case 1: return 2*images_per_fp - total_files;
+      case 0: return 10 - total_files;
+      case 1: return images_per_fp - total_files;
       case 2: return 5*images_per_fp - total_files;
       case 3: return 10*images_per_fp - total_files;
       case 4: return 100*images_per_fp - total_files;
@@ -501,6 +501,7 @@
   $('#rank-modal').modal({"backdrop": false, "show":false});
   $('#mystats-modal').modal({"backdrop": false, "show":false});
   $('#mystats-anchor').on('click', function() {
+    getMyData();
     $('#mystats-modal').modal('show');
   });
   $('#congrats-modal').modal({"backdrop": false, "show":false});

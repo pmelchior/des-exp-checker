@@ -129,25 +129,39 @@
     $('#loading').removeClass('hide');
     if (marks.length)
       clearMarks();
-    if (name === undefined) {
-      // Initialize the FITS file, passing the function getImage as a callback
-      $.get('db.php', $.url().param())
-      .done(function(data) {
-        var response = $.parseJSON(data);
-        fileid = response.rowid;
-        var opts = {
-          el: 'wicked-science-visualization'
-        };
-        var f = new astro.FITS.File(response.name, getImage, opts);
-        $('#image_name').html(response.expname + ', CCD ' + response.ccd + ", " + response.band + "-band");
-        })
-      .fail(function() {alert('Failure when loading image');});
-    } else {
-      var opts = {
-        el: 'wicked-science-visualization'
-        };
-      var f = new astro.FITS.File(name, getImage, opts);
-    }
+    var opts = {
+      el: 'wicked-science-visualization'
+    };
+    var f = new astro.FITS.File(name, getImage, opts); 
+  }
+  
+    function setNextImage(response) {
+    fileid = response.rowid;
+    $('#image_name').html(response.expname + ', CCD ' + response.ccd + ", " + response.band + "-band");
+    $('#share-url').val('http://' + window.location.host + window.location.pathname + '?expname=' + response.expname + '&ccd=' + response.ccd + "&band=" + response.band);
+    renderImage(response.name);
+  }
+  
+  function sendResponse() {
+    // post to DB
+    $.post('db.php',
+           {'fileid': fileid, 'problems': marks},
+           function(data) {
+            var response = $.parseJSON(data);
+            setNextImage(response);
+          }
+    )
+    .fail(function() {
+      alert('Failure when saving response');
+      clearMarks();
+    });
+    
+    // clear UI
+    $("#problem-dialogue").addClass("hide");
+    $('#mark-buttons').addClass('hide');
+    $('#problem-text').val('');
+    $('#problem-name').html('Problem');
+    problem = null;
   }
   
   function userClass(total_files) {
@@ -206,31 +220,6 @@
       $('#congrats-modal').modal('show');
     }
     
-  }
-  
-  function sendResponse() {
-    // post to DB
-    $.post('db.php',
-           {'fileid': fileid, 'problems': marks},
-           function(data) {
-            var response = $.parseJSON(data);
-            renderImage(response.name);
-            fileid = response.rowid;
-            clearMarks();
-            $('#image_name').html(response.expname + ', CCD ' + response.ccd + ", " + response.band + "-band");
-          }
-    )
-    .fail(function() {
-      alert('Failure when saving response');
-      clearMarks();
-    });
-    
-    // clear UI
-    $("#problem-dialogue").addClass("hide");
-    $('#mark-buttons').addClass('hide');
-    $('#problem-text').val('');
-    $('#problem-name').html('Problem');
-    problem = null;
   }
   
   function checkSessionCookie() {
@@ -318,15 +307,16 @@
           <li><a tabindex="-1" class="problem" id="other-problem" href="#">Other...</a></li>
         </ul>
       </div>
-      <span id="problem-dialogue" class="hide" style="margin-left: 20px;font-weight:bold;">
-        Please click to mark problem(s) on the image
+      <span id="problem-dialogue" class="hide" style="margin-left: 10px;font-weight:bold;">
+        Click to mark problem(s) in image
       </span>
-      <span id="mark-buttons" class="hide" style="margin-left: 20px;">
+      <span id="mark-buttons" class="hide" style="margin-left: 10px;">
         <button class="btn btn-info" id="clear-button">Clear</button>
       </span>
       <span style="position:absolute; right: 0px; top:0px;">
         <span class="muted" id="image_name"></span>
-        <button style="margin-left:20px;" class="btn btn-info" href="#" id="toggle-mask-button">Toggle mask</button>
+        <button style="margin-left:10px;" class="btn btn-info" href="#" id="share-button">Share link</button>
+        <button class="btn btn-info" href="#" id="toggle-mask-button">Toggle mask</button>
         <button class="btn btn-info" href="#" id="option-button">Display options</button>
       </span>
     </div>
@@ -404,6 +394,16 @@
       </div>
     </div>
     
+    <div class="modal hide" id="share-modal">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>URL for sharing</h3>
+      </div>
+      <div class="modal-body">
+        <textarea style="width:516px;" type="text" id="share-url"></textarea>
+      </div>
+    </div>
+    
     <div class="modal hide" id="session-modal">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -436,7 +436,16 @@
         
     spinner = new Spinner({color: "#049cdb"}).spin();
     $('#loading').append(spinner.el);
-    renderImage();
+    // get first image data
+    $.get('db.php', $.url().param(), function(data) {
+            var response = $.parseJSON(data);
+            setNextImage(response);
+          }
+    )
+    .fail(function() {
+      alert('Failure when loading image');
+    });
+
     $('#' + stretch + "-button").addClass('btn-primary');
     getMyData();
     setInterval(getMyData, 600000);
@@ -467,6 +476,18 @@
   });
   $('#control-modal').modal({"backdrop": false, "show": false });
   $('#problem-modal').modal({"backdrop": false, "show": false });
+  $('#share-modal').modal({"backdrop": false, "show": false });
+  $('#share-button').on('click', function() {
+    $('#share-modal').modal('show');
+    var textBox = $('#share-url');
+    textBox.select();
+    // Work around Chrome's little problem
+    textBox.onmouseup = function() {
+      // Prevent further mouseup intervention
+      textBox.onmouseup = null;
+      return false;
+    };
+  });
   $('#toggle-mask-button').on('click', function() {
     webfits.showMask = !webfits.showMask;
     webfits.draw();

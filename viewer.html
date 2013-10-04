@@ -208,18 +208,7 @@
     
   }
   
-  function sendResponse(rating) {
-    // update counters
-    var number = parseInt($('#total-files').html());
-    number += 1;
-    $('#total-files').html(number);
-    checkFileCount(number);
-    if (rating != "fine") {
-      number = parseInt($('#flagged-files').html());
-      number += 1;
-      $('#flagged-files').html(number);
-    }
-    
+  function sendResponse() {
     // post to DB
     $.post('db.php',
            {'fileid': fileid, 'problems': marks},
@@ -313,7 +302,7 @@
     </div>
     
     <div style="margin-top:20px; position:relative;">
-      <button id="fine-button" class="btn btn-success send">OK</button>
+      <button id="fine-button" class="btn btn-success send">Next</button>
       <div class="btn-group">
         <button id="problem-button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><span id="problem-name">Problem</span>
         <span class="caret"></span>
@@ -334,7 +323,6 @@
       </span>
       <span id="mark-buttons" class="hide" style="margin-left: 20px;">
         <button class="btn btn-info" id="clear-button">Clear</button>
-        <button class="btn btn-info send" id="save-button">Save</button>
       </span>
       <span style="position:absolute; right: 0px; top:0px;">
         <span class="muted" id="image_name"></span>
@@ -454,8 +442,7 @@
     setInterval(getMyData, 600000);
   });
   $('button[class*="send"]').on('click', function(evt) {
-    var rating = evt.target.id.split("-").shift();
-    sendResponse(rating);
+    sendResponse();
   });
   $('button[class*="stretch"]').on('click', function(evt) {
     // toggle primary class as indicator for current stretch

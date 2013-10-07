@@ -315,9 +315,9 @@
       </span>
       <span style="position:absolute; right: 0px; top:0px;">
         <span class="muted" id="image_name"></span>
-        <button style="margin-left:10px;" class="btn btn-info" href="#" id="share-button">Share link</button>
-        <button class="btn btn-info" href="#" id="toggle-mask-button">Toggle mask</button>
-        <button class="btn btn-info" href="#" id="option-button">Display options</button>
+        <button style="margin-left:10px;" class="btn btn-info" href="#" id="share-button">Share <u>l</u>ink</button>
+        <button class="btn btn-info" href="#" id="toggle-mask-button">Toggle <u>m</u>ask</button>
+        <button class="btn btn-info" href="#" id="option-button"><u>D</u>isplay options</button>
       </span>
     </div>
     
@@ -336,7 +336,7 @@
         <button id="problem-text-button" class="btn btn-primary">Done</button>
       </div>
     </div>
-    <div class="modal hide" id="control-modal">
+    <div class="modal hide" id="control-modal" tabindex="-1">
       <div class="modal-body">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <form class="form-horizontal">
@@ -345,8 +345,8 @@
             <button id="linear-button" class="btn btn-small stretch">Linear</button>
             <button id="sqrt-button" class="btn btn-small stretch">Sqrt</button>
             <button id="logarithm-button" class="btn btn-small stretch">Logarithmic</button>
-            <button id="arcsinh-button" class="btn btn-small stretch">ArcSinh</button>
-            <button id="peter-button" class="btn btn-small stretch">Peter's</button>
+            <button id="arcsinh-button" class="btn btn-small stretch"><u>A</u>rcSinh</button>
+            <button id="peter-button" class="btn btn-small stretch"><u>P</u>eter's</button>
           </fieldset>
           <fieldset>
             <legend>Visible data range</legend>
@@ -359,7 +359,7 @@
       </div>
     </div>
     
-    <div class="modal hide" id="mystats-modal">
+    <div class="modal hide" id="mystats-modal" tabindex="-1">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3>My statistics</h3>
@@ -373,14 +373,14 @@
       </div>
     </div>
 
-    <div class="modal hide" id="rank-modal">
+    <div class="modal hide" id="rank-modal" tabindex="-1">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3>Leaderboard</h3>
       </div>
       <div class="modal-body"></div>
     </div>
-    <div class="modal hide" id="congrats-modal">
+    <div class="modal hide" id="congrats-modal" tabindex="-1">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3>Congratulations</h3>
@@ -394,13 +394,13 @@
       </div>
     </div>
     
-    <div class="modal hide" id="share-modal">
+    <div class="modal hide" id="share-modal" tabindex="-1">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3>URL for sharing</h3>
       </div>
       <div class="modal-body">
-        <textarea style="width:516px;" type="text" id="share-url"></textarea>
+        <textarea style="width:516px;" type="text" id="share-url" disabled></textarea>
       </div>
     </div>
     
@@ -426,6 +426,7 @@
 </body>
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="assets/jquery.cookie.js"></script>
+<script type="text/javascript" src="assets/jwerty.js"></script>
 <script type="text/javascript" src="assets/purl.js"></script>
 <script type="text/javascript" src="assets/spin.min.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
@@ -474,9 +475,9 @@
   $('form').submit(function() {
     return false;
   });
-  $('#control-modal').modal({"backdrop": false, "show": false });
-  $('#problem-modal').modal({"backdrop": false, "show": false });
-  $('#share-modal').modal({"backdrop": false, "show": false });
+  $('#control-modal').modal({"backdrop": false, "show": false, "keyboard": true});
+  $('#problem-modal').modal({"backdrop": false, "show": false, "keyboard": false });
+  $('#share-modal').modal({"backdrop": false, "show": false, "keyboard": true });
   $('#share-button').on('click', function() {
     $('#share-modal').modal('show');
     var textBox = $('#share-url');
@@ -519,13 +520,13 @@
     $('#problem-dialogue').removeClass('hide');
   });
   
-  $('#rank-modal').modal({"backdrop": false, "show":false});
-  $('#mystats-modal').modal({"backdrop": false, "show":false});
+  $('#rank-modal').modal({"backdrop": false, "show":false, "keyboard": true});
+  $('#mystats-modal').modal({"backdrop": false, "show":false, "keyboard": true});
   $('#mystats-anchor').on('click', function() {
     getMyData();
     $('#mystats-modal').modal('show');
   });
-  $('#congrats-modal').modal({"backdrop": false, "show":false});
+  $('#congrats-modal').modal({"backdrop": false, "show":false, "keyboard": true});
   $('#leaderboard-anchor').on('click', function() {
     $.get('ranking.php', {'output': 'html'}, function(response) {
       $('#rank-modal').find('[class*="modal-body"]').html(response);
@@ -537,6 +538,22 @@
       window.location.href="index.html";
       });
   });
-  $('#session-modal').modal({"backdrop": true, "show":false});
+  $('#session-modal').modal({"backdrop": true, "show":false, "keyboard": false});
+  // key bindings
+  jwerty.key('alt+l', function() {
+    $('#share-button').trigger('click');  
+  });
+  jwerty.key('alt+m', function() {
+    $('#toggle-mask-button').trigger('click');  
+  });
+  jwerty.key('alt+d', function() {
+    $('#option-button').trigger('click'); 
+  });
+  jwerty.key('alt+p', function() {
+    $('#peter-button').trigger('click');
+  });
+  jwerty.key('alt+a', function() {
+    $('#arcsinh-button').trigger('click');
+  });
 </script>
 </html>

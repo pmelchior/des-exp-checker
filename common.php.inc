@@ -15,12 +15,11 @@ function getDBHandle() {
 
 function getNextImage($dbh) {
     $sql = 'SELECT files.files.rowid, expname, ccd, band, name FROM files.files';
-    if (isset($_GET['expname']) && isset($_GET['ccd']) && isset($_GET['band'])) {
-        $sql .= ' WHERE expname = ? AND ccd = ? AND band = ? LIMIT 1;';
+    if (isset($_GET['expname']) && isset($_GET['ccd'])) {
+        $sql .= ' WHERE expname = ? AND ccd = ? LIMIT 1;';
         $stmt = $dbh->prepare($sql);
         $stmt->bindParam(1, $_GET['expname'], PDO::PARAM_STR, 14);
         $stmt->bindParam(2, $_GET['ccd'], PDO::PARAM_INT);
-        $stmt->bindParam(3, $_GET['band'], PDO::PARAM_STR, 1);
         $stmt->execute();
         return $stmt;
     }

@@ -138,7 +138,7 @@
     function setNextImage(response) {
     fileid = response.rowid;
     $('#image_name').html(response.expname + ', CCD ' + response.ccd + ", " + response.band + "-band");
-    $('#share-url').val('http://' + window.location.host + window.location.pathname + '?expname=' + response.expname + '&ccd=' + response.ccd + "&band=" + response.band);
+    $('#share-url').val('http://' + window.location.host + window.location.pathname + '?expname=' + response.expname + '&ccd=' + response.ccd);
     renderImage(response.name);
   }
   

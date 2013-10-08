@@ -49,20 +49,14 @@ if ($_POST['action'] == "signup" && (isset($_POST['username']) && isset($_POST['
 
   // send confirmation email 
   if ($answer['success'] === TRUE) {
-      $email = $config['adminemail'];
-      $header = "From: " . $config['adminname']. " <". $email .">\n";
-      $header .= "Reply-To: <". $email .">\n";
-      $header .= "Content-Type: text/plain; charset=UTF-8\n";
-      $header .= "Content-Transfer-Encoding: 8bit\n";
       $subject = "Welcome to the DES exposure checker website";
       $message = "Dear " . array_shift(split(" ",$_POST['name'])) . " (" . $_POST['username'] ."),\n\n";
       $message .= "Thanks for participating in the quest for beautiful, flawless DES images. ";
       $message .= "Your submissions will help us diagnose problems that would otherwise remain unnoticed.\n\n";
       $message .= "We are very interested in the experience you have as user, ";
       $message .= "so please tell us if you like the website, if something isn't working as expected, ";
-      $message .= "how we can improve it, what feature we should add ...\n\n";
-      $message .= "Peter & Erin --\nhttp://" . $config['domain'];
-      mail($_POST['email'],$subject,$message,$header);
+      $message .= "how we can improve it, what feature we should add ...";
+      sendEmail($_POST['email'], $subject, $message);
 }
   echo json_encode($answer);
 }

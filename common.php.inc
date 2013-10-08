@@ -96,4 +96,14 @@ function getProblemCodes() {
       "Other..." => 255
     );
 }
+
+function sendEmail($email, $subject, $message) {
+    global $config;
+    $header = "From: DES exposure checker <". $config['adminemail'] .">\n";
+    $header .= "Reply-To: <". $config['adminemail'] .">\n";
+    $header .= "Content-Type: text/plain; charset=UTF-8\n";
+    $header .= "Content-Transfer-Encoding: 8bit\n";
+    $message .= "\n\nPeter & Erin --\nhttp://" . $config['domain'];
+    return mail($email,$subject,$message,$header);
+}
 ?>

@@ -143,6 +143,12 @@
   }
   
   function sendResponse() {
+    // update counters
+    var number = parseInt($('#total-files').html());
+    number += 1;
+    $('#total-files').html(number);
+    checkFileCount(number);
+    
     // post to DB
     $.post('db.php',
            {'fileid': fileid, 'problems': marks},
@@ -207,19 +213,23 @@
   function checkFileCount(total_files) {
     var uc = userClass(total_files);
     setBadgeColor(uc);
+    if (total_files == 10) { // first status after 10 images
+      $('#fp_number').html("first 10 images.");
+      $('#congrats_details').html("To reflect your achievements, we've upgraded you to <span class='badge " + uc.style + "'>" + uc.title + "</span> status.");
+      $('#congrats-modal').modal('show');
+    }
     if (total_files % images_per_fp == 0) {
       var fps = total_files/images_per_fp;
-      $('#fp_number').html(numberSuffix(fps));
+      $('#fp_number').html(numberSuffix(fps) + " focal plane.");
       var old_uc = userClass(total_files-1);
       if (uc.class > old_uc.class) {
         $('#congrats_details').html("To reflect your achievements, we've upgraded you to <span class='badge " + uc.style + "'>" + uc.title + "</span> status.");
         $('#userrank').removeClass(old_uc.style);
       }
       else
-        $('#congrats_details').html();
+        $('#congrats_details').html("");
       $('#congrats-modal').modal('show');
     }
-    
   }
   
   function checkSessionCookie() {
@@ -386,7 +396,7 @@
         <h3>Congratulations</h3>
       </div>
       <div class="modal-body">
-        <p>You have just finished your <strong id="fp_number"></strong> focal plane.</p>
+        <p>You have just finished your <strong id="fp_number"></strong></p>
         <p id="congrats_details"></p>
       </div>
       <div class="modal-footer">

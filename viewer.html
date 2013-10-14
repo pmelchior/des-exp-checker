@@ -126,7 +126,6 @@
   }
 
   function renderImage(name) {
-    $('#loading').removeClass('hide');
     if (marks.length)
       clearMarks();
     var opts = {
@@ -135,7 +134,7 @@
     var f = new astro.FITS.File(name, getImage, opts); 
   }
   
-    function setNextImage(response) {
+  function setNextImage(response) {
     fileid = response.rowid;
     $('#image_name').html(response.expname + ', CCD ' + response.ccd + ", " + response.band + "-band");
     $('#share-url').val('http://' + window.location.host + window.location.pathname + '?expname=' + response.expname + '&ccd=' + response.ccd);
@@ -143,6 +142,8 @@
   }
   
   function sendResponse() {
+    // show spinner
+    $('#loading').removeClass('hide');
     // update counters
     var number = parseInt($('#total-files').html());
     number += 1;
@@ -331,7 +332,7 @@
       </span>
     </div>
     
-    <div id="loading" class="hide" style="position:relative; left:512px; top:266px; z-index:1000;"></div>
+    <div id="loading" class="hide" style="position:relative; left:512px; top:266px; z-index:1000; width:48px;"></div>
     <div id="wicked-science-visualization" style="margin: 10px 0px; height:512px; width: 1024px; background-color:#CCCCCC;"></div>
     
     <div class="modal hide" id="problem-modal">
@@ -444,9 +445,10 @@
   $(document).ready(function(){
     if (!checkSessionCookie())
         kickOut();
-        
+    // define and show spinner
     spinner = new Spinner({color: "#049cdb"}).spin();
     $('#loading').append(spinner.el);
+    $('#loading').removeClass('hide');
     // get first image data
     $.get('db.php', $.url().param(), function(data) {
             var response = $.parseJSON(data);

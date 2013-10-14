@@ -520,7 +520,7 @@
       $("#problem-dialogue").removeClass("hide");
     problem = evt.target.innerHTML;
     $('#problem-name').html(problem);
-    if (problem == "Other...") {
+    if (problem == "Other..." || problem == "Failure") {
       $('#problem-modal').modal('show');
     } else {
       $('#problem-text').val('');

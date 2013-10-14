@@ -93,7 +93,8 @@ function getProblemCodes() {
       "Satellite" => 4,
       "Readout" => 5,
       "Failure" => 128,
-      "Other..." => 255
+      "Other..." => 255,
+      "Awesome!" => -1
     );
 }
 

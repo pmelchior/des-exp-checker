@@ -167,7 +167,7 @@
     $("#problem-dialogue").addClass("hide");
     $('#mark-buttons').addClass('hide');
     $('#problem-text').val('');
-    $('#problem-name').html('Problem');
+    $('#problem-name').html("Hold on, that's...");
     problem = null;
   }
   
@@ -304,7 +304,7 @@
     <div style="margin-top:20px; position:relative;">
       <button id="fine-button" class="btn btn-success send">Next</button>
       <div class="btn-group">
-        <button id="problem-button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><span id="problem-name">Problem</span>
+        <button id="problem-button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><span id="problem-name">Hold on, that's...</span>
         <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -316,10 +316,12 @@
           <li><a class="problem" tabindex="-1" href="#">Failure</a></li>
           <li class="divider"></li>
           <li><a tabindex="-1" class="problem" id="other-problem" href="#">Other...</a></li>
+          <li class="divider"></li>
+          <li><a tabindex="-1" class="problem" id="other-problem" href="#">Awesome!</a></li>
         </ul>
       </div>
       <span id="problem-dialogue" class="hide" style="margin-left: 10px;font-weight:bold;">
-        Click to mark problem(s) in image
+        Click to mark in the image
       </span>
       <span id="mark-buttons" class="hide" style="margin-left: 10px;">
         <button class="btn btn-info" id="clear-button">Clear</button>
@@ -337,10 +339,10 @@
     
     <div class="modal hide" id="problem-modal">
       <div class="modal-header">
-        <h3>Describe the problem</h3>
+        <h3>Describe what you see</h3>
       </div>
       <div class="modal-body">
-        <textarea style="width:516px;" type="text" id="problem-text" placeholder="Describe in your own words"></textarea>
+        <textarea style="width:516px;" type="text" id="problem-text" placeholder="Describe in your own words. Be as specific as you see fit."></textarea>
       </div>
       <div class="modal-footer">
         <span style="padding-right:20px">When done, click on the image to mark the problematic area</span>
@@ -512,7 +514,7 @@
     $('#problem-modal').modal('hide');
     var problemName = $('#problem-text').val();
     if (problemName.length > 11)
-      problemName = problemName.substring(0,8) + "...";
+      problemName = problemName.substring(0,10) + "...";
     $('#problem-name').html(problemName);
   });
   $('a[class*="problem"]').on('click', function(evt) {
@@ -520,7 +522,7 @@
       $("#problem-dialogue").removeClass("hide");
     problem = evt.target.innerHTML;
     $('#problem-name').html(problem);
-    if (problem == "Other..." || problem == "Failure") {
+    if (problem == "Other..." || problem == "Failure" || problem =="Awesome!") {
       $('#problem-modal').modal('show');
     } else {
       $('#problem-text').val('');

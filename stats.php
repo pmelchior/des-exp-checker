@@ -15,13 +15,15 @@ $stmt = $dbh->prepare('SELECT COUNT(DISTINCT(fileid)), COUNT(fileid) from qa WHE
 $codes = getProblemCodes();
 $problems = array();
 foreach ($codes as $name => $code) {
-    $stmt->bindParam(1, $code, PDO::PARAM_INT);
-    $stmt->execute();
-    $row = $stmt->fetch(PDO::FETCH_NUM);
-    if ($code == 0)
-        $stats['fine'] = $row[0];
-    else
-        array_push($problems, array("name" => $name, "distinct" => $row[0], "all" => $row[1]));
+    if ($code >= 0) {
+        $stmt->bindParam(1, $code, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_NUM);
+        if ($code == 0)
+            $stats['fine'] = $row[0];
+        else
+            array_push($problems, array("name" => $name, "distinct" => $row[0], "all" => $row[1]));
+    }
 }
 $stats['problems'] = $problems;
 echo json_encode($stats);

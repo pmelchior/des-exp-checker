@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DES exposure checker | Gallery</title>
+  <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
+  <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
+  <meta charset="utf-8">
+  <meta name="author" content="Peter Melchior, Erin Sheldon">
+  <link rel="icon" href="assets/DES_logo_trans.png" type="image/png">
+  <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <style>
+  </style>
+  <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript">
+    function deg2sex(ra, dec) {
+      if (ra < 0)
+        ra = 360 + ra
+      var hours = parseInt(ra)/15;
+      var minutes = parseInt((ra - hours*15)*60/15);
+      var seconds = parseInt((ra - hours*15 - minutes*15./60)*3600/15);
+      if (hours < 10)
+        hours = "0" + hours;
+      if (minutes < 10)
+        minutes = "0" + minutes;
+      if (seconds < 10)
+        seconds = "0" + seconds;
+      var alpha = hours + ":" + minutes + ":" + seconds;
+      var degrees = parseInt(dec);
+      minutes = parseInt((Math.abs(dec) - Math.abs(degrees))*60);
+      seconds = parseInt((Math.abs(dec) - Math.abs(degrees) - Math.abs(minutes)*1./60)*3600);
+      if (Math.abs(degrees)  < 10)
+        degrees = "0" + degrees;
+      if (degrees  < 0)
+        degrees = "-" + degrees;
+      else
+        degrees = "+" + degrees;
+      if (minutes < 10)
+        minutes = "0" + minutes;
+      if (seconds < 10)
+        seconds = "0" + seconds;
+      var delta = degrees + ":" + minutes + ":" + seconds;
+      return [alpha, delta];
+    }
+    function coords(ra, dec) {
+      var sexs = deg2sex(ra, dec);
+      document.write("<span class='coords label label-info'>(&alpha; / &delta;) = (<span class='degs'>" + ra + " / " + dec +"</span><span class='sexs hide'>" + sexs[0] + " / " + sexs[1]+"</span>) <i class='icon-screenshot icon-white sex2deg-toogle'></i></span>");
+    }
+  </script>
+</head>
+
+<body>
+  <div id="wrapper">
+  <div class='container'>
+    <div class="navbar">
+      <div class="navbar-inner">
+	<a class="brand" href="index.html">DES exposure checker</a>
+	<ul class="nav">
+          <li><a href="viewer.html">Viewer</a></li>
+	  <li><a href="tutorial.html">Tutorial</a></li>
+          <li><a href="statistics.html">Statistics</a></li>
+          <li class="active"><a href="gallery.html">Gallery</a></li>
+	</ul>
+      </div> 
+    </div>
+    
+    <!-- content area -->
+    <div class="span12">
+      <h1>Gallery</h1>
+      <p>Every once in a while, there's a nugget of gold in a lot of dust.
+      While we are primarily interested in finding image artifacts, it would be
+      stupid to let out on the opportunity of spotting a nice star cluster, an
+      asteroid, or a group of interacting galaxies ...<br>
+      Here we highlight these awesome objects, all found by our users. To report them,
+      use the <button class="btn">Awesome!</button> selector in the viewer,
+      describe what you see, and click on the object in the image.
+      That's all you have to do to get entry to the Hall of Fame.</p>
+    </div>
+    <div class="span6">
+      <h3>Comet C/2010 R1</h3>
+      <p>This comet was spotted in the r-band exposure DECam_00181220 of the VVDS 14hr field.
+      Based on its coordinates in six exposures (from u to Y bands)
+      <table class="table table-striped table-condensed">
+        <thead><tr><th>Image</th><th>Date_obs</th><th>Coordinates</th></tr></thead>
+        <tr><td>181208</td><td>2013-02-23 07:37:26 UTC</td><td><script>coords(210.039,4.234);</script></td></tr>
+        <tr><td>181214</td><td>2013-02-23 07:55:24 UTC</td><td><script>coords(210.037,4.235);</script></td></tr>
+        <tr><td>181220</td><td>2013-02-23 08:13:24 UTC</td><td><script>coords(210.034,4.236);</script></td></tr>
+        <tr><td>181226</td><td>2013-02-23 08:31:29 UTC</td><td><script>coords(210.032,4.237);</script></td></tr>
+        <tr><td>181232</td><td>2013-02-23 08:49:24 UTC</td><td><script>coords(210.029,4.238);</script></td></tr>
+        <tr><td>181238</td><td>2013-02-23 09:07:22 UTC</td><td><script>coords(210.027,4.239);</script></td></tr>
+      </table>
+      we could <a href="http://www.minorplanetcenter.net/cgi-bin/checkcmt.cgi">determine</a>
+      that it is already known under the name <a href="http://ssd.jpl.nasa.gov/sbdb.cgi?sstr=C/2010%20R1">C/2010 R1</a>.
+      At the time of observation, it was 5.98 AU away from Earth. On its hyperbolic orbit, its closest approach brings it
+      within 4.69 AU, before it will eventually leave the solar system. 
+      </p>
+      <!--p class="muted"></p-->
+    </div>
+    <div class="span6">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00181220&ccd=54" title="Click to view the original image">
+          <img src="tutorial/comet1.gif"/></a>
+        <small>First reported by: beckermr on 2013-10-07 17:48:40</small>
+      </p>
+    </div>
+    <div class="span12">
+    <h3>List of Awesome! objects</h3>
+    <div id="awesome-table"></div>
+    </div>
+  </div>
+  <div id="push"></div>
+  </div>
+  <div id="foot">
+    <div class="container" style="text-align:right">
+      <div class="breadcrumb muted" style="margin: 24px 0 0 0;">Created by Peter Melchior and Erin Sheldon</div>
+    </div>
+  </div>      
+</body>
+<script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $.get('gallery.php', {'output': 'html'}, function(response) {
+      $('#awesome-table').html(response);
+    });
+    // coordinate togglers
+  });
+  $('span[class*="coords"]').on('click', function(evt) {
+    /*var node = $(evt.target);
+    var target_class = node.attr('class');
+    if (target_class.search("coords") == -1) {
+      node = node.parent();
+    }
+    var visible = node.find('span:not([class*="hide"])');
+    node.find('span[class*="hide"]').removeClass('hide');
+    visible.addClass('hide');*/
+    
+    // select all coordinates:
+    var nodes = $('span[class*="coords"]');
+    var visible = nodes.find('span:not([class*="hide"])');
+    nodes.find('span[class*="hide"]').removeClass('hide');
+    visible.addClass('hide');
+  });
+  
+  
+  </script>
+</html>

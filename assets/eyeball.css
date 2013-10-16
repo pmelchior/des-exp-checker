@@ -4,7 +4,7 @@ body,html { height: 100%; }
 .container { width:1024px; }
 .coords { cursor: pointer; min-width:180px; position: relative;}
 .sex2deg-toogle { position: absolute; right: 2px; top: 1px;}
-.img-polaroid {width: 300px !important; margin-top:16px;}
+.img-polaroid {margin-top:16px;}
 .namecol { width: 100px !important; white-space: nowrap; overflow: hidden;text-overflow: ellipsis; }
 .ratingcol { position:relative; min-width:50px; }
 .ratingbar { position:absolute; display:block; height:16px; }

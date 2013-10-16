@@ -3,6 +3,7 @@
 <head>
   <title>DES exposure checker</title>
   <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
+  <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
   <meta name="author" content="Peter Melchior, Erin Sheldon">
   <link rel="icon" href="assets/DES_logo_trans.png" type="image/png">
@@ -15,12 +16,6 @@
   var domain = "???";
   </script>
   <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-  <style>
-  .container {width: 980px; }
-  body,html { height: 100%; }
-  #wrapper {min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -60px;}
-  #foot, #push { height: 60px; clear: both; }
-  </style>
 </head>
 
 <body>
@@ -36,11 +31,11 @@
     </div>
     <div class="span8">
       <h4>Introduction</h4>
-      <p>The purpose of the application is to provide easy access to the DES firstcut
-      images. Well, not exactly the firstcut images. What you see here are factor 4
+      <p>The purpose of this website is to provide easy access to the latest DES SV-A1 finalcut
+      images. Well, not exactly the finalcut images. What you see here are factor 4
       downsampled versions of the actual images just to keep the loading times
-      tolerable &mdash; the same goes for the image size, unless you are working
-      on a 4096 pixel wide monitor.</p>
+      and image sizes tolerable.
+      </p>
       <h4>What's the goal of this?</h4>
       <p>We all want to conduct a science analysis based on the DES data. However,
       no data is perfect, so we need to know what kinds of image artifacts are
@@ -48,18 +43,21 @@
       in one way or another. This application helps in two ways:</p>
       <ul>
         <li>It gives a convenient visual impression of the actual DES data and
-        some of the processing steps that have already attempted to identify and
-        mask artifacts.</li>
+        of the processing steps that are already in place to identify and
+        correct for or mask artifacts.</li>
         <li>It enables everyone to search for undetected artifacts. We gather your
         submissions, analyze them, and feed them back to the science working groups
         and DESDM. This way, we can train the processing pipelines on flaws, of
         which we know they are there.</li>
       </ul>
       <h4>How can I start?</h4>
-      Check out our <a href="tutorial.html">Tutorial</a> and you'll know what to do in no time.
+      <p>Check out our <a href="tutorial.html">Tutorial</a> and you'll know what to do in no time.</p>
       <h4>How are we doing so far?</h4>
-      The basic <a href="statistics.html">statistics</a> are computed in real time. More
-      detailed analyses will become available once we have gathered enough submissions.
+      <p>The basic <a href="statistics.html">statistics</a> are computed in real time. More
+      detailed analyses will become available once we have gathered enough submissions.</p>
+      <h4>How can I give feedback?</h4>
+      <p>The code is on <a href="https://github.com/pmelchior/des-exp-checker">github</a>. Please open a new <a href="https://github.com/pmelchior/des-exp-checker/issues">Issue</a> to let us know what we could add, improve, ...</p>
+      <p>If you find particular failure cases and you think they may constitute a new class of artifacts, please go to the <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Problem_classes_from_the_SV-A1_eyeball_website">DESDM users wiki</a>, where we list and discuss such cases.</p>
     </div>
     <div class="span4">
       <h4>Leaderboard</h4>
@@ -98,7 +96,7 @@
           <button class="btn btn-success" id="login_button" data-toggle="button" data-loading-text="Authenticating...">Log in</button>
           &nbsp;&nbsp;
           <script>
-          document.write('<a title="How to get your password resetted" href="mailto:' + email + '@' + domain + '?subject=Please%20reset%20my%20password&body=To%20get%20your%20password%20resetted,%20simply%20send%20this%20email%20from%20the%20email%20account%20you%20used%20when%20signing%20up.">Forgot password?</a>');
+          document.write('<a title="How to get your password resetted" href="mailto:' + email + '@' + domain + '?subject=%5Bdes-exposure-checker%5D%20Please%20reset%20my%20password&body=To%20get%20your%20password%20resetted,%20simply%20send%20this%20email%20from%20the%20email%20account%20you%20used%20when%20signing%20up.">Forgot password?</a>');
           </script>
         <!--/div-->
       </div>

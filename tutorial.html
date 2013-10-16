@@ -23,6 +23,7 @@
           <li><a href="viewer.html">Viewer</a></li>
 	  <li class="active"><a href="#">Tutorial</a></li>
           <li><a href="statistics.html">Statistics</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
 	</ul>
       </div> 
     </div>
@@ -32,11 +33,11 @@
       <h1>Tutorial</h1>
       <p>The <a href="viewer.html">Viewer</a> automatically pulls an image,
       which you should inspect and determine if it's fine. If so, simply press "Next". If not, select one of the
-      predefined artifacts from the "Problem" button. Once you're done marking the problems, click "Next".
+      predefined artifacts from the "Hold on, that's..." button. Once you're done marking the problems, click "Next".
       </p>
       <button id="fine-button" class="btn btn-success">Next</button>
       <div class="btn-group">
-        <button id="problem-button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><span id="problem-name">Problem</span>
+        <button id="problem-button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><span id="problem-name">Hold on, that's...</span>
         <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -48,6 +49,8 @@
           <li><a class="problem" tabindex="-1" href="#">Failure</a></li>
           <li class="divider"></li>
           <li><a tabindex="-1" class="problem" id="other-problem" href="#">Other...</a></li>
+          <li class="divider"></li>
+          <li><a tabindex="-1" class="problem" id="other-problem" href="#">Awesome!</a></li>
         </ul>
       </div>
     </div>
@@ -186,6 +189,24 @@
         <small>Image with "bizarre PSF" (possibly a guider jump)</small>
       </p>
     </div>
+    
+    <div class="span7">
+      <h3>Awesome!</h3>
+      <p>Rarely, you'll come across a truely phenomenal sight, maybe of a bunch of interacting galaxies
+      or of a comet, a star cluster, etc. Please do report these objects by selecting "Awesome!" from the drop-down,
+      then describe what you see and click on the object. We collect these objects, and present the most fabulous ones
+      in our <a href="gallery.html">Gallery</a>.</p>
+      <p>If you'd like to help with the inspection of the candidates
+      for our website and outreach purposes, please contact us. 
+      </p>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00182220&ccd=54" title="Click to view the original image"><img src="tutorial/awesome_comet.png" /></a> 
+        <small>Comet C/2010 R1</small>
+      </p>
+    </div>
+    
     <div class="span12">
     <h3>Can I help?</h3>
     Certainly. If you think you found a new class of artifacts, let us know. If you know where these artefacts come from, let us know. How? Go to <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Problem_classes_from_the_SV-A1_eyeball_website">the redmine wiki</a>, where we list and discuss such cases.

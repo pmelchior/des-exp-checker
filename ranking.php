@@ -2,9 +2,6 @@
 
 include "common.php.inc";
 $dbh = getDBHandle();
-if (!$dbh) {
-    header('HTTP/1.0 500 Internal Server Error');
-}
 
 if (isset($_GET)) {
     if (isset($_GET['myrank'])) {
@@ -44,9 +41,9 @@ if (isset($_GET)) {
                         $total = $row['total_files'];
                     $width_flagged = (100*$row['flagged_files']/$total) . "%";
                     $width_total = (100*($row['total_files']-$row['flagged_files'])/$total) . "%";
-                    echo "<tr><td># ". $counter ."</td><td><span style='width: 100px !important; white-space: nowrap; overflow: hidden;text-overflow: ellipsis;'>" . $row['username'] . "</span></td>";
-                    echo "<td><div style='position:relative; min-width:50px;'><span style='position:absolute; background-color:#9d261d; display:block; height:16px; width:" . $width_flagged ."'></span>";
-                    echo "<span style='position:absolute; left:" . $width_flagged .";background-color:#46a546; display:block; height:16px; width:" . $width_total ."'></span></div></td>";
+                    echo "<tr><td># ". $counter ."</td><td><span class='namecol'>" . $row['username'] . "</span></td>";
+                    echo "<td><div class='ratingcol'><span class='ratingbar bad' style='width:" . $width_flagged ."'></span>";
+                    echo "<span class='ratingbar good' style='left:" . $width_flagged ."; width:" . $width_total ."'></span></div></td>";
                     echo "<td>" . $row['total_files'] . "</td></tr>\n";
                     $counter += 1;
                 }

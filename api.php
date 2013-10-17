@@ -7,7 +7,7 @@ if (isset($_GET['problem'])) {
     $codes = getProblemCodes();
     if (array_search($_GET['problem'], array_keys($codes)) !== FALSE) {
         $code = $codes[$_GET['problem']];
-        $stm = $dbh->prepare("SELECT expname, ccd, problem, comment as location FROM qa JOIN files ON (files.files.rowid=qa.fileid) WHERE problem=" . $code . " ORDER BY expname, ccd ASC");
+        $stm = $dbh->prepare("SELECT qa.rowid as qa_id, expname, ccd, band, problem, comment as location FROM qa JOIN files ON (files.files.rowid=qa.fileid) WHERE problem=" . $code . " ORDER BY expname, ccd ASC");
         $stm->execute();
         $result = array();
         while($row = $stm->fetch(PDO::FETCH_ASSOC)) {

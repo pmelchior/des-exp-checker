@@ -3,7 +3,7 @@
 include "common.php.inc";
 $dbh = getDBHandle();
 
-$stm = $dbh->prepare("SELECT files.files.expname, files.files.ccd, qa.comment, qa.timestamp, users.username FROM qa JOIN files ON (files.files.rowid=qa.fileid) JOIN users ON (qa.userid = users.rowid) WHERE qa.problem=-1 ORDER BY qa.timestamp ASC");
+$stm = $dbh->prepare("SELECT files.files.expname, files.files.ccd, qa.comment, qa.timestamp, users.username FROM qa JOIN files ON (files.files.rowid=qa.fileid) JOIN users ON (qa.userid = users.rowid) WHERE qa.rowid IN (SELECT MIN(qa.rowid) FROM qa WHERE problem=-1 GROUP BY qa.fileid)");
 $stm->execute();
 $response = $stm->fetchAll(PDO::FETCH_ASSOC);
 if (isset($_GET['output'])) {

@@ -5,8 +5,12 @@ body,html { height: 100%; }
 .coords { cursor: pointer; min-width:180px; position: relative;}
 .sex2deg-toogle { position: absolute; right: 2px; top: 1px;}
 .img-polaroid {margin-top:16px;}
+/* for ranking */
 .namecol { width: 100px !important; white-space: nowrap; overflow: hidden;text-overflow: ellipsis; }
 .ratingcol { position:relative; min-width:50px; }
 .ratingbar { position:absolute; display:block; height:16px; }
 .ratingbar.bad { background-color:#9d261d; }
 .ratingbar.good { background-color:#46a546; }
+/* for gallery */
+.imagenamecol {min-width: 180px;}
+.timecol {width: 134px;}

@@ -11,10 +11,10 @@ if (isset($_GET['output'])) {
         echo "<table class='table table-condensed table-striped'><thead><tr><th>Image</th><th>Description</th><th>Username</th><th>Timestamp</th></tr></thead><tbody>\n";
         foreach ($response as $row) {
             $row['comment'] = json_decode($row['comment']);
-            echo "<tr><td><a href='viewer.html?expname=".$row['expname']."&ccd=".$row['ccd']."'>".$row['expname'].", CCD ".$row['ccd']."</a></td>\n";
+            echo "<tr><td class='imagenamecol'><a href='viewer.html?expname=".$row['expname']."&ccd=".$row['ccd']."'>".$row['expname'].", CCD ".$row['ccd']."</a></td>\n";
             echo "<td>".$row['comment']->detail."</td>\n";
             echo "<td>".$row['username']."</td>\n";
-            echo "<td>".$row['timestamp']."</td>\n";
+            echo "<td class='timecol'>".$row['timestamp']."</td>\n";
         }
         echo "</tbody></table>";
     }

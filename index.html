@@ -196,7 +196,7 @@ var arc1 = d3.svg.arc()
     .innerRadius(radius1 - 40);
 var pie = d3.layout.pie();
 
-d3.json("stats.php", function(error, response) {
+d3.json("stats.php?total", function(error, response) {
   
   // checked chart
   var svg = d3.select("#basic_stats").append("svg")

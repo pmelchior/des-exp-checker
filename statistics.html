@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>DES exposure checker | Gallery</title>
+  <title>DES exposure checker | Statistics</title>
   <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
@@ -75,7 +75,7 @@ var arc2 = d3.svg.arc()
     .innerRadius(radius2 - 24);
 var pie = d3.layout.pie();
  
-d3.json("stats.php", function(error, response) {
+d3.json("stats.php?total&breakup", function(error, response) {
   
   // checked chart
   var svg = d3.select("#basic_stats").append("svg")
@@ -131,7 +131,7 @@ d3.json("stats.php", function(error, response) {
   
   // one chart per problem
   svg = d3.select("#problem_stats").selectAll(".pie")
-    .data(response.problems)
+    .data(response.breakup)
     .enter().append("svg")
       .attr("class", "pie")
       .attr("width", radius2 * 2)

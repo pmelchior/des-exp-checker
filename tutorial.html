@@ -42,21 +42,22 @@
         <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-          <li><a class="problem" tabindex="-1" href="#">Cosmic ray</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Ghost</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Cross-talk</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Satellite</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Readout</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Failure</a></li>
+          <li><a class="problem" tabindex="-1" href="#cosmic">Cosmic ray</a></li>
+          <li><a class="problem" tabindex="-1" href="#ghost">Ghost</a></li>
+          <li><a class="problem" tabindex="-1" href="#crosstalk">Cross-talk</a></li>
+          <li><a class="problem" tabindex="-1" href="#satellite">Satellite</a></li>
+          <li><a class="problem" tabindex="-1" href="#readout">Readout</a></li>
+          <li><a class="problem" tabindex="-1" href="#failure">Failure</a></li>
           <li class="divider"></li>
-          <li><a tabindex="-1" class="problem" id="other-problem" href="#">Other...</a></li>
+          <li><a tabindex="-1" class="problem" id="other-problem" href="#other">Other...</a></li>
           <li class="divider"></li>
-          <li><a tabindex="-1" class="problem" id="other-problem" href="#">Awesome!</a></li>
+          <li><a tabindex="-1" class="problem" id="other-problem" href="#awesome">Awesome!</a></li>
         </ul>
       </div>
     </div>
     
     <div class="span7">
+      <a name="cosmic"></a>
       <h3>Cosmic rays</h3>
       <p>They are an inevitable contaminant to images from our deep red-sensitive CCDs, so the
       problem is not that they are there. It's when they are not properly masked.
@@ -87,6 +88,7 @@
     </div>
     
     <div class="span7">
+      <a name="ghost"></a>
       <h3>Ghosts</h3>
       <p>Ghost are reflections of the optics, basically an undesired additional path
       from the outside of the telescope to CCD. They occur all the time,
@@ -104,6 +106,7 @@
     </div>
     
     <div class="span7">
+      <a name="crosstalk"></a>
       <h3>Cross-talk</h3>
       <p>Cross-talk is a readout issue, which occurs in the electronics.
       The visual imprint of cross-talk is a long, horizontal excess of counts,
@@ -127,6 +130,7 @@
     </div>
     
     <div class="span7">
+      <a name="satellite"></a>
       <h3>Satellite</h3>
       <p>Satellite or planes are expected to cross our focal plane several times per hour.
       They create long streaks on the images, much longer and wider than cosmic rays. Since they are so
@@ -143,6 +147,7 @@
     </div>
       
     <div class="span7">
+      <a name="readout"></a>
       <h3>Readout</h3>
       <p>There are additional readout glitches, which can simply be found by looking
       for horizontal (= readout direction) features, almost always exactly one pixel
@@ -157,7 +162,8 @@
     </div>
     
     <div class="span7">
-      <h3>Failures</h3>
+      <a name="failure"></a>
+      <h3>Failure</h3>
       <p>Sometimes a large portion of the entire image is affected by, well, something.
       It would be too bothersome to mark each single feature on such an image, and
       even if, it would probably be hard to train a piece of software to distinguish between
@@ -177,6 +183,7 @@
     </div>
     
     <div class="span7">
+      <a name="other"></a>
       <h3>Other...</h3>
       <p>Sometimes, none of the other categories fit. In this case, you can
       describe the problem in your own words. Please do so in a way that is comprehensible inasmuch
@@ -192,6 +199,7 @@
     </div>
     
     <div class="span7">
+      <a name="awesome"></a>
       <h3>Awesome!</h3>
       <p>Rarely, you'll come across a truely phenomenal sight, maybe of a bunch of interacting galaxies
       or of a comet, a star cluster, etc. Please do report these objects by selecting "Awesome!" from the drop-down,
@@ -203,7 +211,7 @@
     </div>
     <div class="span4 offset1">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00182220&ccd=54" title="Click to view the original image"><img src="tutorial/awesome_comet.png" /></a> 
+        <a href="viewer.html?expname=DECam_00181220&ccd=54" title="Click to view the original image"><img src="tutorial/awesome_comet.png" /></a> 
         <small>Comet C/2010 R1</small>
       </p>
     </div>

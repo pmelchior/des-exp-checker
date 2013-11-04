@@ -12,12 +12,13 @@ class UserManagement {
   function setSeed() {
     // create one-time seed and store it in DB
     $time = time();
-    $oldest_time = $time - 3600*24*30;
-    $oldest_date = date("Y-m-d", $oldest_time);
     $seed = sha1(strval(rand()).strval($time));
-    $query = "DELETE FROM `seeds` WHERE `timestamp` < '". $oldest_date ."';";
-    $this->conn->query($query);
     $query = "INSERT INTO `seeds` (`seed`) VALUES ('" . $seed ."')";
+    $this->conn->query($query);
+    // clean up seed table of outdated seeds
+    $oldest_time = $time - 3600*24*5;
+    $oldest_date = date("Y-m-d", $oldest_time);
+    $query = "DELETE FROM `seeds` WHERE `timestamp` < '". $oldest_date ."'";
     $this->conn->query($query);
     return $seed;
   }
@@ -48,7 +49,7 @@ class UserManagement {
 	  $this->conn->query($query);
 
 	  // delete old sessions
-	  $oldest_date = $now - 3600*24*30;
+	  $oldest_date = date("Y-m-d", $now - 3600*24*30);
 	  $query = "DELETE FROM `sessions` WHERE `timestamp` < '" . $oldest_date ."'";
 	  $this->conn->query($query);
 	  

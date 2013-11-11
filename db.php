@@ -29,12 +29,13 @@ if ($_POST) {
             $sth2 = $dbh->prepare('UPDATE users SET total_files = total_files + 1 WHERE rowid = ?');
             $sth2->execute(array($uid));
         }
-        $activity = getActivity($dbh, $uid);
+        //$activity = getActivity($dbh, $uid);
     }
 }
 
 // return the next image
-$row = getNextImage($dbh);
+$res = getNextImage($dbh);
+$row = $res->fetch(PDO::FETCH_ASSOC);
 $row['name'] = "getImage.php?name=".$row['name'];
 /*if ($_POST)
     $row['activity'] = $activity;

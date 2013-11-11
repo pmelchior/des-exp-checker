@@ -2,10 +2,7 @@
 
 include_once("config.php.inc");
 
-function getDBHandle() {
-    global $config;
-    $dbh = new PDO('sqlite:'. $config['userdb']);
-    $dbh->query('ATTACH DATABASE "' . $config['filedb'].'" AS files');
+function check_or_abort($dbh) {
     if (!$dbh) {
         header('HTTP/1.0 500 Internal Server Error');
         exit(0);
@@ -13,15 +10,22 @@ function getDBHandle() {
     return $dbh;
 }
 
+function getDBHandle() {
+    global $config;
+    $dbh = new PDO('sqlite:'. $config['userdb']);
+    $dbh->query('ATTACH DATABASE "' . $config['filedb'].'" AS files');
+    return check_or_abort($dbh);
+}
+
 function getNextImage($dbh) {
-    $sql = 'SELECT files.files.rowid, expname, ccd, band, name FROM files.files';
+    $sql = 'SELECT files.files.rowid, files.files.expname, ccd, band, name, files.runs.runname FROM files.files JOIN files.runs ON (files.files.expname = files.runs.expname)';
     if (isset($_GET['expname']) && isset($_GET['ccd'])) {
-        $sql .= ' WHERE expname = ? AND ccd = ? LIMIT 1;';
+        $sql .= ' WHERE files.files.expname = ? AND ccd = ? LIMIT 1;';
         $stmt = $dbh->prepare($sql);
         $stmt->bindParam(1, $_GET['expname'], PDO::PARAM_STR, 14);
         $stmt->bindParam(2, $_GET['ccd'], PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt;
+        return check_or_abort($stmt);
     }
     if (isset($_GET['problem'])) {
         $sql .= ' JOIN qa ON (files.rowid = qa.fileid) WHERE qa.problem = ? ORDER BY RANDOM() LIMIT 1;';
@@ -29,14 +33,10 @@ function getNextImage($dbh) {
         $codes = getProblemCodes();
         $stmt->bindParam(1, $codes[$_GET['problem']], PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt;
+        return check_or_abort($stmt);
     }
-    $res = $dbh->query($sql.' ORDER BY RANDOM() LIMIT 1');
-    if ($res === False) {
-        header('HTTP/1.0 500 Internal Server Error');
-        exit(0);
-    }
-    return $res->fetch(PDO::FETCH_ASSOC);
+    // default query
+    return check_or_abort($dbh->query($sql.' ORDER BY RANDOM() LIMIT 1'));
 }
 
 function getUIDFromSID($dbh) {
@@ -73,7 +73,7 @@ function getActivity($dbh, $uid, $date=FALSE) {
     if ($date === FALSE)
         $date = date('Y-m-d');
     $sql = "SELECT COUNT(DISTINCT(fileid)) as activity FROM qa WHERE userid=".$uid." AND timestamp LIKE '".$date."%'";
-    $res = $dbh->query($sql);
+    $res = check_or_abort($dbh->query($sql));
     return array_pop($res->fetch(PDO::FETCH_NUM));
 }
 

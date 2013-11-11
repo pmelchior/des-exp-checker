@@ -29,17 +29,16 @@ if ($_POST) {
             $sth2 = $dbh->prepare('UPDATE users SET total_files = total_files + 1 WHERE rowid = ?');
             $sth2->execute(array($uid));
         }
+        $activity = getActivity($dbh, $uid);
     }
 }
 
 // return the next image
-$res = getNextImage($dbh);
-if ($res === False) {
-    header('HTTP/1.0 500 Internal Server Error');
-    exit(0);
-}
-$row = $res->fetch(PDO::FETCH_ASSOC);
+$row = getNextImage($dbh);
 $row['name'] = "getImage.php?name=".$row['name'];
+/*if ($_POST)
+    $row['activity'] = $activity;
+*/
 echo json_encode($row);
 
 ?>

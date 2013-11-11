@@ -31,7 +31,12 @@ function getNextImage($dbh) {
         $stmt->execute();
         return $stmt;
     }
-    return $dbh->query($sql.' ORDER BY RANDOM() LIMIT 1');
+    $res = $dbh->query($sql.' ORDER BY RANDOM() LIMIT 1');
+    if ($res === False) {
+        header('HTTP/1.0 500 Internal Server Error');
+        exit(0);
+    }
+    return $res->fetch(PDO::FETCH_ASSOC);
 }
 
 function getUIDFromSID($dbh) {
@@ -61,6 +66,15 @@ function getUserData($dbh, $uid) {
     else {
         return FALSE;
     }
+}
+
+
+function getActivity($dbh, $uid, $date=FALSE) {
+    if ($date === FALSE)
+        $date = date('Y-m-d');
+    $sql = "SELECT COUNT(DISTINCT(fileid)) as activity FROM qa WHERE userid=".$uid." AND timestamp LIKE '".$date."%'";
+    $res = $dbh->query($sql);
+    return array_pop($res->fetch(PDO::FETCH_NUM));
 }
 
 // mimics json formatting

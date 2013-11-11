@@ -61,24 +61,22 @@
       <h3>Cosmic rays</h3>
       <p>They are an inevitable contaminant to images from our deep red-sensitive CCDs, so the
       problem is not that they are there. It's when they are not properly masked.
-      The good thing about them: they are easy to spot. Use the display options
-      to select of fairly bright setting,
-      e.g. <button id="peter-button" class="btn btn-primary btn-mini">Peter's</button>,
-      and they will be very apparent. Toggle the mask to find out if all have been
-      found and whether they are entirely masked.
+      The good thing about them: they are easy to spot.</p>
+      <p>
+        <button class="btn btn-info">Toggle <u>m</u>ask</button>
+        <button class="btn btn-info">Toggle <u>s</u>caling</button>
       </p>
       <p>
-        <button class="btn btn-info" href="#" id="toggle-mask-button">Toggle mask</button>
-        <button class="btn btn-info" href="#" id="option-button">Display options</button>
+      Use the buttons showns above to switch to a scaling that focusses on the bright
+      aspects of the image and to blink the mask, and the cosmic rays
+      will become very apparent.
       </p>
-      <p>It's perfectly fine to mark multiple cosmic rays per image, or
+      <p>It's perfectly fine to mark multiple cosmic rays per image
+      (including those that are only partially masked) or
       multiple different problems on the same image. If you want to redo your selection,
-      simply clear the markings from the image. If you're satisfied, save it and move
-      on the the next image.
-      <p>
-        <button class="btn btn-info" href="#" id="toggle-mask-button">Clear</button>
-        <button class="btn btn-info" href="#" id="option-button">Save</button>
-      </p>
+      simply <button class="btn btn-mini btn-info">Clear</button>
+      the markings from the image. If you're satisfied, save it and move
+      on the the next image by clicking on <button class="btn btn-mini btn-success">Next</button>.
     </div>
     <div class="span4 offset1">
       <p class="img-polaroid">
@@ -117,10 +115,8 @@
       </p>
       <p>Since cross-talk scales with the brightness of the object that
       cause it, only the brightest objects (typically stars) will leave a clearly
-      visible imprint. Switch to <button class="btn btn-primary btn-mini">Arcsinh</button>
-      scaling, and potentially <button class="btn btn-primary btn-mini">Reset</button> the
-      visible range, to dig deeper into noise. Since the feature can be very extended,
-      mark the region where it has it's largest vertical extension: the knot in the middle.
+      visible imprint. Toggle the image scaling to dig deeper into noise. Since the feature can be very extended,
+      mark the region where it has it's widest vertical extension: the knot in the middle.
     </div>
     <div class="span4 offset1">
       <p class="img-polaroid">

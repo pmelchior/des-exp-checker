@@ -271,6 +271,7 @@
 <body>
   <div id="wrapper">
   <div class='container'>
+    <!-- NAVBAR -->
     <div class="navbar">
       <div class="navbar-inner">
 	<a class="brand" href="index.html">DES exposure checker</a>
@@ -298,6 +299,7 @@
       </div> 
     </div>
     
+    <!-- BUTTONS -->
     <div style="margin-top:20px; position:relative;">
       <button id="fine-button" class="btn btn-success send">Next</button>
       <div class="btn-group">
@@ -327,13 +329,15 @@
         <span class="muted" id="image_name"></span>
         <button style="margin-left:10px;" class="btn btn-info" href="#" id="share-button">Share <u>l</u>ink</button>
         <button class="btn btn-info" href="#" id="toggle-mask-button">Toggle <u>m</u>ask</button>
-        <button class="btn btn-info" href="#" id="option-button"><u>D</u>isplay options</button>
+        <button class="btn btn-info" href="#" id="scaling-button">Toggle <u>s</u>caling</button>
       </span>
     </div>
     
+    <!-- IMAGE -->
     <div id="loading" class="hide" style="position:relative; left:512px; top:266px; z-index:1000; width:48px;"></div>
     <div id="wicked-science-visualization" style="margin: 10px 0px; height:512px; width: 1024px; background-color:#CCCCCC;"></div>
     
+    <!-- MODALS -->
     <div class="modal hide" id="problem-modal">
       <div class="modal-header">
         <h3>Describe what you see</h3>
@@ -344,28 +348,6 @@
       <div class="modal-footer">
         <span style="padding-right:20px">When done, click on the image to mark the problematic area</span>
         <button id="problem-text-button" class="btn btn-primary">Done</button>
-      </div>
-    </div>
-    <div class="modal hide" id="control-modal" tabindex="-1">
-      <div class="modal-body">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <form class="form-horizontal">
-          <fieldset>
-            <legend>Scaling</legend>
-            <button id="linear-button" class="btn btn-small stretch">Linear</button>
-            <button id="sqrt-button" class="btn btn-small stretch">Sqrt</button>
-            <button id="logarithm-button" class="btn btn-small stretch">Logarithmic</button>
-            <button id="arcsinh-button" class="btn btn-small stretch"><u>A</u>rcSinh</button>
-            <button id="peter-button" class="btn btn-small stretch"><u>P</u>eter's</button>
-          </fieldset>
-          <fieldset>
-            <legend>Visible data range</legend>
-            <input type="text" class="input-small range" placeholder="Minimum" id="vmin-input">
-            <input type="text" class="input-small range" placeholder="Maximum" id="vmax-input">
-            <button id="vmin-max-button" class="btn btn-small range">Update</button>
-            <button id="vmin-max-reset-button" class="btn btn-small range">Reset</button>
-          </fieldset>
-        </form>
       </div>
     </div>
     
@@ -390,6 +372,7 @@
       </div>
       <div class="modal-body"></div>
     </div>
+    
     <div class="modal hide" id="congrats-modal" tabindex="-1">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -441,6 +424,7 @@
 <script type="text/javascript" src="assets/spin.min.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script>
+  // initial setup
   $(document).ready(function(){
     if (!checkSessionCookie())
         kickOut();
@@ -462,33 +446,22 @@
     getMyData();
     setInterval(getMyData, 600000);
   });
-  $('button[class*="send"]').on('click', function(evt) {
-    sendResponse();
-  });
-  $('button[class*="stretch"]').on('click', function(evt) {
-    // toggle primary class as indicator for current stretch
-    $('#' + stretch + "-button").removeClass('btn-primary');
-    stretch = evt.target.id.split("-").shift();
-    $('#' + stretch + "-button").addClass('btn-primary');
-    webfits.setStretch(stretch);
-  });
-  $('#vmin-max-button').on('click', function() {
-    extent = [$('#vmin-input').val(), $('#vmax-input').val()];
-    webfits.setExtent(extent[0], extent[1]);
-  });
-  $('#vmin-max-reset-button').on('click', function() {
-    extent[0] = dataextent[0];
-    extent[1] = dataextent[1];
-    $('#vmin-input').val(extent[0]);
-    $('#vmax-input').val(extent[1]);
-    webfits.setExtent(extent[0], extent[1]);
-  });
   $('form').submit(function() {
     return false;
   });
-  $('#control-modal').modal({"backdrop": false, "show": false, "keyboard": true});
+  
+  // initialize modals
   $('#problem-modal').modal({"backdrop": false, "show": false, "keyboard": false });
   $('#share-modal').modal({"backdrop": false, "show": false, "keyboard": true });
+  $('#rank-modal').modal({"backdrop": false, "show":false, "keyboard": true});
+  $('#mystats-modal').modal({"backdrop": false, "show":false, "keyboard": true});
+  $('#congrats-modal').modal({"backdrop": false, "show":false, "keyboard": true});
+  $('#session-modal').modal({"backdrop": true, "show":false, "keyboard": false});
+  
+  // button actions
+  $('button[class*="send"]').on('click', function(evt) {
+    sendResponse();
+  });
   $('#share-button').on('click', function() {
     $('#share-modal').modal('show');
     var textBox = $('#share-url');
@@ -504,8 +477,9 @@
     webfits.showMask = !webfits.showMask;
     webfits.draw();
   });
-  $('#option-button').on('click', function() {
-    $('#control-modal').modal('show');
+  $('#scaling-button').on('click', function() {
+    stretch = (stretch == "arcsinh" ? "peter" : "arcsinh");
+    webfits.setStretch(stretch);
   });
   $('#problem-text-button').on('click', function() {
     $('#problem-modal').modal('hide');
@@ -521,6 +495,7 @@
     $('#problem-name').html(problem);
     if (problem == "Other..." || problem == "Failure" || problem =="Awesome!") {
       $('#problem-modal').modal('show');
+      $('#problem-text').val(''); // clear previous entry
     } else {
       $('#problem-text').val('');
     }
@@ -531,13 +506,11 @@
     $('#problem-dialogue').removeClass('hide');
   });
   
-  $('#rank-modal').modal({"backdrop": false, "show":false, "keyboard": true});
-  $('#mystats-modal').modal({"backdrop": false, "show":false, "keyboard": true});
+  // user requests
   $('#mystats-anchor').on('click', function() {
     getMyData();
     $('#mystats-modal').modal('show');
   });
-  $('#congrats-modal').modal({"backdrop": false, "show":false, "keyboard": true});
   $('#leaderboard-anchor').on('click', function() {
     $.get('ranking.php', {'output': 'html'}, function(response) {
       $('#rank-modal').find('[class*="modal-body"]').html(response);
@@ -549,7 +522,7 @@
       window.location.href="index.html";
       });
   });
-  $('#session-modal').modal({"backdrop": true, "show":false, "keyboard": false});
+  
   // key bindings
   jwerty.key('alt+l', function() {
     $('#share-button').trigger('click');  
@@ -557,14 +530,8 @@
   jwerty.key('alt+m', function() {
     $('#toggle-mask-button').trigger('click');  
   });
-  jwerty.key('alt+d', function() {
-    $('#option-button').trigger('click'); 
-  });
-  jwerty.key('alt+p', function() {
-    $('#peter-button').trigger('click');
-  });
-  jwerty.key('alt+a', function() {
-    $('#arcsinh-button').trigger('click');
+  jwerty.key('alt+s', function() {
+    $('#scaling-button').trigger('click'); 
   });
 </script>
 </html>

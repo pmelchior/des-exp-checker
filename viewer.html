@@ -121,6 +121,7 @@
     fileid = response.rowid;
     $('#image_name').html(response.expname + ', CCD ' + response.ccd + ", " + response.band + "-band");
     $('#share-url').val('http://' + window.location.host + window.location.pathname + '?expname=' + response.expname + '&ccd=' + response.ccd);
+    $('#desdm-url').val('https://desar2.cosmology.illinois.edu/DESFiles/desardata/OPS/red/' + response.runname + '/red/' + response.expname + '/' + response.expname + '_' + response.ccd +'.fits.fz');
     $('#fov-url').html('https://cosmology.illinois.edu/~mjohns44/SingleEpoch/pngs/' + response.runname + '/mosaics/' + response.expname + '_mosaic.png');
     renderImage(response.name);
   }
@@ -322,6 +323,7 @@
           </button>
           <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
             <li><a tabindex="-1" href="#" id="share-button">Share <u>l</u>ink</a></li>
+            <li><a tabindex="-1" href="#" id="desdm-button"><u>D</u>ownload image from DESDM</a></li>
             <li><a tabindex="-1" href="#" id="fov-button">Show entire <u>F</u>oV</a></li>
             <li><a tabindex="-1" href="#" id="squad-button">Get eyeball squad <u>r</u>eport</a></li>
           </ul>
@@ -418,6 +420,17 @@
       </div>
     </div>
     
+    <div class="modal hide" id="desdm-modal" tabindex="-1">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>URL for finalcut image from DESDM</h3>
+      </div>
+      <div class="modal-body">
+        <textarea style="width:516px;" type="text" id="desdm-url" disabled></textarea>
+      </div>
+    </div>
+    
+    
     <div class="modal hide" id="session-modal">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -475,6 +488,7 @@
   $('#fov-modal').modal({"backdrop": false, "show": false, "keyboard": true });
   $('#squad-modal').modal({"backdrop": false, "show": false, "keyboard": true });
   $('#share-modal').modal({"backdrop": false, "show": false, "keyboard": true });
+  $('#desdm-modal').modal({"backdrop": false, "show": false, "keyboard": true });
   $('#rank-modal').modal({"backdrop": false, "show":false, "keyboard": true});
   $('#mystats-modal').modal({"backdrop": false, "show":false, "keyboard": true});
   $('#congrats-modal').modal({"backdrop": false, "show":false, "keyboard": true});
@@ -487,6 +501,17 @@
   $('#share-button').on('click', function() {
     $('#share-modal').modal('show');
     var textBox = $('#share-url');
+    textBox.select();
+    // Work around Chrome's little problem
+    textBox.onmouseup = function() {
+      // Prevent further mouseup intervention
+      textBox.onmouseup = null;
+      return false;
+    };
+  });
+  $('#desdm-button').on('click', function() {
+    $('#desdm-modal').modal('show');
+    var textBox = $('#desdm-url');
     textBox.select();
     // Work around Chrome's little problem
     textBox.onmouseup = function() {
@@ -571,6 +596,9 @@
   // key bindings
   jwerty.key('alt+l', function() {
     $('#share-button').trigger('click');  
+  });
+  jwerty.key('alt+d', function() {
+    $('#desdm-button').trigger('click');  
   });
   jwerty.key('alt+m', function() {
     $('#toggle-mask-button').trigger('click');  

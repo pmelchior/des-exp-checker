@@ -14,3 +14,4 @@ body,html { height: 100%; }
 /* for gallery */
 .imagenamecol {min-width: 180px;}
 .timecol {width: 134px;}
+.modal {top: 60px; }

@@ -15,8 +15,6 @@
   <script type="text/javascript" src="assets/webfits-canvas.0.3.1.js"></script>
   <script type="text/javascript">
   var webfits = null;
-  var extent = null;
-  var dataextent = null;
   var stretch = "arcsinh";
   var spinner;
   var marks = [];
@@ -72,13 +70,10 @@
   
   // Define callback for when pixels have been read from file
   function createVisualization(arr, opts) {
-    
     var dataunit = opts.dataunit;
-    
-    //var dataunit = opts.dataunit;
     var width = dataunit.width;
     var height = dataunit.height;
-    dataextent = dataunit.getExtent(arr);
+    var extent = dataunit.getExtent(arr);
     
     // Get the DOM element
     var el = $('#' + opts.el).get(0);
@@ -91,16 +86,10 @@
       webfits = new astro.WebFITS(el,width, height);
       // Add pan and zoom controls
       webfits.setupControls(callbacks, opts);
-      extent = $.extend(true, [], dataextent); // fancy for: deep copy of dataextent
-      
-      // set the vmin, vmax from extent
-      $('#vmin-input').val(extent[0]);
-      $('#vmax-input').val(extent[1]);
     }
     
     // Load array representation of image
     webfits.loadImage('exposure', arr, width, height);
-    
     // Set the intensity range and stretch
     webfits.setExtent(extent[0], extent[1]);
     webfits.setStretch(stretch);
@@ -111,7 +100,6 @@
     opts["dataunit"] = dataunit;
     // Asynchronously get pixels representing the image passing a callback and options
     dataunit.getFrameAsync(0, addMaskLayer, opts);
-
   }
   
   function addMaskLayer(arr, opts) {
@@ -133,6 +121,7 @@
     fileid = response.rowid;
     $('#image_name').html(response.expname + ', CCD ' + response.ccd + ", " + response.band + "-band");
     $('#share-url').val('http://' + window.location.host + window.location.pathname + '?expname=' + response.expname + '&ccd=' + response.ccd);
+    $('#fov-url').html('https://cosmology.illinois.edu/~mjohns44/SingleEpoch/pngs/' + response.runname + '/mosaics/' + response.expname + '_mosaic.png');
     renderImage(response.name);
   }
   
@@ -327,7 +316,16 @@
       </span>
       <span style="position:absolute; right: 0px; top:0px;">
         <span class="muted" id="image_name"></span>
-        <button style="margin-left:10px;" class="btn btn-info" href="#" id="share-button">Share <u>l</u>ink</button>
+        <div class="btn-group" style="margin-left:10px;">
+          <button id="info-button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Info</span>
+          <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+            <li><a tabindex="-1" href="#" id="share-button">Share <u>l</u>ink</a></li>
+            <li><a tabindex="-1" href="#" id="fov-button">Show entire <u>F</u>oV</a></li>
+            <li><a tabindex="-1" href="#" id="squad-button">Get eyeball squad <u>r</u>eport</a></li>
+          </ul>
+        </div>
         <button class="btn btn-info" href="#" id="toggle-mask-button">Toggle <u>m</u>ask</button>
         <button class="btn btn-info" href="#" id="scaling-button">Toggle <u>s</u>caling</button>
       </span>
@@ -348,6 +346,29 @@
       <div class="modal-footer">
         <span style="padding-right:20px">When done, click on the image to mark the problematic area</span>
         <button id="problem-text-button" class="btn btn-primary">Done</button>
+      </div>
+    </div>
+    
+    <div class="modal hide" id="fov-modal" tabindex="-1">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Field-of-View image</h3>
+      </div>
+      <div class="modal-body" id="fov-body" style="max-height:none;">
+      <div id="fov-url" class="hide"></div>
+      </div>
+    </div>
+    
+    <div class="modal hide" id="squad-modal" tabindex="-1">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Eyeball squad report</h3>
+      </div>
+      <div class="modal-body">
+      <strong>Anything wrong?</strong>
+      <p id="squad-wrong-text"></p>
+      <strong>Additional comments</strong>
+      <p id="squad-comment-text"></p>
       </div>
     </div>
     
@@ -442,7 +463,6 @@
       alert('Failure when loading image');
     });
 
-    $('#' + stretch + "-button").addClass('btn-primary');
     getMyData();
     setInterval(getMyData, 600000);
   });
@@ -452,6 +472,8 @@
   
   // initialize modals
   $('#problem-modal').modal({"backdrop": false, "show": false, "keyboard": false });
+  $('#fov-modal').modal({"backdrop": false, "show": false, "keyboard": true });
+  $('#squad-modal').modal({"backdrop": false, "show": false, "keyboard": true });
   $('#share-modal').modal({"backdrop": false, "show": false, "keyboard": true });
   $('#rank-modal').modal({"backdrop": false, "show":false, "keyboard": true});
   $('#mystats-modal').modal({"backdrop": false, "show":false, "keyboard": true});
@@ -472,6 +494,29 @@
       textBox.onmouseup = null;
       return false;
     };
+  });
+  $('#fov-button').on('click', function() {
+    $('#fov-body').find('.fov-image').remove(); //<a title="Open full-size version" href="' + $('#fov-url').html() +'">
+    $('<img class="fov-image" src="'+ $('#fov-url').html() +'" border="0" />').load(function() {
+      $(this).width(530).height(454).appendTo('#fov-body');
+    });
+    $('#fov-modal').modal('show');
+  });
+  $('#squad-button').on('click', function() {
+    var expname = $('#image_name').html().split(',').shift();
+    $.get('eyeball_squad_report.php', {'expname': expname }, function(response) {
+        if (response) {
+          $('#squad-wrong-text').html(response.wrong);
+          if (response.comment != "")
+            $('#squad-comment-text').html(response.comment);
+          else
+            $('#squad-comment-text').html('None');
+        } else {
+          $('#squad-wrong-text').html('<i>not available</i>');
+          $('#squad-comment-text').html('<i>not available</i>');
+        }
+      }, 'json');
+    $('#squad-modal').modal('show');
   });
   $('#toggle-mask-button').on('click', function() {
     webfits.showMask = !webfits.showMask;
@@ -531,7 +576,13 @@
     $('#toggle-mask-button').trigger('click');  
   });
   jwerty.key('alt+s', function() {
-    $('#scaling-button').trigger('click'); 
+    $('#scaling-button').trigger('click');
+  });
+  jwerty.key('alt+f', function() {
+    $('#fov-button').trigger('click');
+  });
+  jwerty.key('alt+r', function() {
+    $('#squad-button').trigger('click');
   });
 </script>
 </html>

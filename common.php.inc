@@ -56,25 +56,77 @@ function getUIDFromSID($dbh) {
     return FALSE;
 }
 
+function numberSuffix($num) {
+    switch($num) {
+        case 1: return '1st'; break;
+        case 2: return '2nd'; break;
+        default: return $num.'th'; break; 
+    }
+}
+
+function userClass($total_files) {
+    global $config;
+    if ($total_files / $config['images_per_fp'] >= 100)
+      return 5;
+    if ($total_files / $config['images_per_fp'] >= 10)
+      return 4;
+    if ($total_files / $config['images_per_fp'] >= 5)
+      return 3;
+    if ($total_files == 257) {
+        return 3;
+    }
+    if ($total_files / $config['images_per_fp'] >= 1)
+      return 2;
+    if ($total_files >= 10)
+      return 1;
+    return 0;
+}
+
+function missingFilesForNextClass($total_files, $userclass) {
+    global $config;
+    switch($userclass) {
+      case 0: return 10 - $total_files; break;
+      case 1: return $config['images_per_fp'] - $total_files; break;
+      case 2: return 5*$config['images_per_fp'] - $total_files; break;
+      case 3: return 10*$config['images_per_fp'] - $total_files; break;
+      case 4: return 100*$config['mages_per_fp'] - $total_files; break;
+      case 5: return 1000*$config['mages_per_fp'] - $total_files; break;
+    }
+  }
+  
 function getUserData($dbh, $uid) {
     $stmt = $dbh->prepare("SELECT username, total_files, flagged_files, (SELECT COUNT(*)+1 from users WHERE total_files > (SELECT total_files FROM users WHERE rowid = ?)) as rank FROM  users WHERE rowid = ?");
     $stmt->bindParam(1, $uid, PDO::PARAM_INT);
     $stmt->bindParam(2, $uid, PDO::PARAM_INT);
     $stmt->execute();
-    if ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+    if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $row['userclass'] = userClass($row['total_files']);
+        $row['missingfiles'] = missingFilesForNextClass($row['total_files'], $row['userclass']);
         return $row;
+    }
     else {
         return FALSE;
     }
 }
 
-
 function getActivity($dbh, $uid, $date=FALSE) {
+    $activity = array();
     if ($date === FALSE)
         $date = date('Y-m-d');
     $sql = "SELECT COUNT(DISTINCT(fileid)) as activity FROM qa WHERE userid=".$uid." AND timestamp LIKE '".$date."%'";
     $res = check_or_abort($dbh->query($sql));
-    return array_pop($res->fetch(PDO::FETCH_NUM));
+    $activity['today'] = array_pop($res->fetch(PDO::FETCH_NUM));
+    $sql = "SELECT total_files FROM users WHERE rowid=".$uid;
+    $res = check_or_abort($dbh->query($sql));
+    $activity['alltime'] = array_pop($res->fetch(PDO::FETCH_NUM));
+    return $activity;
+}
+
+function giveBonusPoints($dbh, $uid, $points) {
+    $stmt = $dbh->prepare("UPDATE users SET total_files = total_files + ? WHERE rowid = ?");
+    $stmt->bindParam(1, $points, PDO::PARAM_INT);
+    $stmt->bindParam(2, $uid, PDO::PARAM_INT);
+    check_or_abort($stmt->execute());
 }
 
 // mimics json formatting

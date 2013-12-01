@@ -20,7 +20,6 @@
   var marks = [];
   var problem = null;
   var fileid = null;
-  var images_per_fp = 61;
   
   function overlayCallback(_this, opts, evt) {
     if (problem !== null) {
@@ -126,6 +125,18 @@
     renderImage(response.name);
   }
   
+  function userClass(uc) {
+    // frequent users: color badge acording to # of focal planes done
+    switch (uc) {
+      case 1: return {class: 1, style: 'badge-success', title: 'Rookie'}; break;
+      case 2: return {class: 2, style: 'badge-warning', title: 'Frequent checker'}; break;
+      case 3: return {class: 3, style: 'badge-important', title: 'Top performer'}; break;
+      case 4: return {class: 4, style: 'badge-info', title: 'Veteran'}; break;
+      case 5: return {class: 5, style: 'badge-inverse', title: 'Chief inspector'}; break;
+      default: return {class: 0}; break;
+    }
+  }
+  
   function sendResponse() {
     // show spinner
     $('#loading').removeClass('hide');
@@ -133,13 +144,29 @@
     var number = parseInt($('#total-files').html());
     number += 1;
     $('#total-files').html(number);
-    checkFileCount(number);
     
     // post to DB
     $.post('db.php',
            {'fileid': fileid, 'problems': marks},
            function(data) {
             var response = $.parseJSON(data);
+            if (response.congrats !== undefined) {
+              $('#congrats_text').html(response.congrats.text);
+              if (response.congrats.detail !== undefined) {
+                $('#congrats_details').html(response.congrats.detail);
+                if (response.congrats.userclass !== undefined) {
+                  var uc = userClass(response.congrats.userclass);
+                  $('#status_class').addClass(uc.style);
+                  $('#status_class').html(uc.title);
+                  $('#userrank').removeClass();
+                  $('#userrank').addClass("badge");
+                  $('#userrank').addClass(uc.style); // set the badge color
+                }
+              }
+              else
+                $('#congrats_details').html();
+              $('#congrats-modal').modal('show');
+            }
             setNextImage(response);
           }
     )
@@ -154,68 +181,6 @@
     $('#problem-text').val('');
     $('#problem-name').html("Hold on, that's...");
     problem = null;
-  }
-  
-  function userClass(total_files) {
-    // frequent users: color badge acording to # of focal planes done
-    if (total_files / images_per_fp >= 100)
-      return {class: 5, style: 'badge-inverse', title: 'Chief inspector'};
-    if (total_files / images_per_fp >= 10)
-      return {class: 4, style: 'badge-info', title: 'Veteran'};
-    if (total_files / images_per_fp >= 5)
-      return {class: 3, style: 'badge-important', title: 'Top performer'};
-    if (total_files / images_per_fp >= 1)
-      return {class: 2, style: 'badge-warning', title: 'Frequent checker'};
-    if (total_files >= 10)
-      return {class: 1, style: 'badge-success', title: 'Rookie'};
-    return {class: 0};
-  }
-  
-  function missingFilesForNextClass(total_files, userclass) {
-    switch(userclass.class) {
-      case 0: return 10 - total_files;
-      case 1: return images_per_fp - total_files;
-      case 2: return 5*images_per_fp - total_files;
-      case 3: return 10*images_per_fp - total_files;
-      case 4: return 100*images_per_fp - total_files;
-    }
-  }
-  
-  function setBadgeColor(userClass) {
-    if (userClass.class > 0)
-      $('#userrank').addClass(userClass.style);
-  }
-  
-  function numberSuffix(number) {
-    if (number == 1)
-      return number + "st";
-    if (number == 2)
-      return number + "nd";
-    if (number == 3)
-      return number + "rd";
-    return number + "th";
-  }
-  
-  function checkFileCount(total_files) {
-    var uc = userClass(total_files);
-    setBadgeColor(uc);
-    if (total_files == 10) { // first status after 10 images
-      $('#fp_number').html("first 10 images.");
-      $('#congrats_details').html("To reflect your achievements, we've upgraded you to <span class='badge " + uc.style + "'>" + uc.title + "</span> status.");
-      $('#congrats-modal').modal('show');
-    }
-    if (total_files % images_per_fp == 0) {
-      var fps = total_files/images_per_fp;
-      $('#fp_number').html(numberSuffix(fps) + " focal plane.");
-      var old_uc = userClass(total_files-1);
-      if (uc.class > old_uc.class) {
-        $('#congrats_details').html("To reflect your achievements, we've upgraded you to <span class='badge " + uc.style + "'>" + uc.title + "</span> status.");
-        $('#userrank').removeClass(old_uc.style);
-      }
-      else
-        $('#congrats_details').html("");
-      $('#congrats-modal').modal('show');
-    }
   }
   
   function checkSessionCookie() {
@@ -239,20 +204,22 @@
       $('#username').html(response.username);
       $('#userrank').html("#"+response.rank);
       $('#user-rank').html("#"+response.rank);
-      setBadgeColor(userClass(response.total_files));
+      var uc = userClass(response.userclass);
+      if (uc.class > 0)
+        $('#userrank').addClass(uc.style);
       $('#total-files').html(response.total_files);
       $('#flagged-files').html(response.flagged_files);
       $('#user-menu').removeClass('hide');
-      var uc = userClass(response.total_files);
+      
       var rankDetails = "";
-      if (uc.class > 0)
+      if (uc.class > 0) 
         rankDetails += "You have the rank of a <span class='badge " + uc.style + "'>" + uc.title + "</span>.<br />";
       if (uc.class < 5) {
-        var missing = missingFilesForNextClass(response.total_files, uc);
-        var next_uc = userClass(parseInt(response.total_files) + missing);
-        rankDetails += "You need another <strong>" + missing + "</strong> images to reach the rank of a <span class='badge " + next_uc.style + "'>" + next_uc.title + "</span>.";
+        var next_uc = userClass(uc.class + 1);
+        rankDetails += "You need another <strong>" + response.missingfiles + "</strong> images to reach the rank of a <span class='badge " + next_uc.style + "'>" + next_uc.title + "</span>.";
       }
       $('#user_rank_details').html(rankDetails);
+
     }, 'json');
   }
   </script>
@@ -402,7 +369,7 @@
         <h3>Congratulations</h3>
       </div>
       <div class="modal-body">
-        <p>You have just finished your <strong id="fp_number"></strong></p>
+        <p id="congrats_text"></p>
         <p id="congrats_details"></p>
       </div>
       <div class="modal-footer">

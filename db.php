@@ -59,17 +59,6 @@ if ($_POST) {
         $fps = $activity['alltime'] / $config['images_per_fp'];
         $row['congrats'] = array('text'=> "You have just finished your <strong>". numberSuffix($fps). " focal plane</strong>!");
     }
-    
-    // advent calendar
-    if ($activity['today'] == 10) {
-        giveBonusPoints($dbh, $uid, 10);
-        if (isset($row['congrats'])) {
-            $row['congrats']['detail'] .= "<br>You have also just finished your <strong>10th image today</strong>. And since it is Advent, and Advent is the time to be generous, we give you <span class='label label-important'>+10</span> points to your account.";
-        } else 
-            $row['congrats'] = array('text'=> "You have just finished your <strong>10th image today</strong>!",
-                                    'detail' => "It is Advent. And since Advent is the time to be generous, we give you <span class='label label-important'>+10</span> points to your account."
-                                    );
-    }
 }
 echo json_encode($row);
 

@@ -98,6 +98,7 @@
     <!-- MODALS -->
     <div class="modal hide" id="problem-modal">
       <div class="modal-header">
+        <button type="button" class="close" id="problem-close-button">&times;</button>
         <h3>Describe what you see</h3>
       </div>
       <div class="modal-body">
@@ -218,7 +219,6 @@
 <script>
   // initial setup
   $(document).ready(function(){
-    $('#problem-name').html(problem_default);
     if (!checkSessionCookie())
         kickOut();
     // define and show spinner
@@ -242,7 +242,8 @@
     return false;
   });
   
-  // initialize modals
+  // initialize fields and modals
+  $('#problem-name').html(problem_default);
   $('#problem-modal').modal({"backdrop": false, "show": false, "keyboard": false });
   $('#fov-modal').modal({"backdrop": false, "show": false, "keyboard": true });
   $('#squad-modal').modal({"backdrop": false, "show": false, "keyboard": true });
@@ -330,6 +331,9 @@
       $('#problem-text').val('');
     }
   });
+  $('#problem-close-button').on('click', function() {
+    closeProblemModal();
+  });
   $('#clear-button').on('click', function() {
     clearMarks();
     $('#mark-buttons').addClass('hide');
@@ -372,5 +376,10 @@
   jwerty.key('alt+r', function() {
     $('#squad-button').trigger('click');
   });
+
+  // Enter and Esc for special keybindings inside the problem modal  
+  $('#problem-modal').bind('keydown', jwerty.event('Enter', function () { $('#problem-text-button').trigger('click'); }));
+  $('#problem-modal').bind('keydown', jwerty.event('Esc', function () { closeProblemModal(); }));
+  
 </script>
 </html>

@@ -207,3 +207,9 @@ function getMyData() {
 
   }, 'json');
 }
+
+function closeProblemModal() {
+  $('#problem-modal').modal('hide');
+  $('#problem-name').html(problem_default);
+  problem = null;
+}

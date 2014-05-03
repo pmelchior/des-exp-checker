@@ -4,6 +4,7 @@ var spinner;
 var marks = [];
 var problem = null;
 var fileid = null;
+var problem_default = "Hold on, that's...";
 
 function overlayCallback(_this, opts, evt) {
   if (problem !== null) {
@@ -163,7 +164,7 @@ function sendResponse() {
   $("#problem-dialogue").addClass("hide");
   $('#mark-buttons').addClass('hide');
   $('#problem-text').val('');
-  $('#problem-name').html("Hold on, that's...");
+  $('#problem-name').html(problem_default);
   problem = null;
 }
 

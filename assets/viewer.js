@@ -6,10 +6,24 @@ var problem = null;
 var fileid = null;
 var problem_default = "Hold on, that's...";
 
+function addMark(prob) {
+  var ctx = webfits.overlayCtx;
+  ctx.beginPath();
+  ctx.arc(prob.x, prob.y, 50, 0, 2*Math.PI, true);
+  ctx.lineWidth=2;
+  ctx.strokeStyle='#FF0000';
+  ctx.stroke();
+    
+  ctx.font = '12pt Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#FF0000';
+  ctx.fillText(prob.problem, prob.x, prob.y);
+}
+
 function overlayCallback(_this, opts, evt) {
   if (problem !== null) {
     // add circle around dbl-clicked location
-    var ctx = _this.overlayCtx;
     var rect = _this.canvas.getBoundingClientRect();
     var prob = {
       x: (evt.clientX - rect.left + 0.5), // for unknown reasons, there is a 0.5 pixel shift in rect.left/right
@@ -18,17 +32,7 @@ function overlayCallback(_this, opts, evt) {
       detail: $('#problem-text').val() == "" ? null : $('#problem-text').val()
     };
     marks.push(prob);
-    ctx.beginPath();
-    ctx.arc(prob.x, prob.y, 50, 0, 2*Math.PI, true);
-    ctx.lineWidth=2;
-    ctx.strokeStyle='#FF0000';
-    ctx.stroke();
-    
-    ctx.font = '12pt Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#FF0000';
-    ctx.fillText(prob.problem, prob.x, prob.y);
+    addMark(prob);
     
     // remove "mark the image" text and show the save/clear buttons instead
     $('#problem-dialogue').addClass('hide');
@@ -39,6 +43,14 @@ function overlayCallback(_this, opts, evt) {
 function clearMarks() {
   webfits.overlayCtx.clearRect(0,0,webfits.canvas.width, webfits.canvas.height);
   marks = [];
+}
+
+function clearLastMark() {
+  marks.pop();
+  webfits.overlayCtx.clearRect(0,0,webfits.canvas.width, webfits.canvas.height);
+  for (var i=0; i < marks.length; i++) {
+    addMark(marks[i]);
+  }
 }
 
 // Define callback to be executed after image is received from the server

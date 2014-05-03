@@ -71,7 +71,7 @@
         Click to mark in the image
       </span>
       <span id="mark-buttons" class="hide" style="margin-left: 10px;">
-        <button class="btn btn-info" id="clear-button">Clear</button>
+        <button class="btn btn-info" id="clear-button">Clear Last</button>
       </span>
       <span style="position:absolute; right: 0px; top:0px;">
         <span class="muted" id="image_name"></span>
@@ -335,9 +335,11 @@
     closeProblemModal();
   });
   $('#clear-button').on('click', function() {
-    clearMarks();
-    $('#mark-buttons').addClass('hide');
-    $('#problem-dialogue').removeClass('hide');
+    clearLastMark();
+    if (marks.length == 0) {
+      $('#mark-buttons').addClass('hide');
+      $('#problem-dialogue').removeClass('hide');
+    }
   });
   
   // user requests

@@ -50,23 +50,7 @@
     <!-- BUTTONS -->
     <div style="margin-top:20px; position:relative;">
       <button id="fine-button" class="btn btn-success send">Next</button>
-      <div class="btn-group">
-        <button id="problem-button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><span id="problem-name"></span>
-        <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-          <li><a class="problem" tabindex="-1" href="#">Cosmic ray</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Ghost</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Cross-talk</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Satellite</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Readout</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Failure</a></li>
-          <li class="divider"></li>
-          <li><a tabindex="-1" class="problem" id="other-problem" href="#">Other...</a></li>
-          <li class="divider"></li>
-          <li><a tabindex="-1" class="problem" id="other-problem" href="#">Awesome!</a></li>
-        </ul>
-      </div>
+      <!--#include file="problem_selector.shtml"-->
       <span id="problem-dialogue" class="hide" style="margin-left: 10px;font-weight:bold;">
         Click to mark in the image
       </span>
@@ -226,7 +210,16 @@
     $('#loading').append(spinner.el);
     $('#loading').removeClass('hide');
     // get first image data
-    $.get('db.php', $.url().param(), function(data) {
+    var url_params = $.url().param();
+    if (url_params.problem !== undefined) {
+      initial_problem = {
+        x: url_params.x,
+        y: url_params.y,
+        problem: url_params.problem,
+        detail: null
+      };
+    }
+    $.get('db.php', url_params, function(data) {
             var response = $.parseJSON(data);
             setNextImage(response);
           }
@@ -243,7 +236,7 @@
   });
   
   // initialize fields and modals
-  $('#problem-name').html(problem_default);
+  problem_default = $('#problem-name').html();
   $('#problem-modal').modal({"backdrop": false, "show": false, "keyboard": false });
   $('#fov-modal').modal({"backdrop": false, "show": false, "keyboard": true });
   $('#squad-modal').modal({"backdrop": false, "show": false, "keyboard": true });

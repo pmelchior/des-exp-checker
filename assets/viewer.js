@@ -3,21 +3,22 @@ var stretch = "arcsinh";
 var spinner;
 var marks = [];
 var problem = null;
+var initial_problem = null;
 var fileid = null;
-var problem_default = "Hold on, that's...";
+var problem_default = null;
 
 function addMark(prob) {
   var ctx = webfits.overlayCtx;
   ctx.beginPath();
   ctx.arc(prob.x, prob.y, 50, 0, 2*Math.PI, true);
   ctx.lineWidth=2;
-  ctx.strokeStyle='#FF0000';
+  ctx.strokeStyle='#FFFF00';
   ctx.stroke();
     
   ctx.font = '12pt Arial';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#FF0000';
+  ctx.fillStyle = '#FFFF00';
   ctx.fillText(prob.problem, prob.x, prob.y);
 }
 
@@ -82,6 +83,14 @@ function createVisualization(arr, opts) {
     webfits = new astro.WebFITS(el,width, height);
     // Add pan and zoom controls
     webfits.setupControls(callbacks, opts);
+            // Add marking of initial_problem if present
+    if (initial_problem !== null) {
+      addMark(initial_problem);
+      console.log(initial_problem);
+      //initial_problem = null;
+    }
+
+
   }
   
   // Load array representation of image

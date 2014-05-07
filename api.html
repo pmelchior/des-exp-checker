@@ -32,30 +32,14 @@
     <!-- content area -->
     <div class="span12">
       <h1>API</h1>
-      <p>The API allows you to query our submission database for a list of the
+      <p>The API allows you to query our submission database for the list of the
       categorized problems. You'll get them anonymized and without a timestamp,
       the format is <a href="http://www.json.org/">JSON</a>, which should be digestible in almost
       any programming language. If you need at different format,
       open a <a href="https://github.com/pmelchior/des-exp-checker/issues">github issue</a>.
       </p>
       <p>Select the problem class below:</p>
-      <div class="btn-group">
-        <button id="problem-button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><span id="problem-name">Hold on, that's...</span>
-        <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-          <li><a class="problem" tabindex="-1" href="api.php?problem=Cosmic%20ray">Cosmic ray</a></li>
-          <li><a class="problem" tabindex="-1" href="api.php?problem=Ghost">Ghost</a></li>
-          <li><a class="problem" tabindex="-1" href="api.php?problem=Cross-talk">Cross-talk</a></li>
-          <li><a class="problem" tabindex="-1" href="api.php?problem=Satellite">Satellite</a></li>
-          <li><a class="problem" tabindex="-1" href="api.php?problem=Readout">Readout</a></li>
-          <li><a class="problem" tabindex="-1" href="api.php?problem=Failure">Failure</a></li>
-          <li class="divider"></li>
-          <li><a tabindex="-1" class="problem" href="api.php?problem=Other...">Other...</a></li>
-          <li class="divider"></li>
-          <li><a tabindex="-1" class="problem" href="api.php?problem=Awesome!">Awesome!</a></li>
-        </ul>
-      </div>
+      <!--#include file="problem_selector.shtml"-->
     
       <h3>Any other queries?</h3>
       The set of queries we currently allow is restricted to global queries based on the problem class.
@@ -73,4 +57,14 @@
 </body>
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  // initial setup
+  $(document).ready(function(){
+    // connect problem selector to anchor in page
+    $('a[class*="problem"]').on('click', function(evt) {
+      var problem = evt.target.innerHTML;
+      window.open('api.php?problem=' + encodeURI(problem));
+    });
+  });
+</script>
 </html>

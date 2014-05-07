@@ -18,9 +18,10 @@ function getDBHandle() {
 }
 
 function getNextImage($dbh) {
-    $sql = 'SELECT files.files.rowid, files.files.expname, ccd, band, name, files.runs.runname FROM files.files JOIN files.runs ON (files.files.expname = files.runs.expname)';
+    global $config;
+    $sql = 'SELECT '.$config['release'].'.rowid, '.$config['release'].'.expname, ccd, band, name, files.runs.runname FROM '.$config['release'].' JOIN files.runs ON ('.$config['release'].'.expname = files.runs.expname)';
     if (isset($_GET['expname']) && isset($_GET['ccd'])) {
-        $sql .= ' WHERE files.files.expname = ? AND ccd = ? LIMIT 1;';
+        $sql .= ' WHERE '.$config['release'].'.expname = ? AND ccd = ? LIMIT 1;';
         $stmt = $dbh->prepare($sql);
         $stmt->bindParam(1, $_GET['expname'], PDO::PARAM_STR, 14);
         $stmt->bindParam(2, $_GET['ccd'], PDO::PARAM_INT);
@@ -28,7 +29,7 @@ function getNextImage($dbh) {
         return check_or_abort($stmt);
     }
     if (isset($_GET['problem'])) {
-        $sql .= ' JOIN qa ON (files.rowid = qa.fileid) WHERE qa.problem = ? ORDER BY RANDOM() LIMIT 1;';
+        $sql .= ' JOIN qa ON ('.$config['release'].'.rowid = qa.fileid) WHERE qa.problem = ? ORDER BY RANDOM() LIMIT 1;';
         $stmt = $dbh->prepare($sql);
         $codes = getProblemCodes();
         $stmt->bindParam(1, $codes[$_GET['problem']], PDO::PARAM_INT);
@@ -153,14 +154,53 @@ function json_output($data) {
 function getProblemCodes() {
     return array(
       "OK" => 0,
-      "Cosmic ray" => 1,
-      "Ghost" => 2,
-      "Cross-talk" => 3,
-      "Satellite" => 4,
-      "Readout" => 5,
-      "Failure" => 128,
+      
+      // Temporary categories, to be re-inspected
+      "Old_Readout" => -5,
+      "Old_Other" => -6,
+      "Old_Sky" => -7,
+      
+      // Instrument
+      "Guiding" => 11,
+      "Star trails" => 12,
+      "Readout" => 13,
+      "Haze" => 14,
+      
+      // Flat fielding
+      "A/B jump" => 21,
+      "Fringing" => 22,
+      "Tape bump" => 23,
+      "Tree rings" => 24,
+      "Vertical jump" => 25,
+      "Vertical stripes" => 26,
+      
+      // Reflections
+      "Scattered light" => 31,
+      "Ghost" => 32,
+      "Brush strokes" => 33,
+      "Bright arc" => 34,
+      
+      // Tracks
+      "Satellite" => 41,
+      "Airplane" => 42,
+      
+      // Masking
+      "Column mask" => 51,
+      "Mask dots" => 52,
+      "Excessive mask" => 53,
+      "Cosmic ray" => 54,
+      "Cross-talk" => 55,
+      "Edge-bleed" => 56,
+      
+      // Sky estimation
+      "Dark corner/edge" => 61,
+      "Dark halo" => 62,
+      "Boxy background" => 63,
+      "Wavy background" => 64,
+      "Anti-bleed" => 65,
+      
       "Other..." => 255,
-      "Awesome!" => -1
+      "Awesome!" => -1,
     );
 }
 

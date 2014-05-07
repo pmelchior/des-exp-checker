@@ -6,9 +6,9 @@ $dbh = getDBHandle();
 $stats = array();
 // basic stats: how many total files, how many done
 if (isset($_GET['total'])) {
-    $stmt = $dbh->query('SELECT COUNT(1) from files.files');
+    $stmt = $dbh->query('SELECT COUNT(1) from files.' . $config['release']);
     $stats['total'] = $stmt->fetchColumn();
-    $stmt = $dbh->query('SELECT COUNT(DISTINCT(fileid)) from qa');
+    $stmt = $dbh->query('SELECT COUNT(DISTINCT(fileid)) from qa WHERE problem >= 0');
     $stats['done'] = $stmt->fetchColumn();
 }
 

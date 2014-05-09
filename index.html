@@ -17,30 +17,39 @@
 <body>
   <div id="wrapper">
   <div class='container'>
-    <div class="hero-unit">
+    <div class="navbar">
+      <div class="navbar-inner">
+	<a class="brand" href="index.html">DES exposure checker</a>
+	<ul class="nav">
+          <li><a href="viewer.html">Viewer</a></li>
+	  <li><a href="tutorial.html">Tutorial</a></li>
+          <li><a href="statistics.html">Statistics</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+	</ul>
+      </div>
+    </div>
+    <div class="hero-unit" id="des-hero">
+    <div style="width: 700px">
     <h1>DES exposure checker</h1>
-    <p>See how DES images actually look like. Discover flaws we would otherwise have missed. Make our data better.</p>
+    <p style="margin-top:10px">See how DES images actually look like. Discover flaws we would otherwise have missed. Make our data better.</p>
     <p>
       <button class="btn btn-primary btn-large" id="open-login-button">Log in</button>
       <button class="btn btn-primary btn-large" id="open-signup-button">Sign up</button>
     </p>
     </div>
+    <div id="basic_stats" style="position: absolute; top: 36px; right:0px;"></div>
+    </div>
     <div class="span8">
-      <h4>Introduction</h4>
-      <p>The purpose of this website is to provide easy access to the latest DES SV-A1 finalcut
-      images. Well, not exactly the finalcut images. What you see here are factor 4
-      downsampled versions of the actual images just to keep the loading times
-      and image sizes tolerable.
-      </p>
-      <h4>What's the goal of this?</h4>
-      <p>We all want to conduct a science analysis based on the DES data. However,
+      <h4>What's this good for?</h4>
+      <p>We all want to get science done based on the DES data. However,
       no data is perfect, so we need to know what kinds of image artifacts are
       in our data because, ultimatively, all of them need  to be accounted for
       in one way or another. This application helps in two ways:</p>
       <ul>
-        <li>It gives a convenient visual impression of the actual DES data and
-        of the processing steps that are already in place to identify and
-        correct for or mask artifacts.</li>
+        <li>It gives you convenient access to the latest DES SV-A1 finalcut images
+        and shows the processing steps that are already in place to identify and
+        correct for known problems.</li>
         <li>It enables everyone to search for undetected artifacts. We gather your
         submissions, analyze them, and feed them back to the science working groups
         and DESDM. This way, we can train the processing pipelines on flaws, of
@@ -56,9 +65,8 @@
       <p>The code is on <a href="https://github.com/pmelchior/des-exp-checker">github</a>. Please open a new <a href="https://github.com/pmelchior/des-exp-checker/issues">Issue</a> to let us know what we could add, improve, ...</p>
       <p>If you find particular failure cases and you think they may constitute a new class of artifacts, please go to the <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Problem_classes_from_the_SV-A1_eyeball_website">DESDM users wiki</a>, where we list and discuss such cases.</p>
     </div>
-    <div class="span4">
-      <div id="basic_stats"></div>
-      <h4>Top 10 contributors</h4>
+    <div class="span4" style="float: right">
+      <h4>Top contributors</h4>
       <div id="leaderboard"></div>
     </div>
   </div>
@@ -154,7 +162,7 @@
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script>
   $(document).ready(function () {
-    $.get('ranking.php', {'limit': 10, 'output': 'html', 'short':true}, function(response) {
+    $.get('ranking.php', {'limit': 15, 'output': 'html', 'short':true}, function(response) {
       $('#leaderboard').html(response);
     });
   });
@@ -189,17 +197,11 @@
 </script>
 
 <script>      
-var radius1 = 100;
-var arc1 = d3.svg.arc()
-    .outerRadius(radius1)
-    .innerRadius(radius1 - 40);
-var pie = d3.layout.pie();
-
 d3.json("stats.php?total&today", function(error, response) {
   // checked chart: simply show the numbers as text
   var svg = d3.select("#basic_stats").append("svg")
-    .attr("width", radius1*2)
-    .attr("height", radius1*2);
+    .attr("width", 188)
+    .attr("height", 180);
     
   var g = svg.selectAll(".arc")
     .data([response.total])
@@ -208,6 +210,7 @@ d3.json("stats.php?total&today", function(error, response) {
     //.attr("transform", "translate(" + radius1 + ", 0)")
     .style("text-anchor", "start")
     .attr("dy", "55px")
+    .style("fill", "#333333")
     .style("font-size", "60px")
     .style("font-weight", "bold")
     .text(function(d) { return d.toString(); });
@@ -215,6 +218,7 @@ d3.json("stats.php?total&today", function(error, response) {
     //.attr("transform", "translate(" + radius1 + ", 0)")
     .style("text-anchor", "start")
     .attr("dy", "75px")
+    .style("fill", "#333333")
     .style("font-size", "14px")
     .text("images checked");
     

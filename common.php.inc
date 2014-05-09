@@ -83,9 +83,6 @@ function userClass($total_files) {
       return 4;
     if ($total_files / $config['images_per_fp'] >= 5)
       return 3;
-    if ($total_files == 257) {
-        return 3;
-    }
     if ($total_files / $config['images_per_fp'] >= 1)
       return 2;
     if ($total_files >= 10)

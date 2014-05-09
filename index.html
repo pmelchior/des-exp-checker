@@ -32,13 +32,13 @@
     <div class="hero-unit" id="des-hero">
     <div style="width: 700px">
     <h1>DES exposure checker</h1>
-    <p style="margin-top:10px">See how DES images actually look like. Discover flaws we would otherwise have missed. Make our data better.</p>
+    <p>See how DES images actually look like. Discover flaws we would otherwise have missed. Make our data better.</p>
     <p>
       <button class="btn btn-primary btn-large" id="open-login-button">Log in</button>
       <button class="btn btn-primary btn-large" id="open-signup-button">Sign up</button>
     </p>
     </div>
-    <div id="basic_stats" style="position: absolute; top: 36px; right:0px;"></div>
+    <div id="basic_stats" style="position: absolute; top: 30px; right:0px;"></div>
     </div>
     <div class="span8">
       <h4>What's this good for?</h4>
@@ -200,8 +200,8 @@
 d3.json("stats.php?total&today", function(error, response) {
   // checked chart: simply show the numbers as text
   var svg = d3.select("#basic_stats").append("svg")
-    .attr("width", 188)
-    .attr("height", 180);
+    .attr("width", 200)
+    .attr("height", 190);
     
   var g = svg.selectAll(".arc")
     .data([response.total])
@@ -209,7 +209,7 @@ d3.json("stats.php?total&today", function(error, response) {
   g.append("text")
     //.attr("transform", "translate(" + radius1 + ", 0)")
     .style("text-anchor", "start")
-    .attr("dy", "55px")
+    .attr("dy", "63px")
     .style("fill", "#333333")
     .style("font-size", "60px")
     .style("font-weight", "bold")
@@ -217,9 +217,10 @@ d3.json("stats.php?total&today", function(error, response) {
   g.append("text")
     //.attr("transform", "translate(" + radius1 + ", 0)")
     .style("text-anchor", "start")
-    .attr("dy", "75px")
+    .attr("dy", "91px")
     .style("fill", "#333333")
-    .style("font-size", "14px")
+    .style("font-size", "18px")
+    .style("font-weight", "200")
     .text("images checked");
     
   var g = svg.selectAll(".arc")
@@ -228,7 +229,7 @@ d3.json("stats.php?total&today", function(error, response) {
   g.append("text")
     //.attr("transform", "translate(" + radius1 + ", 0)")
     .style("text-anchor", "start")
-    .attr("dy", "148px")
+    .attr("dy", "156px")
     .style("fill", "#46a546")
     .style("font-size", "60px")
     .style("font-weight", "bold")
@@ -236,8 +237,9 @@ d3.json("stats.php?total&today", function(error, response) {
   g.append("text")
     //.attr("transform", "translate(" + radius1 + ", 0)")
     .style("text-anchor", "start")
-    .attr("dy", "168px")
-    .style("font-size", "14px")
+    .attr("dy", "184px")
+    .style("font-size", "18px")
+    .style("font-weight", "200")
     .style("fill", "#46a546")
     .text("today");
 });

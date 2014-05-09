@@ -109,7 +109,9 @@ function createVisualization(arr, opts) {
 function addMaskLayer(arr, opts) {
   webfits.loadImage('bpm', arr, 1024, 512);
   webfits.draw();
+  // after both image and mask are drawn: remove loading spinner
   $('#loading').addClass('hide');
+  $('#wicked-science-visualization').find('canvas').fadeTo(100, 1);
 }
 
 function renderImage(name) {
@@ -143,6 +145,7 @@ function userClass(uc) {
 function sendResponse() {
   // show spinner
   $('#loading').removeClass('hide');
+  $('#wicked-science-visualization').find('canvas').fadeTo(300, 0.05);
   // update counters
   var number = parseInt($('#total-files').html());
   number += 1;

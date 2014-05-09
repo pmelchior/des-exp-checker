@@ -34,8 +34,14 @@
       this.overlay.setAttribute('height', this.height);
       this.overlay.setAttribute('class', 'overlay');
       this.overlayCtx = this.overlay.getContext('2d');
+      this.report = document.createElement('canvas');
+      this.report.setAttribute('width', this.width);
+      this.report.setAttribute('height', this.height);
+      this.report.setAttribute('class', 'report');
+      this.reportCtx = this.report.getContext('2d');
       this.el.appendChild(this.canvas);
       this.el.appendChild(this.overlay);
+      this.el.appendChild(this.report);
       this.nImages = 0;
       if (!this.getContext()) {
         return null;
@@ -51,9 +57,12 @@
       parentStyle.position = 'relative';
       canvasStyle = this.canvas.style;
       overlayStyle = this.overlay.style;
+      reportStyle = this.report.style;
       canvasStyle.position = 'absolute';
       overlayStyle.position = 'absolute';
+      reportStyle.position = 'absolute';
       overlayStyle.pointerEvents = 'none';
+      reportStyle.pointerEvents = 'none';
     }
 
     BaseApi.prototype.setupControls = function(callbacks, opts) {

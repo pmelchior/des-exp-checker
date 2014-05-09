@@ -1,0 +1,66 @@
+      <div class="btn-group">
+        <button id="problem-button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><span id="problem-name">This is...</span>
+        <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+          <li class="dropdown-submenu">
+            <a tabindex="-1" href="#">Masking</a>
+            <ul class="dropdown-menu">
+              <li><a class="problem" tabindex="-1" href="#">Column mask</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Cosmic ray</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Mask dots</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Cross-talk</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Edge-bleed</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Excessive mask</a></li>
+            </ul>
+          </li>
+          <li class="dropdown-submenu">
+            <a tabindex="-1" href="#">Sky estimation</a>
+            <ul class="dropdown-menu">
+              <li><a class="problem" tabindex="-1" href="#">Dark corner/edge</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Dark halo</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Quilted sky</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Wavy sky</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Anti-bleed</a></li>
+            </ul>
+          </li>
+          <li class="dropdown-submenu">
+            <a tabindex="-1" href="#">Flat field</a>
+            <ul class="dropdown-menu">
+              <li><a class="problem" tabindex="-1" href="#">A/B jump</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Fringing</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Tape bump</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Tree rings</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Vertical jump</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Vertical stripes</a></li>
+            </ul>
+          </li>
+          <li class="dropdown-submenu">
+            <a tabindex="-1" href="#">Reflections</a>
+            <ul class="dropdown-menu">
+              <li><a class="problem" tabindex="-1" href="#">Scattered light</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Ghost</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Brush strokes</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Bright arc</a></li>
+            </ul>
+          </li>
+          <li class="dropdown-submenu">
+            <a tabindex="-1" href="#">Tracks</a>
+            <ul class="dropdown-menu">
+              <li><a class="problem" tabindex="-1" href="#">Satellite</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Airplane</a></li>
+            </ul>
+          </li><li class="dropdown-submenu">
+            <a tabindex="-1" href="#">Instrument/Site</a>
+            <ul class="dropdown-menu">
+              <li><a class="problem" tabindex="-1" href="#">Guiding</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Star trails</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Readout</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Haze</a></li>
+            </ul>
+          </li>
+          <li class="divider"></li>
+          <li><a tabindex="-1" class="problem" id="other-problem" href="#">Other...</a></li>
+          <li><a tabindex="-1" class="problem" id="other-problem" href="#">Awesome!</a></li>
+        </ul>
+      </div>

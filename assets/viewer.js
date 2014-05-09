@@ -3,22 +3,26 @@ var stretch = "arcsinh";
 var spinner;
 var marks = [];
 var problem = null;
-var initial_problem = null;
 var fileid = null;
 var problem_default = null;
+var has_reported_problems = false;
 
-function addMark(prob) {
-  var ctx = webfits.overlayCtx;
+function addMark(prob, ctx) {
+  var color = '#FFFF00';
+  if (ctx === undefined)
+    ctx = webfits.overlayCtx;
+  else
+    color = '#FF0000';
   ctx.beginPath();
-  ctx.arc(prob.x, prob.y, 50, 0, 2*Math.PI, true);
+  ctx.arc(prob.x, prob.y, 40, 0, 2*Math.PI, true);
   ctx.lineWidth=2;
-  ctx.strokeStyle='#FFFF00';
+  ctx.strokeStyle=color;
   ctx.stroke();
     
-  ctx.font = '12pt Arial';
+  ctx.font = '14px Helvetica';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#FFFF00';
+  ctx.fillStyle = color;
   ctx.fillText(prob.problem, prob.x, prob.y);
 }
 
@@ -41,9 +45,12 @@ function overlayCallback(_this, opts, evt) {
   }
 }
 
-function clearMarks() {
-  webfits.overlayCtx.clearRect(0,0,webfits.canvas.width, webfits.canvas.height);
-  marks = [];
+function clearMarks(ctx) {
+  if (ctx === undefined) {
+    ctx = webfits.overlayCtx;
+    marks = [];
+  }
+  ctx.clearRect(0,0,webfits.canvas.width, webfits.canvas.height);
 }
 
 function clearLastMark() {
@@ -83,14 +90,6 @@ function createVisualization(arr, opts) {
     webfits = new astro.WebFITS(el,width, height);
     // Add pan and zoom controls
     webfits.setupControls(callbacks, opts);
-            // Add marking of initial_problem if present
-    if (initial_problem !== null) {
-      addMark(initial_problem);
-      console.log(initial_problem);
-      //initial_problem = null;
-    }
-
-
   }
   
   // Load array representation of image
@@ -114,8 +113,6 @@ function addMaskLayer(arr, opts) {
 }
 
 function renderImage(name) {
-  if (marks.length)
-    clearMarks();
   var opts = {
     el: 'wicked-science-visualization'
   };
@@ -123,7 +120,7 @@ function renderImage(name) {
 }
 
 function setNextImage(response) {
-  fileid = response.rowid;
+  fileid = response.fileid;
   $('#image_name').html(response.expname + ', CCD ' + response.ccd + ", " + response.band + "-band");
   $('#share-url').val('http://' + window.location.host + window.location.pathname + '?expname=' + response.expname + '&ccd=' + response.ccd);
   $('#desdm-url').val('https://desar2.cosmology.illinois.edu/DESFiles/desardata/OPS/red/' + response.runname + '/red/' + response.expname + '/' + response.expname + '_' + response.ccd +'.fits.fz');
@@ -178,7 +175,6 @@ function sendResponse() {
   )
   .fail(function() {
     alert('Failure when saving response');
-    clearMarks();
   });
   
   // clear UI
@@ -186,6 +182,12 @@ function sendResponse() {
   $('#mark-buttons').addClass('hide');
   $('#problem-text').val('');
   $('#problem-name').html(problem_default);
+  if (marks.length)
+    clearMarks();
+  if (has_reported_problems) {
+    clearMarks(webfits.reportCtx);
+    has_reported_problems = false;
+  }
   problem = null;
 }
 

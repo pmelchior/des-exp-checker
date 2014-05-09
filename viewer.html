@@ -67,7 +67,7 @@
             <li><a tabindex="-1" href="#" id="share-button">Share <u>l</u>ink</a></li>
             <li><a tabindex="-1" href="#" id="desdm-button"><u>D</u>ownload image from DESDM</a></li>
             <li><a tabindex="-1" href="#" id="fov-button">Show entire <u>F</u>oV</a></li>
-            <li><a tabindex="-1" href="#" id="squad-button">Get eyeball squad <u>r</u>eport</a></li>
+            <li><a tabindex="-1" href="#" id="reported-button">Show reported <u>p</u>roblems</a></li>
           </ul>
         </div>
         <button class="btn btn-info" href="#" id="toggle-mask-button">Toggle <u>m</u>ask</button>
@@ -210,16 +210,7 @@
     $('#loading').append(spinner.el);
     $('#loading').removeClass('hide');
     // get first image data
-    var url_params = $.url().param();
-    if (url_params.problem !== undefined) {
-      initial_problem = {
-        x: url_params.x,
-        y: url_params.y,
-        problem: url_params.problem,
-        detail: null
-      };
-    }
-    $.get('db.php', url_params, function(data) {
+    $.get('db.php', $.url().param(), function(data) {
             var response = $.parseJSON(data);
             setNextImage(response);
           }
@@ -296,6 +287,32 @@
       }, 'json');
     $('#squad-modal').modal('show');
   });
+  $('#reported-button').on('click', function() {
+    var elem = $($(webfits.reportCtx)[0].canvas);
+    // if new file: get reported problems
+    if (has_reported_problems === false) {
+      $('#loading').removeClass('hide');
+      setTimeout(function() { // add a little timeout to give feedback to user
+      $.get('problems.php', {'fileid': fileid }, function(response) {
+          if (response) {
+            for (var i=0; i < response.length; i++) {
+              addMark(response[i], webfits.reportCtx);
+            }
+          }
+          $('#loading').addClass('hide');
+          has_reported_problems = true;
+          elem.css('display', 'block');
+        }, 'json');
+      }, 500);
+    }
+    // toggle visibility of the canvas with the reported problems
+    else {
+      if (elem.css('display') == 'block')
+        elem.css('display', 'none');
+      else
+        elem.css('display', 'block');
+    }
+  });
   $('#toggle-mask-button').on('click', function() {
     webfits.showMask = !webfits.showMask;
     webfits.draw();
@@ -370,6 +387,9 @@
   });
   jwerty.key('alt+r', function() {
     $('#squad-button').trigger('click');
+  });
+  jwerty.key('alt+p', function() {
+    $('#reported-button').trigger('click');
   });
 
   // Enter and Esc for special keybindings inside the problem modal  

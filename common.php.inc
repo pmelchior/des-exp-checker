@@ -19,9 +19,9 @@ function getDBHandle() {
 
 function getNextImage($dbh) {
     global $config;
-    $sql = 'SELECT '.$config['release'].'.rowid, '.$config['release'].'.expname, ccd, band, name, files.runs.runname FROM '.$config['release'].' JOIN files.runs ON ('.$config['release'].'.expname = files.runs.expname)';
+    $sql = 'SELECT '.$config['release'].'.rowid as fileid, '.$config['release'].'.expname, ccd, band, name, files.runs.runname FROM '.$config['release'].' JOIN files.runs ON ('.$config['release'].'.expname = files.runs.expname)';
     if (isset($_GET['expname']) && isset($_GET['ccd'])) {
-        $sql .= ' WHERE '.$config['release'].'.expname = ? AND ccd = ? LIMIT 1;';
+        $sql .= ' WHERE '.$config['release'].'.expname = ? AND ccd = ? LIMIT 1';
         $stmt = $dbh->prepare($sql);
         $stmt->bindParam(1, $_GET['expname'], PDO::PARAM_STR, 14);
         $stmt->bindParam(2, $_GET['ccd'], PDO::PARAM_INT);
@@ -29,7 +29,7 @@ function getNextImage($dbh) {
         return check_or_abort($stmt);
     }
     if (isset($_GET['problem'])) {
-        $sql .= ' JOIN qa ON ('.$config['release'].'.rowid = qa.fileid) WHERE qa.problem = ? ORDER BY RANDOM() LIMIT 1;';
+        $sql .= ' JOIN qa ON ('.$config['release'].'.rowid = qa.fileid) WHERE qa.problem = ? ORDER BY RANDOM() LIMIT 1';
         $stmt = $dbh->prepare($sql);
         $codes = getProblemCodes();
         $stmt->bindParam(1, $codes[$_GET['problem']], PDO::PARAM_INT);
@@ -38,6 +38,16 @@ function getNextImage($dbh) {
     }
     // default query
     return check_or_abort($dbh->query($sql.' ORDER BY RANDOM() LIMIT 1'));
+}
+
+function getProblems($dbh, $fileid) {
+    global $config;
+    $sql = 'SELECT problem, comment FROM qa WHERE release=? AND fileid=? AND problem != 0 AND problem >= -1';
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam(1, $config['release'], PDO::PARAM_STR, 4);
+    $stmt->bindParam(2, $fileid, PDO::PARAM_INT);
+    $stmt->execute();
+    return check_or_abort($stmt);
 }
 
 function getUIDFromSID($dbh) {
@@ -195,8 +205,8 @@ function getProblemCodes() {
       // Sky estimation
       "Dark corner/edge" => 61,
       "Dark halo" => 62,
-      "Boxy background" => 63,
-      "Wavy background" => 64,
+      "Quilted sky" => 63,
+      "Wavy sky" => 64,
       "Anti-bleed" => 65,
       
       "Other..." => 255,

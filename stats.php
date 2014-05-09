@@ -4,28 +4,32 @@ include "common.php.inc";
 $dbh = getDBHandle();
 
 $stats = array();
-// basic stats: how many total files, how many done
+// basic stats: how many files done
 if (isset($_GET['total'])) {
-    $stmt = $dbh->query('SELECT COUNT(1) from files.' . $config['release']);
-    $stats['total'] = $stmt->fetchColumn();
-    $stmt = $dbh->query('SELECT COUNT(DISTINCT(fileid)) from qa WHERE problem >= 0');
-    $stats['done'] = $stmt->fetchColumn();
+    $stmt = $dbh->query('SELECT COUNT(DISTINCT(fileid)) FROM qa');
+    $stats['total'] = intval($stmt->fetchColumn());
 }
-
+if (isset($_GET['today'])) {
+    $date = date('Y-m-d H:i:s', strtotime('-1 day'));
+    $stmt = $dbh->query("SELECT COUNT(DISTINCT(fileid)) FROM qa WHERE timestamp > '".$date."%'");
+    $stats['today'] = intval($stmt->fetchColumn());
+}
 if (isset($_GET['breakup'])) {
     // how many have problems
     $stmt = $dbh->prepare('SELECT COUNT(DISTINCT(fileid)), COUNT(fileid) from qa WHERE problem = ?');
     $codes = getProblemCodes();
     $problems = array();
+    $stats['checked'] = 0;
     foreach ($codes as $name => $code) {
         if ($code >= 0) {
             $stmt->bindParam(1, $code, PDO::PARAM_INT);
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_NUM);
+            $stats['checked'] += $row[0];
             if ($code == 0)
-                $stats['fine'] = $row[0];
+                $stats['fine'] = intval($row[0]);
             else
-                array_push($problems, array("name" => $name, "distinct" => $row[0], "all" => $row[1]));
+                array_push($problems, array("name" => $name, "distinct" => intval($row[0]), "all" => intval($row[1])));
         }
     }
     $stats['breakup'] = $problems;

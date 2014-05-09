@@ -120,8 +120,8 @@ function getUserData($dbh, $uid) {
 function getActivity($dbh, $uid, $date=FALSE) {
     $activity = array();
     if ($date === FALSE)
-        $date = date('Y-m-d');
-    $sql = "SELECT COUNT(DISTINCT(fileid)) as activity FROM qa WHERE userid=".$uid." AND timestamp LIKE '".$date."%'";
+        $date = date('Y-m-d H:i:s', strtotime('-1 day'));
+    $sql = "SELECT COUNT(DISTINCT(fileid)) as activity FROM qa WHERE userid=".$uid." AND timestamp > '".$date."%'";
     $res = check_or_abort($dbh->query($sql));
     $activity['today'] = array_pop($res->fetch(PDO::FETCH_NUM));
     $sql = "SELECT total_files FROM users WHERE rowid=".$uid;

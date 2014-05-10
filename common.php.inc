@@ -40,14 +40,28 @@ function getNextImage($dbh) {
     return check_or_abort($dbh->query($sql.' ORDER BY RANDOM() LIMIT 1'));
 }
 
-function getProblems($dbh, $fileid) {
+function getProblems($dbh, $fileid, $qa_id=NULL) {
     global $config;
-    $sql = 'SELECT problem, x, y, detail FROM qa WHERE release=? AND fileid=? AND problem != 0 AND problem >= -1';
+    $sql = 'SELECT problem, x, y, detail FROM qa WHERE release=? AND fileid=?';
+    if (isset($qa_id))
+        $sql .= ' AND rowid=?';
+    else 
+        $sql .= ' AND problem != 0 AND problem >= -1';
     $stmt = $dbh->prepare($sql);
     $stmt->bindParam(1, $config['release'], PDO::PARAM_STR, 4);
     $stmt->bindParam(2, $fileid, PDO::PARAM_INT);
+    if (isset($qa_id))
+        $stmt->bindParam(3, $qa_id, PDO::PARAM_INT);
     $stmt->execute();
-    return check_or_abort($stmt);
+    $res = check_or_abort($stmt);
+    $codes = getProblemCodes();
+    $problem_code = array_flip($codes);
+    $problems = array();
+    while($row = $res->fetch(PDO::FETCH_ASSOC)) {
+        $row['problem'] = $problem_code[$row['problem']];
+        array_push($problems, $row);
+    }
+    return $problems;
 }
 
 function getUIDFromSID($dbh) {

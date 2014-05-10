@@ -37,6 +37,9 @@ $res = getNextImage($dbh);
 $row = $res->fetch(PDO::FETCH_ASSOC);
 $row['name'] = "getImage.php?name=".$row['name'];
 
+// problem marks are requested
+if(isset($_GET['show_marks']) || isset($_GET['qa_id']))
+    $row['marks'] = getProblems($dbh, $row['fileid'], $_GET['qa_id']);
 
 if ($_POST) {
     // badge of honor:

@@ -80,7 +80,7 @@ function createVisualization(arr, opts) {
   var extent = dataunit.getExtent(arr);
   
   // Get the DOM element
-  var el = $('#' + opts.el).get(0);
+  var el = $('#wicked-science-visualization').get(0);
   
   var callbacks = {
     onclick: overlayCallback
@@ -109,25 +109,31 @@ function createVisualization(arr, opts) {
 function addMaskLayer(arr, opts) {
   webfits.loadImage('bpm', arr, 1024, 512);
   webfits.draw();
-  // after both image and mask are drawn: remove loading spinner
-  $('#loading').addClass('hide');
-  $('#wicked-science-visualization').find('canvas').fadeTo(100, 1);
+  completeVisualization(opts);
 }
 
-function renderImage(name) {
-  var opts = {
-    el: 'wicked-science-visualization'
-  };
-  var f = new astro.FITS.File(name, getImage, opts); 
-}
-
-function setNextImage(response) {
+// to be done once all elements of webfits are in place
+function completeVisualization(response) {
+    // add marks if present in response
+  if (response.marks !== undefined) {
+    for (var i=0; i < response.marks.length; i++) {
+      addMark(response.marks[i], webfits.reportCtx);
+    }
+    has_reported_problems = true;
+  }
+  // set file-dependent information
   fileid = response.fileid;
   $('#image_name').html(response.expname + ', CCD ' + response.ccd + ", " + response.band + "-band");
   $('#share-url').val('http://' + window.location.host + window.location.pathname + '?expname=' + response.expname + '&ccd=' + response.ccd);
   $('#desdm-url').val('https://desar2.cosmology.illinois.edu/DESFiles/desardata/OPS/red/' + response.runname + '/red/' + response.expname + '/' + response.expname + '_' + response.ccd +'.fits.fz');
   $('#fov-url').html('https://cosmology.illinois.edu/~mjohns44/SingleEpoch/pngs/' + response.runname + '/mosaics/' + response.expname + '_mosaic.png');
-  renderImage(response.name);
+  // after both image and mask are drawn: remove loading spinner
+  $('#loading').addClass('hide');
+  $('#wicked-science-visualization').find('canvas').fadeTo(200, 1);
+}
+
+function setNextImage(response) {
+  var f = new astro.FITS.File(response.name, getImage, response);
 }
 
 function userClass(uc) {
@@ -145,7 +151,7 @@ function userClass(uc) {
 function sendResponse() {
   // show spinner
   $('#loading').removeClass('hide');
-  $('#wicked-science-visualization').find('canvas').fadeTo(300, 0.05);
+  $('#wicked-science-visualization').find('canvas').fadeTo(400, 0.05);
   // update counters
   var number = parseInt($('#total-files').html());
   number += 1;

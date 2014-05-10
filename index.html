@@ -38,7 +38,7 @@
       <button class="btn btn-primary btn-large" id="open-signup-button">Sign up</button>
     </p>
     </div>
-    <div id="basic_stats" style="position: absolute; top: 30px; right:0px;"></div>
+    <div id="basic_stats" style="position: absolute; top: 30px; right:30px;"></div>
     </div>
     <div class="span8">
       <h4>What's this good for?</h4>
@@ -196,27 +196,28 @@
   });
 </script>
 
-<script>      
+<script>
+var width=200;
 d3.json("stats.php?total&today", function(error, response) {
   // checked chart: simply show the numbers as text
   var svg = d3.select("#basic_stats").append("svg")
-    .attr("width", 200)
+    .attr("width", width)
     .attr("height", 190);
     
   var g = svg.selectAll(".arc")
     .data([response.total])
     .enter().append("g");
   g.append("text")
-    //.attr("transform", "translate(" + radius1 + ", 0)")
-    .style("text-anchor", "start")
+    .attr("transform", "translate(" + width/2 + ", 0)")
+    .style("text-anchor", "middle")
     .attr("dy", "63px")
     .style("fill", "#333333")
     .style("font-size", "60px")
     .style("font-weight", "bold")
     .text(function(d) { return d.toString(); });
   g.append("text")
-    //.attr("transform", "translate(" + radius1 + ", 0)")
-    .style("text-anchor", "start")
+    .attr("transform", "translate(" + width/2 + ", 0)")
+    .style("text-anchor", "middle")
     .attr("dy", "91px")
     .style("fill", "#333333")
     .style("font-size", "18px")
@@ -227,16 +228,16 @@ d3.json("stats.php?total&today", function(error, response) {
     .data([response.today])
     .enter().append("g");
   g.append("text")
-    //.attr("transform", "translate(" + radius1 + ", 0)")
-    .style("text-anchor", "start")
+    .attr("transform", "translate(" + width/2 + ", 0)")
+    .style("text-anchor", "middle")
     .attr("dy", "156px")
     .style("fill", "#46a546")
     .style("font-size", "60px")
     .style("font-weight", "bold")
     .text(function(d) { return d.toString(); });
   g.append("text")
-    //.attr("transform", "translate(" + radius1 + ", 0)")
-    .style("text-anchor", "start")
+    .attr("transform", "translate(" + width/2 + ", 0)")
+    .style("text-anchor", "middle")
     .attr("dy", "184px")
     .style("font-size", "18px")
     .style("font-weight", "200")

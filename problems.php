@@ -8,14 +8,9 @@ if (isset($_GET['fileid'])) {
     $res = getProblems($dbh, $_GET['fileid']);
     $codes = getProblemCodes();
     $problem_code = array_flip($codes);
-
     while($row = $res->fetch(PDO::FETCH_ASSOC)) {
-        
-        $formatted = array('problem' => $problem_code[$row['problem']]);
-        $detail = json_decode($row['comment'], true);
-        foreach ($detail as $k => $v)
-            $formatted[$k] = $v;
-        array_push($problems, $formatted);
+        $row['problem'] = $problem_code[$row['problem']];
+        array_push($problems, $row);
     }
     echo json_encode($problems);
 }

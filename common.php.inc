@@ -42,7 +42,7 @@ function getNextImage($dbh) {
 
 function getProblems($dbh, $fileid) {
     global $config;
-    $sql = 'SELECT problem, comment FROM qa WHERE release=? AND fileid=? AND problem != 0 AND problem >= -1';
+    $sql = 'SELECT problem, x, y, detail FROM qa WHERE release=? AND fileid=? AND problem != 0 AND problem >= -1';
     $stmt = $dbh->prepare($sql);
     $stmt->bindParam(1, $config['release'], PDO::PARAM_STR, 4);
     $stmt->bindParam(2, $fileid, PDO::PARAM_INT);
@@ -200,7 +200,7 @@ function getProblemCodes() {
       "Edge-bleed" => 56,
       
       // Sky estimation
-      "Dark corner/edge" => 61,
+      "Dark rim" => 61,
       "Dark halo" => 62,
       "Quilted sky" => 63,
       "Wavy sky" => 64,

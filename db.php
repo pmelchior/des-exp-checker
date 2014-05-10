@@ -8,24 +8,23 @@ if ($_POST) {
     $uid = getUIDFromSID($dbh);
     if ($uid) {
         // parse POST data and store each element in table qa
-        $sth = $dbh->prepare('INSERT INTO qa (release, fileid, userid, problem, comment) VALUES (?, ?, ?, ?, ?)');
+        $sth = $dbh->prepare('INSERT INTO qa (release, fileid, userid, problem, x, y, detail) VALUES (?, ?, ?, ?, ?, ?, ?)');
         if (isset($_POST['problems'])) {
             $codes = getProblemCodes();
             foreach ($_POST['problems'] as $problem) {
                 $code = $codes[$problem['problem']];
                 $problem['x'] = (int) $problem['x'];
                 $problem['y'] = (int) $problem['y'];
-                unset($problem['problem']);
                 if ($problem['detail'] == '')
-                    unset($problem['detail']);
+                   $problem['detail'] = null;
                 // stores x,y, and (occasionally a free-form comment)
-                $sth->execute(array($config['release'], $_POST['fileid'], $uid, $code, json_encode($problem)));
+                $sth->execute(array($config['release'], $_POST['fileid'], $uid, $code, $problem['x'], $problem['y'], $problem['detail']));
             }
             // update attached user database to reflect user action
             $sth2 = $dbh->prepare('UPDATE users SET total_files = total_files + 1, flagged_files = flagged_files + 1 WHERE rowid = ?');
             $sth2->execute(array($uid));
         } else {
-            $sth->execute(array($config['release'], $_POST['fileid'], $uid, 0, null));
+            $sth->execute(array($config['release'], $_POST['fileid'], $uid, 0, null, null, null));
             $sth2 = $dbh->prepare('UPDATE users SET total_files = total_files + 1 WHERE rowid = ?');
             $sth2->execute(array($uid));
         }

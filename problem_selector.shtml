@@ -17,7 +17,7 @@
           <li class="dropdown-submenu">
             <a tabindex="-1" href="#">Sky estimation</a>
             <ul class="dropdown-menu">
-              <li><a class="problem" tabindex="-1" href="#">Dark corner/edge</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Dark rim</a></li>
               <li><a class="problem" tabindex="-1" href="#">Dark halo</a></li>
               <li><a class="problem" tabindex="-1" href="#">Quilted sky</a></li>
               <li><a class="problem" tabindex="-1" href="#">Wavy sky</a></li>

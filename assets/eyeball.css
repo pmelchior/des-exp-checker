@@ -15,4 +15,4 @@ body,html { height: 100%; }
 .imagenamecol {min-width: 180px;}
 .timecol {width: 134px;}
 .modal {top: 60px; }
-#des-hero {position: relative; padding: 30px 60px; border: 1px solid #ddd; margin-top: -30px; z-index: -1}
+#des-hero {position: relative; padding: 30px 60px; border: 1px solid #ddd; border-top: 0px; margin-top: -20px; }

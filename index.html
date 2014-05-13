@@ -173,14 +173,17 @@
   function checkSessionCookie() {
     return ($.cookie('sid') != null);    
   }
-  $('#open-login-button').on('click', function() {
+  $('#open-login-button').on('click', function(evt) {
+    console.log("clicked");
       if (checkSessionCookie())
         window.location.href = "viewer.html";
       else
         $('#logIn').modal('show');
+      evt.preventDefault();
   });
-  $('#open-signup-button').on('click', function() {
+  $('#open-signup-button').on('click', function(evt) {
     $('#signUp').modal('show');
+    evt.preventDefault();
   });
   $('#signup-name').on('input', function(evt) {
     var name = $(evt.target).val();

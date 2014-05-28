@@ -32,14 +32,32 @@
     <!-- content area -->
     <div class="span7">
       <h1>Tutorial</h1>
-      <p>The <a href="viewer.html">Viewer</a> automatically pulls an image,
-      which you should inspect and determine if it's fine. If so, simply press "Next". If not, select one of the
-      predefined artifacts from the "Hold on, that's..." button. Once you're done marking the problems, click "Next".
+      <p>The <a href="viewer.html">Viewer</a> displays an image from a single DECam CCD for you to inspect.
+      If there are no obvious issues with the image, simply press "Next". 
+      If not, click the "This is..." button and select one of the predefined artifacts. 
+      Click on the location of the artifact to mark it on the image.
+      Once you are done marking artifacts, click "Next".
       </p>
       <button id="fine-button" class="btn btn-success">Next</button>
       <!--#include file="problem_selector.shtml"-->
     </div>
     
+    <div class="span7">
+      <a id="masking-anchor"></a>
+      <h2>Masking</h2>
+    </div>
+
+    <div class="span7">
+      <a id="column-mask-anchor"></a>
+      <h3>Column Mask</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
     <div class="span7">
       <a id="cosmic-ray-anchor"></a>
       <h3>Cosmic rays</h3>
@@ -47,11 +65,11 @@
       problem is not that they are there. It's when they are not properly masked.
       The good thing about them: they are easy to spot.</p>
       <p>
-        <button class="btn btn-info">Toggle <u>m</u>ask</button>
-        <button class="btn btn-info">Toggle <u>s</u>caling</button>
+	<button class="btn btn-info">Toggle <u>m</u>ask</button>
+	<button class="btn btn-info">Toggle <u>s</u>caling</button>
       </p>
       <p>
-      Use the buttons showns above to switch to a scaling that focusses on the bright
+      Use the buttons showns above to switch to a scaling that focuses on the bright
       aspects of the image and to blink the mask, and the cosmic rays
       will become very apparent.
       </p>
@@ -64,29 +82,22 @@
     </div>
     <div class="span4 offset1">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
-        <small>Partially masked cosmic ray (center)</small>
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Partially masked cosmic ray (center)</small>
       </p>
     </div>
-    
+
     <div class="span7">
-      <a id="ghost-anchor"></a>
-      <h3>Ghosts</h3>
-      <p>Ghost are reflections of the optics, basically an undesired additional path
-      from the outside of the telescope to CCD. They occur all the time,
-      but only show up if a bright object provides enough illumination for this
-      extra optical path. Then, often very large areas (from parts of a chip to the
-      entire focal plane) show ring-like features, which are brighter or fainter than the
-      surrounding sky. Whether ghosts are of concern depends strongly on the kind
-      of science analysis you're after. In either case, we need to know where they are.
+      <a id="mask-dots-anchor"></a>
+      <h3>Mask Dots</h3>
     </div>
     <div class="span4 offset1">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00158404&ccd=19" title="Click to view the original image"><img src="tutorial/ghost.png" /></a>
-        <small>Factor 2 zoom-out of a pupil ghost next to a bright star.</small>
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
       </p>
     </div>
-    
+
     <div class="span7">
       <a id="cross-talk-anchor"></a>
       <h3>Cross-talk</h3>
@@ -108,26 +119,288 @@
         <small>Cross-talk from the bright star in the bottom onto the top amplifier.</small>
       </p>
     </div>
+
+    <div class="span7">
+      <a id="edge-bleed-anchor"></a>
+      <h3>Edge-bleed</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="excessive-mask-anchor"></a>
+      <h3>Excessive mask</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <h2>Sky Estimation</h2>
+    </div>
+
+    <div class="span7">
+      <a id="dark-rim-anchor"></a>
+      <h3>Dark rim</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="dark-halo-anchor"></a>
+      <h3>Dark halo</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="Quilted-sky-anchor"></a>
+      <h3>Quilted sky</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="wavy-sky-anchor"></a>
+      <h3>Wavy sky</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="anti-bleed-anchor"></a>
+      <h3>Anti-bleed</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
+
+    <div class="span7">
+      <h2>Flat Field</h2>
+    </div>
+
+    <div class="span7">
+      <a id="ab-jump-anchor"></a>
+      <h3>A/B jump</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="fringing-anchor"></a>
+      <h3>Fringing</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="tape-bump-anchor"></a>
+      <h3>Tape bump</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="tree-rings-anchor"></a>
+      <h3>Tree rings</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="vertical-jump-anchor"></a>
+      <h3>Vertical jump</h3>
+      <p>
+        The vertical jump arises from the incorporation of a few bad flats into the calibration sets.
+        These flats contain a strong gradient caused by the shutter failing to close during readout.
+        Due to the clipping algorithm when combining multiple flats, this results in a vertical "jump" near the center of flat-fielded images.
+        More information on the vertical jump feature can be found <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Central_Bias_Jump">here</a>.
+      </p>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="vertical-stripes-anchor"></a>
+      <h3>Vertical stripes</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
+
+    <div class="span7">
+      <h2>Reflections</h2>
+    </div>
+
+    <div class="span7">
+      <a id="scattered-light-anchor"></a>
+      <h3>Scattered light</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="ghost-anchor"></a>
+      <h3>Ghosts</h3>
+      <p>Ghost are reflections off the internal camera optics. 
+        They dominantly appear when a bright object is in the field of view and often occupy very large areas (from parts of a chip to the entire focal plane).
+        Small ghosts can be identified on a single chip by their characteristic "tie-fighter window" pattern; however, often it is helpful to look at images of the full focal play.
+        More information on ghosts can be found <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Ghosts">here</a>.
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00158404&ccd=19" title="Click to view the original image"><img src="tutorial/ghost.png" /></a>
+        <small>Factor 2 zoom-out of a pupil ghost next to a bright star.</small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="brush-strokes-anchor"></a>
+      <h3>Brush strokes</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="bright-arc-anchor"></a>
+      <h3>Bright arc</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
     
     <div class="span7">
+      <h2>Tracks</h2>
+    </div>
+
+    <div class="span7">
       <a id="satellite-anchor"></a>
-      <h3>Satellite</h3>
-      <p>Satellite, planes, orbital stages of rockets, and other reflecting bodies
-      are expected to cross our focal plane several times per hour.
-      They create long streaks on the images, much longer and wider than cosmic rays. Since they are so
+      <h3>Satellites</h3>
+      <p>Satellite, orbital stages of rockets, and other reflecting bodies
+      often cross our focal plane.
+      They create long, unsaturated streaks on the images, much longer and wider than cosmic rays. Since they are so
       large, you can mark the track whereever you want. Sometimes, however, 
-      the tracks are broken into segments (remember: planes have blinking lights,
-      <a href="http://www.satobs.org/tumble/tumbleintro.html">rocket parts may tumble</a>),
+      the tracks are broken into segments (remember: <a href="http://www.satobs.org/tumble/tumbleintro.html">rocket parts may tumble</a>),
       in which case we'd like to have marks on each of the segments.
       </p>
     </div>
     <div class="span4 offset1">
       <p class="img-polaroid">
         <a href="viewer.html?expname=DECam_00170663&ccd=10" title="Click to view the original image"><img src="tutorial/satellite.png" /></a>
-        <small>Satellite or plane track</small>
+        <small>Satellite streak</small>
       </p>
     </div>
-      
+
+    <div class="span7">
+      <a id="airplane-anchor"></a>
+      <h3>Airplanes</h3>
+      <p> Unfortunately, CTIO lies along a regional Chilean airline flight path. 
+        We expect that roughly 15 planes will cross the DECam focal plane per season. 
+        Planes have a much larger impact that satellites, often destroying the sky background estimation.
+        When lights on a airplane blink, they appear as out-of-focus donuts (and can be used to determine the height of the plane...).
+        Slightly more information on airplanes can be found <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Airplanes">here</a>.
+      </p>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>An airplane trail</small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <h2>Instrument/Telescope</h2>
+    </div>
+
+    <div class="span7">
+      <a id="guiding-anchor"></a>
+      <h3>Guiding</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="star-trails-anchor"></a>
+      <h3>Star trails</h3>
+      <p> Star bleeds are often symptomatic of the camera being readout with the shutter still open.
+        Star bleeds caused by shutter errors can be identified by looking at the full focal plane image, where the direction of the star bleeds will change between the top and bottom of the focal plane (due to a switch in the readout direction).
+        Shutter errors should be solved in Year 2.
+      </p>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
     <div class="span7">
       <a id="readout-anchor"></a>
       <h3>Readout</h3>
@@ -142,6 +415,18 @@
         <small>Unmasked readout glitch (top). In addition, there is also a cosmic ray hit and a fainter cross-talk.</small>
       </p>
     </div>
+
+    <div class="span7">
+      <a id="haze-anchor"></a>
+      <h3>Haze</h3>
+    </div>
+    <div class="span4 offset1">
+      <p class="img-polaroid">
+	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
+	<small>Description</small>
+      </p>
+    </div>
+
     
     <!--div class="span7">
       <a name="failure"></a>

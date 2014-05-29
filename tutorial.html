@@ -72,7 +72,7 @@
 	<button class="btn btn-info">Toggle <u>s</u>caling</button>
       </p>
       <p>
-      Use the buttons showns above to switch to a scaling that focuses on the bright aspects of the image and to blink the mask, and the cosmic rays will become very apparent.
+      Use the buttons shown above to switch to a scaling that focuses on the bright aspects of the image and to blink the mask, and the cosmic rays will become very apparent.
       </p>
       <p>It's perfectly fine to mark multiple cosmic rays per image
       (including those that are only partially masked) or
@@ -179,7 +179,8 @@
     <div class="span7">
       <a id="dark-halo-anchor"></a>
       <h3>Dark halo</h3>
-      <p> We don't understand this yet...
+      <p> Dark halos occasionally appear surrounding bright objects. 
+        This results from the sky background being over-estimated close to these objects.
       </p>
     </div>
     <div class="span4 offset1">
@@ -192,7 +193,11 @@
     <div class="span7">
       <a id="Quilted-sky-anchor"></a>
       <h3>Quilted sky</h3>
-      <p> We don't understand this yet...
+      <p> Occasionally images show strong rectilinear patches of high and low intensity.
+        Each patch is roughly 512x512 pixels in size, and in the worst cases a CCD will appear as a 4x8 quilt of these patches.
+        This artifact appears strongest near the sides of the image, and sometimes the only visible feature will be a single vertical line inset by roughly 1/8th of a CCD length.
+        This patterning appears in the reduced image itself and is not strictly an artifact of the sky background estimation.
+        We don't understand the root cause of this artifact yet...
       </p>
     </div>
     <div class="span4 offset1">
@@ -218,13 +223,16 @@
     <div class="span7">
       <a id="anti-bleed-anchor"></a>
       <h3>Anti-bleed</h3>
-      <p> We don't understand this yet...
+      <p> Dark anti-bleeds are vertical streaks extending towards the near edge of a chip from bright stars.
+        They have a width roughly comparable to the masked region of the star.
+        They appear in the reduced images themselves and are thus not purely an artifact of the sky background subtraction.
+        We don't understand the root cause of these this yet...
       </p>
     </div>
     <div class="span4 offset1">
       <p class="img-polaroid">
 	<a href="viewer.html?expname=DECam_00169331&ccd=55" title="Click to view the original image"><img src="tutorial/anti_bleed.png" /></a>
-	<small>Dark anti-bleed around two bright stars</small>
+	<small>Dark anti-bleed around bright stars</small>
       </p>
     </div>
 
@@ -238,7 +246,7 @@
       <h3>A/B jump</h3>
       <p> The top and bottom halves of the DECam CCDs are read out by two different amplifiers.
         The gains on these amplifiers are different leading to a different background level on the two halves of each CCD.
-        This should be corrected for in flat fielding; however, a failure can lead to a strong change in the background level at the horizontal midplane of the CCDs.
+        This should be corrected for in flat fielding; however, a failure can lead to a strong change in the background level at the horizontal mid-plane of the CCDs.
         This is most pronounced with the low-light-level non-linearity of CCD 31.
       </p>
     </div>
@@ -282,7 +290,7 @@
     <div class="span7">
       <a id="tree-rings-anchor"></a>
       <h3>Tree rings</h3>
-      <p> Tree rings are concentric, circularly symmetric features arising changes in the effective pixel size resultin from transverse electric fields in the CCDs.
+      <p> Tree rings are concentric, circularly symmetric features arising changes in the effective pixel size resulting from transverse electric fields in the CCDs.
         Tree rings originate from variations in the doping impurities during single-crystal silicon growth.
         Thus, the tree ring pattern of each CCD will depend on its relative position in the silicon wafer.
         Tree rings appear most strongly in the z-band.
@@ -403,7 +411,7 @@
       <p>Satellite, orbital stages of rockets, and other reflecting bodies
       often cross our focal plane.
       They create long, unsaturated streaks on the images, much longer and wider than cosmic rays. Since they are so
-      large, you can mark the track whereever you want. Sometimes, however, 
+      large, you can mark the track wherever you want. Sometimes, however, 
       the tracks are broken into segments (remember: <a href="http://www.satobs.org/tumble/tumbleintro.html">rocket parts may tumble</a>),
       in which case we'd like to have marks on each of the segments.
       </p>
@@ -533,7 +541,7 @@
     <div class="span7">
       <a name="awesome-anchor"></a>
       <h3>Awesome!</h3>
-      <p>Rarely, you'll come across a truely phenomenal sight, maybe of a bunch of interacting galaxies
+      <p>Rarely, you'll come across a truly phenomenal sight, maybe of a bunch of interacting galaxies
       or of a comet, a star cluster, etc. Please do report these objects by selecting "Awesome!" from the drop-down,
       then describe what you see and click on the object. We collect these objects, and present the most fabulous ones
       in our <a href="gallery.html">Gallery</a>.</p>
@@ -550,7 +558,7 @@
     
     <div class="span12">
     <h3>Can I help?</h3>
-    Certainly. If you think you found a new class of artifacts, let us know. If you know where these artefacts come from, let us know. How? Go to <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Problem_classes_from_the_SV-A1_eyeball_website">the redmine wiki</a>, where we list and discuss such cases.
+    Certainly. If you think you found a new class of artifacts, let us know. If you know where these artifacts come from, let us know. How? Go to <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Problem_classes_from_the_SV-A1_eyeball_website">the redmine wiki</a>, where we list and discuss such cases.
   </div>
   <div id="push"></div>
   </div>

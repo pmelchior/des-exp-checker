@@ -179,7 +179,8 @@
     <div class="span7">
       <a id="dark-halo-anchor"></a>
       <h3>Dark halo</h3>
-      <p> We don't understand this yet...
+      <p> Dark halos occasionally appear surrounding bright objects. 
+        This results from the sky background being over-estimated close to these objects.
       </p>
     </div>
     <div class="span4 offset1">
@@ -192,7 +193,11 @@
     <div class="span7">
       <a id="Quilted-sky-anchor"></a>
       <h3>Quilted sky</h3>
-      <p> We don't understand this yet...
+      <p> Occasionally images show strong rectilinear patches of high and low intensity.
+        Each patch is roughly 512x512 pixels in size, and in the worst cases a CCD will appear as a 4x8 quilt of these patches.
+        This artifact appears strongest near the sides of the image, and sometimes the only visible feature will be a single vertical line inset by roughly 1/8th of a CCD length.
+        This patterning appears in the reduced image itself and is not strictly an artifact of the sky background estimation.
+        We don't understand the root cause of this artifact yet...
       </p>
     </div>
     <div class="span4 offset1">
@@ -218,13 +223,16 @@
     <div class="span7">
       <a id="anti-bleed-anchor"></a>
       <h3>Anti-bleed</h3>
-      <p> We don't understand this yet...
+      <p> Dark anti-bleeds are vertical streaks extending towards the near edge of a chip from bright stars.
+        They have a width roughly comparable to the masked region of the star.
+        They appear in the reduced images themselves and are thus not purely an artifact of the sky background subtraction.
+        We don't understand the root cause of these this yet...
       </p>
     </div>
     <div class="span4 offset1">
       <p class="img-polaroid">
 	<a href="viewer.html?expname=DECam_00169331&ccd=55" title="Click to view the original image"><img src="tutorial/anti_bleed.png" /></a>
-	<small>Dark anti-bleed around two bright stars</small>
+	<small>Dark anti-bleed around bright stars</small>
       </p>
     </div>
 
@@ -550,7 +558,7 @@
     
     <div class="span12">
     <h3>Can I help?</h3>
-    Certainly. If you think you found a new class of artifacts, let us know. If you know where these artefacts come from, let us know. How? Go to <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Problem_classes_from_the_SV-A1_eyeball_website">the redmine wiki</a>, where we list and discuss such cases.
+    Certainly. If you think you found a new class of artifacts, let us know. If you know where these artifacts come from, let us know. How? Go to <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Problem_classes_from_the_SV-A1_eyeball_website">the redmine wiki</a>, where we list and discuss such cases.
   </div>
   <div id="push"></div>
   </div>

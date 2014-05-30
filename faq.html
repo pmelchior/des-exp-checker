@@ -34,8 +34,9 @@
     <div class="span12">
       <h1>FAQ</h1>
       <p>Things can get confusing sometimes, problems do no appear to fit into any given category, etc.
+<<<<<<< HEAD
         We try to answer a couple of re-ocurring questions here and additional questions can be found on the redmine forum <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Problem_classes_from_the_SV-A1_eyeball_website">here</a>.
-        If you have a question that may be of broader interest to the community, post it on the redmine forum or email it directly to the <a href="mailto:DES%20exposure%20checker?subject=%5Bdes-exposure-checker%5D%20FAQ">exposure checker</a>. 
+        If you have a question that may be of broader interest to the community, post it on the redmine forum or email it directly to the <a href="#" id="email-anchor">DES exposure checker folks</a>. 
         For technical requests (bugs or improvements to the website), open a <a href="https://github.com/pmelchior/des-exp-checker/issues">github issue</a>.
       </p>       
     </div>
@@ -64,10 +65,8 @@
 <script>
   // initial setup
   $(document).ready(function(){
-    // connect problem selector to anchor in page
-    $('a[class*="problem"]').on('click', function(evt) {
-      var problem = evt.target.innerHTML;
-      window.open('api.php?problem=' + encodeURI(problem));
+    $.get('email.php', function(response) {
+      $('#email-anchor').attr('href', 'mailto:' + response);
     });
   });
 </script>

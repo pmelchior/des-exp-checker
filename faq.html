@@ -34,13 +34,22 @@
     <div class="span12">
       <h1>FAQ</h1>
       <p>Things can get confusing sometimes, problems do no appear to fit into any given category, etc.
-      We try to answer a couple of re-ocurring questions here. If you have such a question, contact
-      the eyeball checker; for technical requests (bugs or improvements to the website),
-      open a <a href="https://github.com/pmelchior/des-exp-checker/issues">github issue</a>.
-      </p>
-      
-      
+        We try to answer a couple of re-ocurring questions here and additional questions can be found on the redmine forum <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Problem_classes_from_the_SV-A1_eyeball_website">here</a>.
+        If you have a question that may be of broader interest to the community, post it on the redmine forum or email it directly to the <a href="mailto:DES%20exposure%20checker?subject=%5Bdes-exposure-checker%5D%20FAQ">exposure checker</a>. 
+        For technical requests (bugs or improvements to the website), open a <a href="https://github.com/pmelchior/des-exp-checker/issues">github issue</a>.
+      </p>       
     </div>
+    <div class="span12">
+      <a id="mask-dots-anchor"></a>
+      <h4>What are those dots in the column masks?</h4>
+      <p> Very hot pixels will overflow into downstream pixels during readout creatig a "bad column".
+        Additionally, cross talk creates hot pixels spaced every 60 pixels upstream (towards the readout side) of the hot pixels. 
+        This appears as a dotted mask upstream of a truncated bad column mask.
+        These dots are not actually a problem class.
+        For some more details see <a href="http://des-docdb.fnal.gov:8080/cgi-bin/ShowDocument?docid=6989">here</a>.
+      </p>
+    </div>
+
   </div>
   <div id="push"></div>
   </div>

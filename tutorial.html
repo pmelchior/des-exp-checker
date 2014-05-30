@@ -35,7 +35,7 @@
       <h1>Tutorial</h1>
       <p>The <a href="viewer.html">Viewer</a> displays an image from a single DECam CCD for you to inspect.
       If there are no obvious issues with the image, simply press "Next". 
-      If not, click the "This is..." button and select one of the predefined artifacts. 
+      If not, click the "That's a..." button and select one of the predefined artifacts. 
       Click on the location of the artifact to mark it on the image.
       Once you are done marking artifacts, click "Next".
       </p>
@@ -90,24 +90,6 @@
     </div>
 
     <div class="span7">
-      <a id="mask-dots-anchor"></a>
-      <h3>Mask Dots</h3>
-      <b> I would remove this as a problem class (maybe add to an FAQ).</b>
-      <p> Very hot pixels will overflow into downstream pixels during readout creating a "bad column".
-        Additionally, cross talk creates hot pixels spaced every 60 pixels upstream (towards the readout side) of the hot pixels. 
-        This appears as a dotted mask upstream of a truncated bad column mask.
-        These dots are not actually a problem class.
-        For some more details see <a href="http://des-docdb.fnal.gov:8080/cgi-bin/ShowDocument?docid=6989">here</a>.
-      </p>
-    </div>
-    <div class="span4 offset1">
-      <p class="img-polaroid">
-	<a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
-	<small>Description</small>
-      </p>
-    </div>
-
-    <div class="span7">
       <a id="cross-talk-anchor"></a>
       <h3>Cross-talk</h3>
       <p>Cross-talk is a readout issue, which occurs in the electronics.
@@ -147,14 +129,15 @@
     <div class="span7">
       <a id="excessive-mask-anchor"></a>
       <h3>Excessive mask</h3>
-      <b> I would remove this class. </b>
-      <p> We don't understand this yet...
+      <p> Occasionally large regions of a CCD get masked for no apparent reason.
+        Sometimes this is a failure in edge-bleed masking, other times the cause is uncertain.
+        Flag excessive masks when you see them.
       </p>
     </div>
     <div class="span4 offset1">
       <p class="img-polaroid">
-	<a href="viewer.html?expname=DECam_00147574&ccd=42" title="Click to view the original image"><img src="tutorial/excessive_mask.png" /></a>
-	<small>Description</small>
+	<a href="viewer.html?expname=DECam_00170637&ccd=16" title="Click to view the original image"><img src="tutorial/excessive_mask.png" /></a>
+	<small>Excessive masking caused by edge-bleed failure.</small>
       </p>
     </div>
 
@@ -194,11 +177,9 @@
     <div class="span7">
       <a id="Quilted-sky-anchor"></a>
       <h3>Quilted sky</h3>
-      <p> Occasionally images show strong rectilinear patches of high and low intensity.
-        Each patch is roughly 512x512 pixels in size, and in the worst cases a CCD will appear as a 4x8 quilt of these patches.
-        This artifact appears strongest near the sides of the image, and sometimes the only visible feature will be a single vertical line inset by roughly 1/8th of a CCD length.
-        This patterning appears in the reduced image itself and is not strictly an artifact of the sky background estimation.
-        We don't understand the root cause of this artifact yet...
+      <p> Occasionally images show strong rectilinear patterning, and in the worst cases a CCD will appear as a 4x8 quilt of light and dark regions.
+        This quilting is introduced by a mismatch in the normalization factor between the pupil and illumination correction (both of which are calculated in 512 pixel blocks).
+        This artifact often appears strongest near the sides of the CCD, and can manifest itself as a single vertical line inset by roughly 1/8th of a CCD length.
       </p>
     </div>
     <div class="span4 offset1">
@@ -211,7 +192,9 @@
     <div class="span7">
       <a id="wavy-sky-anchor"></a>
       <h3>Wavy sky</h3>
-      <p> We don't understand this very well...
+      <p> Wavy sky appears as large-scale structures contributing a high-level of sky background.
+        These features are often correlated over the entire focal plane and can occur for several exposures in a row (they may be the result of poor observing conditions).
+        We don't understand the root cause of this this yet...
       </p>
     </div>
     <div class="span4 offset1">
@@ -224,10 +207,10 @@
     <div class="span7">
       <a id="anti-bleed-anchor"></a>
       <h3>Anti-bleed</h3>
-      <p> Dark anti-bleeds are vertical streaks extending towards the near edge of a chip from bright stars.
+      <p> Anti-bleeds are dark streaks extending vertical from bright stars towards the long edges of the CCD.
         They have a width roughly comparable to the masked region of the star.
         They appear in the reduced images themselves and are thus not purely an artifact of the sky background subtraction.
-        We don't understand the root cause of these this yet...
+        We don't understand the root cause of this this yet...
       </p>
     </div>
     <div class="span4 offset1">
@@ -261,8 +244,9 @@
     <div class="span7">
       <a id="fringing-anchor"></a>
       <h3>Fringing</h3>
-      <p> Fringes are known to be variable (relative to the rest of sky brightness) and the pipeline does not currently deal with them too well.
-        Most common in the z-band.
+      <p> Fringes are an interference pattern that occur at red wavelengths when the CCDs become transparent (think of the fringes on the surface of an oily puddle). 
+        Fringes are known to be variable (relative to the rest of sky brightness) and the pipeline does not currently deal with them too well.
+        They occur most commonly in the z-band.
       </p>
     </div>
     <div class="span4 offset1">
@@ -325,7 +309,9 @@
     <div class="span7">
       <a id="vertical-stripes-anchor"></a>
       <h3>Vertical stripes</h3>
-      <p> We don't understand this yet...
+      <p> Some images contain a grainy vertical striping.
+        Sometimes, this striping can be so bad that the image gets excessively masked.
+        We don't understand the root cause of these yet...        
       </p>
     </div>
     <div class="span4 offset1">
@@ -341,9 +327,8 @@
     </div>
 
     <div class="span7">
-      <a id="scattered-light-anchor"></a>
-      <h3>Scattered light</h3>
-      <b> I would change this to "Bright Spray"</b> 
+      <a id="bright-spray-anchor"></a>
+      <h3>Bright Spray</h3>
       <p> The worst scattered light features come bright off-axis stars scattering off of the wall of the shutter.
         This leads to broad bright sprays fanning out from the edge of the focal plane.
         These features can be most easily identified on the full focal plane images.
@@ -376,7 +361,9 @@
     <div class="span7">
       <a id="brush-strokes-anchor"></a>
       <h3>Brush strokes</h3>
-      <p> We don't understand this yet...
+      <p> In addition to Bright Sprays, less intense scattered light features appear on smaller scales.
+        These have been termed "Brush Strokes" due to their diffuse, sweeping appearance.
+        We don't understand the root cause of these yet...
       </p>
     </div>
     <div class="span4 offset1">
@@ -447,7 +434,7 @@
 
     <div class="span7">
       <a id="guiding-anchor"></a>
-      <h3>Guiding</h3>
+      <h3>Guiding Failure</h3>
       <p> Failures in the telescope guiding can lead to extended and elongated sources.
         These issues will hopefully be solved in Year 1.
       </p>
@@ -460,8 +447,8 @@
     </div>
 
     <div class="span7">
-      <a id="star-trails-anchor"></a>
-      <h3>Star trails</h3>
+      <a id="shutter-anchor"></a>
+      <h3>Shutter Failure</h3>
       <p> Star bleeds are often symptomatic of the camera being readout with the shutter still open.
         Star bleeds caused by shutter errors can be identified by looking at the full focal plane image, where the direction of the star bleeds will change between the top and bottom of the focal plane (due to a switch in the readout direction).
         Shutter errors should be solved by Year 2.
@@ -491,7 +478,8 @@
     <div class="span7">
       <a id="haze-anchor"></a>
       <h3>Haze</h3>
-      <p> We don't understand this yet...
+      <p> Haze appears as large diffuse blurs around bright objects.
+        We don't understand the root cause of this this yet...
       </p>
     </div>
     <div class="span4 offset1">

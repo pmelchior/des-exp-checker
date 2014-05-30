@@ -183,7 +183,7 @@ function getProblemCodes() {
       
       // Instrument
       "Guiding" => 11,
-      "Star trails" => 12,
+      "Shutter" => 12,
       "Readout" => 13,
       "Haze" => 14,
       
@@ -196,8 +196,8 @@ function getProblemCodes() {
       "Vertical stripes" => 26,
       
       // Reflections
-      "Scattered light" => 31,
       "Ghost" => 32,
+      "Bright spray" => 31,
       "Brush strokes" => 33,
       "Bright arc" => 34,
       
@@ -207,7 +207,7 @@ function getProblemCodes() {
       
       // Masking
       "Column mask" => 51,
-      "Mask dots" => 52,
+      // "Mask dots" => 52, // found unneccesary
       "Excessive mask" => 53,
       "Cosmic ray" => 54,
       "Cross-talk" => 55,

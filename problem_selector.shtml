@@ -8,7 +8,6 @@
             <ul class="dropdown-menu">
               <li><a class="problem" tabindex="-1" href="#">Column mask</a></li>
               <li><a class="problem" tabindex="-1" href="#">Cosmic ray</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Mask dots</a></li>
               <li><a class="problem" tabindex="-1" href="#">Cross-talk</a></li>
               <li><a class="problem" tabindex="-1" href="#">Edge-bleed</a></li>
               <li><a class="problem" tabindex="-1" href="#">Excessive mask</a></li>
@@ -38,8 +37,8 @@
           <li class="dropdown-submenu">
             <a tabindex="-1" href="#">Reflections</a>
             <ul class="dropdown-menu">
-              <li><a class="problem" tabindex="-1" href="#">Scattered light</a></li>
               <li><a class="problem" tabindex="-1" href="#">Ghost</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Bright spray</a></li>
               <li><a class="problem" tabindex="-1" href="#">Brush strokes</a></li>
               <li><a class="problem" tabindex="-1" href="#">Bright arc</a></li>
             </ul>
@@ -54,7 +53,7 @@
             <a tabindex="-1" href="#">Instrument/Site</a>
             <ul class="dropdown-menu">
               <li><a class="problem" tabindex="-1" href="#">Guiding</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Star trails</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Shutter</a></li>
               <li><a class="problem" tabindex="-1" href="#">Readout</a></li>
               <li><a class="problem" tabindex="-1" href="#">Haze</a></li>
             </ul>

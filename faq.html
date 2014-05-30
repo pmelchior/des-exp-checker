@@ -35,7 +35,7 @@
       <h1>FAQ</h1>
       <p>Things can get confusing sometimes, problems do no appear to fit into any given category, etc.
       We try to answer a couple of re-ocurring questions here. If you have such a question, contact
-      the eyeball checker; for technical requests (bugs or improvements to the website),
+      the <a href="#" id="email-anchor">eyeball checker folks</a>; for technical requests (bugs or improvements to the website),
       open a <a href="https://github.com/pmelchior/des-exp-checker/issues">github issue</a>.
       </p>
       
@@ -55,10 +55,8 @@
 <script>
   // initial setup
   $(document).ready(function(){
-    // connect problem selector to anchor in page
-    $('a[class*="problem"]').on('click', function(evt) {
-      var problem = evt.target.innerHTML;
-      window.open('api.php?problem=' + encodeURI(problem));
+    $.get('email.php', function(response) {
+      $('#email-anchor').attr('href', 'mailto:' + response);
     });
   });
 </script>

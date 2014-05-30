@@ -100,9 +100,7 @@
         <!--div class="form-actions" style="margin-bottom: 0px;"-->
           <button class="btn btn-success" id="login_button" data-toggle="button" data-loading-text="Authenticating...">Log in</button>
           &nbsp;&nbsp;
-          <script>
-          document.write('<a title="How to get your password resetted" href="mailto:DES%20exposure%20checker?subject=%5Bdes-exposure-checker%5D%20Please%20reset%20my%20password&body=To%20get%20your%20password%20resetted,%20simply%20send%20this%20email%20from%20the%20email%20account%20you%20used%20when%20signing%20up.">Forgot password?</a>');
-          </script>
+          <a id="email-anchor" title="How to get your password resetted" href="#">Forgot password?</a>
         <!--/div-->
       </div>
     </div>
@@ -175,12 +173,15 @@
     return ($.cookie('sid') != null);    
   }
   $('#open-login-button').on('click', function(evt) {
-    console.log("clicked");
-      if (checkSessionCookie())
-        window.location.href = "viewer.html";
-      else
-        $('#logIn').modal('show');
-      evt.preventDefault();
+    if (checkSessionCookie())
+      window.location.href = "viewer.html";
+    else {
+      $.get('email.php', function(response) {
+        $('#email-anchor').attr('href', 'mailto:' + response + '?subject=%5Bdes-exposure-checker%5D%20Please%20reset%20my%20password&body=To%20get%20your%20password%20resetted,%20simply%20send%20this%20email%20from%20the%20email%20account%20you%20used%20when%20signing%20up.');
+      });
+      $('#logIn').modal('show');
+    }
+    evt.preventDefault();
   });
   $('#open-signup-button').on('click', function(evt) {
     $('#signUp').modal('show');

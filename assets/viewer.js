@@ -12,7 +12,7 @@ function addMark(prob, ctx) {
   if (ctx === undefined)
     ctx = webfits.overlayCtx;
   else
-    color = '#FF0000';
+    color = '#FFA500';
   ctx.beginPath();
   ctx.arc(prob.x, prob.y, 40, 0, 2*Math.PI, true);
   ctx.lineWidth=2;

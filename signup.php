@@ -22,7 +22,7 @@ function createAccount($dbh, $username, $email, $password) {
     if (strpos($error[2], 'username')) {
       $answer["message"] = "The username you chose already exists. Please pick another one.";
     }
-    elseif (strpos($stmt->error, 'email')) {
+    elseif (strpos($error[2], 'email')) {
       $answer["message"] = "The email address your provided is already in use by a registered user. Please choose another one.";
     }
     else {

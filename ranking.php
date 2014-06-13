@@ -16,17 +16,15 @@ if (isset($_GET)) {
         if (isset($_GET['limit'])) {
             if (is_numeric($_GET['limit'])) {
                 $query .= ' LIMIT ?';
-                $sth = $dbh->prepare($query);
-                $sth->bindParam(1, $_GET['limit'], PDO::PARAM_INT);
+                $stmt = $dbh->prepare($query);
+                $stmt->bindParam(1, $_GET['limit'], PDO::PARAM_INT);
             }
         } else {
-            $sth = $dbh->prepare($query);
+            $stmt = $dbh->prepare($query);
         }
-        $sth->execute();
-        if ($res === False)
-            header('HTTP/1.0 500 Internal Server Error');
-    
-        $response = $sth->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->execute();
+        check_or_abort($stmt);
+        $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
         if (isset($_GET['output'])) {
             if ($_GET['output'] == "html") {

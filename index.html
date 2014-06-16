@@ -34,7 +34,10 @@
     <div style="width: 700px">
     <h1>DES exposure checker</h1>
     <p>See how DES images actually look like. Discover flaws we would otherwise have missed. Make our data better.</p>
-    <p>
+    <p id="getin-buttons" style="display: none">
+      <a href="viewer.html" class="btn btn-primary btn-large">Let's go</a>
+    </p>
+    <p id="login-buttons">
       <button class="btn btn-primary btn-large" id="open-login-button">Log in</button>
       <button class="btn btn-primary btn-large" id="open-signup-button">Sign up</button>
     </p>
@@ -154,49 +157,52 @@
     </div>
   </div>
 </body>
-<script src="assets/sha1.js"></script>
+<script type="text/javascript" src="assets/sha1.js"></script>
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="assets/jquery.cookie.js"></script>
 <script type="text/javascript" src="assets/login.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script>
+  function checkSessionCookie() {
+    return ($.cookie('sid') != null);    
+  }
   $(document).ready(function () {
     $.get('ranking.php', {'limit': 15, 'output': 'html', 'short':true}, function(response) {
       $('#leaderboard').html(response);
     });
-  });
-  $('#logIn').modal({"show": false });
-  $('#login_button').on('click', logIn).button();
-  $('#signup_button').on('click', signUp).button();
-  $('#signUp').modal({"show": false });
-  function checkSessionCookie() {
-    return ($.cookie('sid') != null);    
-  }
-  $('#open-login-button').on('click', function(evt) {
-    if (checkSessionCookie())
-      window.location.href = "viewer.html";
-    else {
-      $.get('email.php', function(response) {
-        $('#email-anchor').attr('href', 'mailto:' + response + '?subject=%5Bdes-exposure-checker%5D%20Please%20reset%20my%20password&body=To%20get%20your%20password%20resetted,%20simply%20send%20this%20email%20from%20the%20email%20account%20you%20used%20when%20signing%20up.');
-      });
-      $('#logIn').modal('show');
+  
+    if (checkSessionCookie()) {
+      $('#getin-buttons').show();
+      $('#login-buttons').hide();
     }
-    evt.preventDefault();
-  });
-  $('#open-signup-button').on('click', function(evt) {
-    $('#signUp').modal('show');
-    evt.preventDefault();
-  });
-  $('#signup-name').on('input', function(evt) {
-    var name = $(evt.target).val();
-    if (name.length) {
-      var chunks = name.split(" ");
-      name = chunks[0][0].toLowerCase();
-      if (chunks.length > 1)
-        name += chunks[1].toLowerCase();
-      $('#signup-username').val(name);
-    } else {
-      $('#signup-username').val('');
+    else {
+      $('#logIn').modal({"show": false });
+      $('#login_button').on('click', logIn).button();
+      $('#signup_button').on('click', signUp).button();
+      $('#signUp').modal({"show": false });
+      $('#open-login-button').on('click', function(evt) {
+        $.get('email.php', function(response) {
+          $('#email-anchor').attr('href', 'mailto:' + response + '?subject=%5Bdes-exposure-checker%5D%20Please%20reset%20my%20password&body=To%20get%20your%20password%20resetted,%20simply%20send%20this%20email%20from%20the%20email%20account%20you%20used%20when%20signing%20up.');
+        });
+        $('#logIn').modal('show');
+        evt.preventDefault();
+      });
+      $('#open-signup-button').on('click', function(evt) {
+        $('#signUp').modal('show');
+        evt.preventDefault();
+      });
+      $('#signup-name').on('input', function(evt) {
+        var name = $(evt.target).val();
+        if (name.length) {
+          var chunks = name.split(" ");
+          name = chunks[0][0].toLowerCase();
+          if (chunks.length > 1)
+            name += chunks[1].toLowerCase();
+          $('#signup-username').val(name);
+        } else {
+          $('#signup-username').val('');
+        }
+      });
     }
   });
 </script>

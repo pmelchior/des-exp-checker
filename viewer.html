@@ -32,7 +32,7 @@
           <li><a href="gallery.html">Gallery</a></li>
 	</ul>
         <ul class="nav pull-right hide" id="user-menu" style="margin-right:-20px">
-          <li class="dropdown">
+          <li id="mydata-li" class="dropdown" style="display: none">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <span id="username">Username</span> <span class="badge" id="userrank">#1</span>
             <b class="caret"></b>
@@ -44,6 +44,7 @@
               <li><a tabindex="-1" id="logout" href="#">Logout</a></li>
             </ul>
           </li>
+          <li id="login-li"><a href="index.html">Log in ...</a></li>
         </ul>
       </div> 
     </div>
@@ -177,11 +178,14 @@
     <div class="modal hide" id="session-modal">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3 id="session_header">Login required</h3>
+        <h3 id="session_header"></h3>
       </div>
       <div class="modal-body">
         <p id="session_text"></p>
         <p id="session_details"></p>
+      </div>
+      <div class="modal-footer" id="session-footer" style="display: none">
+        <a href="#" class="btn btn-primary" id="session-button"></a>
       </div>
     </div>
     
@@ -203,8 +207,6 @@
 <script>
   // initial setup
   $(document).ready(function(){
-    if (!checkSessionCookie())
-        kickOut();
     // define and show spinner
     spinner = new Spinner({color: "#049cdb"}).spin();
     $('#loading').append(spinner.el);
@@ -217,9 +219,25 @@
     .fail(function() {
       alert('Failure when loading image');
     });
-    
-    getMyData();
-    setInterval(getMyData, 600000);
+    // if user is logged in: show user dropdown
+    if (checkSessionCookie()) {
+      getMyData();
+      setInterval(getMyData, 600000);
+      $('#login-li').hide();
+      $('#mydata-li').show();
+    }
+    else {
+      // is not: show message when user clicks on the problem button
+      $('#problem-button').on('click', function(evt) {
+        $('#session_header').html("Login required");
+        $('#session_text').html("To report problems you need to <a href='index.html'>log in</a> with your exposure checker credentials.");
+        $('#session_details').html("If you've done that, your session may be expired. Either way, please log in (again)...");
+        $('#session-button').html('Log in').attr('href', 'index.html');
+        $('#session-footer').show();
+        $('#session-modal').modal('show');
+        evt.preventDefault();
+      });
+    }
   });
   $('form').submit(function() {
     return false;

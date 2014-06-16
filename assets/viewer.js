@@ -214,16 +214,6 @@ function checkSessionCookie() {
   return ($.cookie('sid') != null);    
 }
 
-function kickOut() {
-  $('#session_header').html("Login required");
-  $('#session_text').html("To view this page, you need to log in. If you've done that, your session may be expired. Either way, please log in (again)...");
-  $('#session-modal').modal('show');
-  setTimeout(function() {
-    // kick out
-    window.location.href = "index.html";
-  }, 3000);
-}
-
 function getMyData() {
   $.get('mydata.php', function(response) {
     // check if server has just invalidated session

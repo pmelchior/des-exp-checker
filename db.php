@@ -63,7 +63,7 @@ if ($row) {
 else {
     $row['error'] = "File missing";
     $row['message'] = "The requested image cannot be retrieved.";
-    $row['description'] = "This is likely caused by our catalog only comprising DES SV-A1 images in griz bands.";
+    $row['description'] = "This is likely caused by our catalog only comprising SV-A1 images in griz bands.";
 }
 if (isset($congrats))
     $row['congrats'] = $congrats;

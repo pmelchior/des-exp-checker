@@ -19,6 +19,7 @@ function getDBHandle() {
 
 function getNextImage($dbh) {
     global $config;
+    $res = null;
     $sql = 'SELECT '.$config['release'].'.rowid as fileid, '.$config['release'].'.expname, ccd, band, name, files.runs.runname FROM '.$config['release'].' JOIN files.runs ON ('.$config['release'].'.expname = files.runs.expname)';
     if (isset($_GET['expname']) && isset($_GET['ccd'])) {
         $sql .= ' WHERE '.$config['release'].'.expname = ? AND ccd = ? LIMIT 1';
@@ -26,18 +27,23 @@ function getNextImage($dbh) {
         $stmt->bindParam(1, $_GET['expname'], PDO::PARAM_STR, 14);
         $stmt->bindParam(2, $_GET['ccd'], PDO::PARAM_INT);
         $stmt->execute();
-        return check_or_abort($stmt);
+        $res = check_or_abort($stmt);
     }
-    if (isset($_GET['problem'])) {
+    elseif (isset($_GET['problem'])) {
         $sql .= ' JOIN qa ON ('.$config['release'].'.rowid = qa.fileid) WHERE qa.problem = ? ORDER BY RANDOM() LIMIT 1';
         $stmt = $dbh->prepare($sql);
         $codes = getProblemCodes();
         $stmt->bindParam(1, $codes[$_GET['problem']], PDO::PARAM_INT);
         $stmt->execute();
-        return check_or_abort($stmt);
+        $res = check_or_abort($stmt);
     }
     // default query
-    return check_or_abort($dbh->query($sql.' ORDER BY RANDOM() LIMIT 1'));
+    else
+        $res = check_or_abort($dbh->query($sql.' ORDER BY RANDOM() LIMIT 1'));
+    if ($row = $res->fetch(PDO::FETCH_ASSOC))
+        return $row;
+    else
+        return FALSE;
 }
 
 function getProblems($dbh, $fileid, $qa_id=NULL) {

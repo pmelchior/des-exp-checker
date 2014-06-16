@@ -133,7 +133,16 @@ function completeVisualization(response) {
 }
 
 function setNextImage(response) {
-  var f = new astro.FITS.File(response.name, getImage, response);
+  if (response.error === undefined) { 
+    var f = new astro.FITS.File(response.name, getImage, response);
+  }
+  else {
+    $('#session_header').html(response.error);
+    $('#session_text').html(response.message);
+    $('#session_details').html(response.description);
+    $('#session-modal').modal('show');
+    $('#loading').addClass('hide');
+  }
 }
 
 function userClass(uc) {
@@ -148,6 +157,24 @@ function userClass(uc) {
   }
 }
 
+function showCongrats(congrats) {
+  $('#congrats_text').html(congrats.text);
+  if (congrats.detail !== undefined) {
+    $('#congrats_details').html(congrats.detail);
+    if (congrats.userclass !== undefined) {
+      var uc = userClass(congrats.userclass);
+      $('#status_class').addClass(uc.style);
+      $('#status_class').html(uc.title);
+      $('#userrank').removeClass();
+      $('#userrank').addClass("badge");
+      $('#userrank').addClass(uc.style); // set the badge color
+    }
+  }
+  else
+    $('#congrats_details').html();
+  $('#congrats-modal').modal('show');
+}
+
 function sendResponse() {
   // show spinner
   $('#loading').removeClass('hide');
@@ -158,32 +185,15 @@ function sendResponse() {
   $('#total-files').html(number);
   
   // post to DB
-  $.post('db.php',
-         {'fileid': fileid, 'problems': marks},
-         function(data) {
-          var response = $.parseJSON(data);
-          if (response.congrats !== undefined) {
-            $('#congrats_text').html(response.congrats.text);
-            if (response.congrats.detail !== undefined) {
-              $('#congrats_details').html(response.congrats.detail);
-              if (response.congrats.userclass !== undefined) {
-                var uc = userClass(response.congrats.userclass);
-                $('#status_class').addClass(uc.style);
-                $('#status_class').html(uc.title);
-                $('#userrank').removeClass();
-                $('#userrank').addClass("badge");
-                $('#userrank').addClass(uc.style); // set the badge color
-              }
-            }
-            else
-              $('#congrats_details').html();
-            $('#congrats-modal').modal('show');
-          }
-          setNextImage(response);
-        }
-  )
-  .fail(function() {
-    alert('Failure when saving response');
+  $.post('db.php', {'fileid': fileid, 'problems': marks},
+    function(data) {
+      var response = $.parseJSON(data);
+      if (response.congrats !== undefined)
+        showCongrats(response.congrats);
+      setNextImage(response);
+    })
+    .fail(function() {
+      alert('Failure when saving response');
   });
   
   // clear UI
@@ -205,6 +215,8 @@ function checkSessionCookie() {
 }
 
 function kickOut() {
+  $('#session_header').html("Login required");
+  $('#session_text').html("To view this page, you need to log in. If you've done that, your session may be expired. Either way, please log in (again)...");
   $('#session-modal').modal('show');
   setTimeout(function() {
     // kick out

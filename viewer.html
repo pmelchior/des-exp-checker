@@ -174,15 +174,14 @@
       </div>
     </div>
     
-    
     <div class="modal hide" id="session-modal">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Login required</h3>
+        <h3 id="session_header">Login required</h3>
       </div>
       <div class="modal-body">
-        <p>To view this page, you need to log in. If you've done that, your session
-        may be expired. Either way, please log in (again)...</p>
+        <p id="session_text"></p>
+        <p id="session_details"></p>
       </div>
     </div>
     
@@ -212,14 +211,13 @@
     $('#loading').removeClass('hide');
     // get first image data
     $.get('db.php', $.url().param(), function(data) {
-            var response = $.parseJSON(data);
-            setNextImage(response);
-          }
-    )
+        var response = $.parseJSON(data);
+        setNextImage(response);
+      })
     .fail(function() {
       alert('Failure when loading image');
     });
-
+    
     getMyData();
     setInterval(getMyData, 600000);
   });

@@ -16,6 +16,7 @@ function sendPassword(params, button) {
                 button.removeClass('btn-danger');
                 button.addClass('btn-success');
                 // reload the page: now with valid session id
+                $.cookie("sid", 1, { expires : 10 });
                 window.location.href = 'viewer.html';
             }
     }, 'json');

@@ -31,14 +31,13 @@
     </div>
     
     <!-- content area -->
-    <div class="span7">
+    <div class="span12">
       <h1>Tutorial</h1>
       <p>The <a href="viewer.html">Viewer</a> displays an image from a single DECam CCD for you to inspect.
         If there are no obvious issues with the image, simply press "Next". 
-        If not, click the "That's a..." button and select one of the predefined artifacts. 
-        Click on the location of the artifact to mark it on the image.
-        Please mark both false negative and false positive instances of artifacts (e.g., use "Edge-Bleed" to mark both an edge-bleed without an edge-bleed mask and a edge-bleed mask without an edge-bleed).
-        Once you are done marking artifacts, click "Next".
+        If not, click the "Problem" button and select one of the predefined categories. 
+        Click on the problematic location to mark it on the image. Please mark both false negative and false positive instances of artifacts (e.g., use "Edge-Bleed" to mark both an edge-bleed without an edge-bleed mask and a edge-bleed mask without an edge-bleed).
+        Once you are done marking all problems, click "Next".
       </p>
       <button id="fine-button" class="btn btn-success">Next</button>
       <!--#include file="problem_selector.shtml"-->
@@ -56,9 +55,9 @@
           We attempt to mask these columns with a "bad pixel mask" and it is useful to know when we are missing bad columns.
         </p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00168965&ccd=27" title="Click to view the original image"><img src="tutorial/column_mask.png" /></a>
+          <a href="viewer.html?expname=DECam_00157811&ccd=28" title="Click to view the original image"><img src="tutorial/column_mask.gif" /></a>
           <small>Partially masked bad column</small>
         </p>
       </div>
@@ -72,20 +71,16 @@
           <button class="btn btn-info">Toggle <u>m</u>ask</button>
           <button class="btn btn-info">Toggle <u>s</u>caling</button>
         </p>
-        <p>
-        Use the buttons shown above to switch to a scaling that focuses on the bright aspects of the image and to blink the mask, and the cosmic rays will become very apparent.
-        </p>
-        <p>It's perfectly fine to mark multiple cosmic rays per image
+        <p>Use the buttons shown above to switch to a scaling that focuses on the
+        bright aspects of the image and to blink the mask, and the cosmic rays will become very apparent.
+        It's perfectly fine to mark multiple cosmic rays per image
         (including those that are only partially masked) or
-        multiple different problems on the same image. If you want to redo your selection,
-        simply <button class="btn btn-mini btn-info">Clear</button>
-        the markings from the image. If you're satisfied, save it and move
-        on the the next image by clicking on <button class="btn btn-mini btn-success">Next</button>.
+        multiple different problems on the same image.</p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
-          <small>Partially masked cosmic ray (center)</small>
+          <a href="viewer.html?expname=DECam_00161501&ccd=18" title="Click to view the original image"><img src="tutorial/cosmic_ray.gif" /></a>
+          <small>Several partially masked cosmic rays</small>
         </p>
       </div>
        
@@ -104,10 +99,10 @@
         visible imprint. Toggle the image scaling to dig deeper into noise. Since the feature can be very extended,
         mark the region where it has it's widest vertical extension: the knot in the middle.
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00169293&ccd=7" title="Click to view the original image"><img src="tutorial/cross_talk.png" /></a>
-          <small>Cross-talk from the bright star in the bottom onto the top amplifier.</small>
+          <a href="viewer.html?expname=DECam_00161873&ccd=2" title="Click to view the original image"><img src="tutorial/cross_talk.gif" /></a>
+          <small>Cross-talk from several bright stars</small>
         </p>
       </div>
        
@@ -119,10 +114,10 @@
           If this mask is too big, too small, or not present at all, please tag the location of the error.
         </p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00161967&ccd=17" title="Click to view the original image"><img src="tutorial/edge_bleed.png" /></a>
-          <small>Description</small>
+          <a href="viewer.html?expname=DECam_00157575&ccd=9" title="Click to view the original image"><img src="tutorial/edge_bleed.gif" /></a>
+          <small>Edge-bleed on left side from bright star further right</small>
         </p>
       </div>
        
@@ -131,13 +126,13 @@
         <h3>Excessive mask</h3>
         <p> Occasionally large regions of a CCD get masked for no apparent reason.
           Sometimes this is a failure in edge-bleed masking, other times the cause is uncertain.
-          Flag excessive masks when you see them.
+          Toggle the mask and flag excessive masks when you see them.
         </p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00170637&ccd=16" title="Click to view the original image"><img src="tutorial/excessive_mask.png" /></a>
-          <small>Excessive masking caused by edge-bleed failure.</small>
+          <a href="viewer.html?expname=DECam_00170637&ccd=16" title="Click to view the original image"><img src="tutorial/excessive_mask.gif" /></a>
+          <small>Excessive masking on the right side, maybe due to bright star</small>
         </p>
       </div>
     </div>    
@@ -153,10 +148,10 @@
           These dark rims are often correlated with bright stars or dense fields.
         </p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00169958&ccd=50" title="Click to view the original image"><img src="tutorial/dark_rim.png" /></a>
-          <small>This image shows characteristic dark corners</small>
+          <a href="viewer.html?expname=DECam_00169958&ccd=50" title="Click to view the original image"><img src="tutorial/dark_rim.gif" /></a>
+          <small>Dark area at the top-left corner</small>
         </p>
       </div>
        
@@ -167,9 +162,9 @@
           This results from the sky background being over-estimated close to these objects.
         </p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00168969&ccd=53" title="Click to view the original image"><img src="tutorial/dark_halo.png" /></a>
+          <a href="viewer.html?expname=DECam_00168969&ccd=53" title="Click to view the original image"><img src="tutorial/dark_halo.gif" /></a>
           <small>A dark halo appears around the bright star in this image</small>
         </p>
       </div>
@@ -182,10 +177,10 @@
           This artifact often appears strongest near the sides of the CCD, and can manifest itself as a single vertical line inset by roughly 1/8th of a CCD length.
         </p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00164761&ccd=20" title="Click to view the original image"><img src="tutorial/quilted_sky.png" /></a>
-          <small>Quilted image</small>
+          <a href="viewer.html?expname=DECam_00164761&ccd=20" title="Click to view the original image"><img src="tutorial/quilted_sky.gif" /></a>
+          <small>Quilted sky (factor 2 downsampled)</small>
         </p>
       </div>
        
@@ -197,10 +192,10 @@
           We don't understand the root cause of this this yet...
         </p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00163508&ccd=62" title="Click to view the original image"><img src="tutorial/wavy_sky.png" /></a>
-          <small>Wavy image</small>
+          <a href="viewer.html?expname=DECam_00163508&ccd=62" title="Click to view the original image"><img src="tutorial/wavy_sky.gif" /></a>
+          <small>Wavy sky (factor 2 downsampled)</small>
         </p>
       </div>
        
@@ -213,9 +208,9 @@
           We don't understand the root cause of this this yet...
         </p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00169331&ccd=55" title="Click to view the original image"><img src="tutorial/anti_bleed.png" /></a>
+          <a href="viewer.html?expname=DECam_00169331&ccd=55" title="Click to view the original image"><img src="tutorial/anti_bleed.gif" /></a>
           <small>Dark anti-bleed around bright stars</small>
         </p>
       </div>
@@ -233,10 +228,10 @@
           This is most pronounced with the low-light-level non-linearity of CCD 31.
         </p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00152743&ccd=31" title="Click to view the original image"><img src="tutorial/ab_jump.png" /></a>
-          <small>A/B bias jump characteristic of CCD 31</small>
+          <a href="viewer.html?expname=DECam_00152743&ccd=31" title="Click to view the original image"><img src="tutorial/ab_jump.gif" /></a>
+          <small>A/B bias jump characteristic of CCD 31 (factor 2 downsampled)</small>
         </p>
       </div>
        
@@ -248,9 +243,9 @@
           They occur most commonly in the z-band.
         </p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00181120&ccd=49" title="Click to view the original image"><img src="tutorial/fringing.png" /></a>
+          <a href="viewer.html?expname=DECam_00181120&ccd=49" title="Click to view the original image"><img src="tutorial/fringing.gif" /></a>
           <small>Strong fringing pattern</small>
         </p>
       </div>
@@ -260,14 +255,14 @@
         <h3>Tape bump</h3>
         <p> The silicon wafers are attached to the CCD backplanes by six pieces of double-sided tape (three along each long edge of the CCD).
           Physical stresses on the silicon lattice distort the electric field in these regions changing the effective size of the pixels in these regions.
-          A failure in flat-fielding can lead to one or more of these tape bumps being visible in the reduced image.
-          For more information, see here (link to tree ring paper).
+          A failure in flat-fielding can lead to one or often more of these tape bumps being visible in the reduced image.
+          For more information, see <a href="http://arxiv.org/abs/1403.6127">this paper</a>.
         </p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00181151&ccd=16" title="Click to view the original image"><img src="tutorial/tape_bump.png" /></a>
-          <small>Six tape bumps can be seen along the edge of this image.</small>
+          <a href="viewer.html?expname=DECam_00181151&ccd=16" title="Click to view the original image"><img src="tutorial/tape_bumps.gif" /></a>
+          <small>Tape bump at the bottom center, together with fringing</small>
         </p>
       </div>
        
@@ -278,12 +273,12 @@
           Tree rings originate from variations in the doping impurities during single-crystal silicon growth.
           Thus, the tree ring pattern of each CCD will depend on its relative position in the silicon wafer.
           Tree rings appear most strongly in the z-band.
-          For more information, see here (link to tree ring paper).
+          For more information, see <a href="http://arxiv.org/abs/1403.6127">this paper</a>.
         </p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00181154&ccd=24" title="Click to view the original image"><img src="tutorial/tree_rings.png" /></a>
+          <a href="viewer.html?expname=DECam_00181154&ccd=24" title="Click to view the original image"><img src="tutorial/tree_rings.gif" /></a>
           <small>Strong concentric tree ring pattern</small>
         </p>
       </div>
@@ -298,9 +293,9 @@
           More information on the vertical jump feature can be found <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Central_Bias_Jump">here</a>.
         </p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00181033&ccd=1" title="Click to view the original image"><img src="tutorial/vertical_jump.png" /></a>
+          <a href="viewer.html?expname=DECam_00181033&ccd=1" title="Click to view the original image"><img src="tutorial/vertical_jump.gif" /></a>
           <small>Vertical jump from bad flats</small>
         </p>
       </div>
@@ -313,10 +308,10 @@
           We don't understand the root cause of these yet...        
         </p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00147580&ccd=22" title="Click to view the original image"><img src="tutorial/vertical_stripes.png" /></a>
-          <small>Vertical stripes resulting in excessive masking</small>
+          <a href="viewer.html?expname=DECam_00147580&ccd=22" title="Click to view the original image"><img src="tutorial/vertical_stripes.gif" /></a>
+          <small>Vertical stripes, resulting in excessive masking</small>
         </p>
       </div>
     </div>
@@ -326,18 +321,30 @@
 
       <div class="span6">
         <a id="bright-spray-anchor"></a>
-        <h3>Bright Spray</h3>
+        <h3>Bright spray</h3>
         <p> The worst scattered light features come bright off-axis stars scattering off of the wall of the shutter.
           This leads to broad bright sprays fanning out from the edge of the focal plane.
-          These features can be most easily identified on the full focal plane images.
+          These features can be most easily identified on the full focal plane images, via this button:</p>
+          <div class="btn-group" style="margin-left:10px;">
+            <button id="info-button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Info</span>
+            <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+              <li><a tabindex="-1" href="#bright-spray-anchor" id="share-button">Share <u>l</u>ink</a></li>
+              <li><a tabindex="-1" href="#bright-spray-anchor" id="desdm-button"><u>D</u>ownload image from DESDM</a></li>
+              <li><a tabindex="-1" href="#bright-spray-anchor" id="fov-button">Show entire <u>F</u>oV</a></li>
+              <li><a tabindex="-1" href="#bright-spray-anchor" id="reported-button">Show reported <u>p</u>roblems</a></li>
+            </ul>
+          </div>
+          <p>
           This issues should be corrected for Year 2.
           More information can be found <a href="http://des-docdb.fnal.gov:8080/cgi-bin/ShowDocument?docid=7002">here</a>.
         </p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00153949&ccd=3" title="Click to view the original image"><img src="tutorial/scattered_light.png" /></a>
-          <small>Example of strong spray of scattered light</small>
+          <a href="viewer.html?expname=DECam_00153949&ccd=3" title="Click to view the original image"><img src="tutorial/bright_spray.gif" /></a>
+          <small>Example of strong spray of scattered light (factor 2 downsampled)</small>
         </p>
       </div>
        
@@ -349,10 +356,10 @@
           Small ghosts can be identified on a single chip by their characteristic "tie-fighter window" pattern; however, often it is helpful to look at images of the full focal play.
           More information on ghosts can be found <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Ghosts">here</a>.
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00158404&ccd=19" title="Click to view the original image"><img src="tutorial/ghost.png" /></a>
-          <small>Factor 2 zoom-out of a pupil ghost next to a bright star.</small>
+          <a href="viewer.html?expname=DECam_00158404&ccd=19" title="Click to view the original image"><img src="tutorial/ghost.gif" /></a>
+          <small>Pupil ghost next to a bright star (factor 2 downsampled)</small>
         </p>
       </div>
        
@@ -364,9 +371,9 @@
           We don't understand the root cause of these yet...
         </p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00151918&ccd=38" title="Click to view the original image"><img src="tutorial/brush_strokes.png" /></a>
+          <a href="viewer.html?expname=DECam_00163439&ccd=31" title="Click to view the original image"><img src="tutorial/brush_strokes.gif" /></a>
           <small>Brush strokes of scattered light</small>
         </p>
       </div>
@@ -379,10 +386,10 @@
           This issue may be corrected in Year 2.
         </p>
       </div>
-      <div class="span4 offset1">
+      <div class="span5">
         <p class="img-polaroid">
-          <a href="viewer.html?expname=DECam_00179358&ccd=44" title="Click to view the original image"><img src="tutorial/bright_arc.png" /></a>
-          <small>Bright arc of scattered light.</small>
+          <a href="viewer.html?expname=DECam_00179358&ccd=44" title="Click to view the original image"><img src="tutorial/bright_arc.gif" /></a>
+          <small>Bright arc of scattered light (factor 2 downsampled)</small>
         </p>
       </div>
     </div>

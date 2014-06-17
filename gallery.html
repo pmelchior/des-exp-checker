@@ -119,7 +119,7 @@
     covering a lot of area to as of yet unreached depths. In other words, the collection of these objects
     is a great source for public outreach and the title slides of our upcoming DES presentations.
     And potentially, you might be able to discover something really new out there.</p>
-    <p>If that sounds like a job for you, please <a href="mailto:DES%20exposure%20checker?subject=%5Bdes-exposure-checker%5D%20I%20like%20to%20help%20with%20the%20gallery">contact us</a>.</p>
+    <p>If that sounds like a job for you, please <a href="#" id="email-anchor">contact us</a>.</p>
     </div>
   </div>
   <div id="push"></div>
@@ -136,8 +136,11 @@
     $.get('gallery.php', {'output': 'html'}, function(response) {
       $('#awesome-table').html(response);
     });
-    // coordinate togglers
+    $.get('email.php', function(response) {
+      $('#email-anchor').attr('href', 'mailto:' + response);
+    });
   });
+  // coordinate togglers
   $('span[class*="coords"]').on('click', function(evt) {
     // select all coordinates:
     var nodes = $('span[class*="coords"]');

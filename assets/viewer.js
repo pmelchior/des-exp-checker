@@ -137,10 +137,10 @@ function setNextImage(response) {
     var f = new astro.FITS.File(response.name, getImage, response);
   }
   else {
-    $('#session_header').html(response.error);
-    $('#session_text').html(response.message);
-    $('#session_details').html(response.description);
-    $('#session-modal').modal('show');
+    $('#message_header').html(response.error);
+    $('#message_text').html(response.message);
+    $('#message_details').html(response.description);
+    $('#message-modal').modal('show');
     $('#loading').addClass('hide');
   }
 }

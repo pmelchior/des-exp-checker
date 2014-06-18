@@ -38,8 +38,13 @@ function getNextImage($dbh) {
         $res = check_or_abort($stmt);
     }
     // default query
-    else
+    else {
+        // to created redundancy: make every 2nd image drawn from list with existing qa
+        if (rand(0,2) < 1) {
+            $sql .= ' JOIN qa ON ('.$config['release'].'.rowid = qa.fileid)';
+        }
         $res = check_or_abort($dbh->query($sql.' ORDER BY RANDOM() LIMIT 1'));
+    }
     if ($row = $res->fetch(PDO::FETCH_ASSOC))
         return $row;
     else

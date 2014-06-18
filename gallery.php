@@ -17,6 +17,9 @@ if (isset($_GET['output'])) {
         }
         echo "</tbody></table>";
     }
+    if ($_GET['output'] == "json") {
+        echo json_encode($response);
+    }
 }
 else 
     echo json_encode($response);

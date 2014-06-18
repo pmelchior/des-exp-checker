@@ -44,7 +44,7 @@
               <li><a tabindex="-1" id="logout" href="#">Logout</a></li>
             </ul>
           </li>
-          <li id="login-li"><a href="index.html">Log in ...</a></li>
+          <li id="login-li"><a href="index.html" class="login-trigger">Log in ...</a></li>
         </ul>
       </div> 
     </div>
@@ -162,17 +162,32 @@
       </div>
     </div>
     
-    <div class="modal hide" id="session-modal">
+    <div class="modal hide" id="login-modal">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3 id="session_header"></h3>
+        <h3>Login required</h3>
       </div>
       <div class="modal-body">
-        <p id="session_text"></p>
-        <p id="session_details"></p>
+        <p>To report problems you need to log in with your exposure checker credentials.<br>
+        If you've done that, your session may be expired. If you haven't signed up yet, please do so.</p>
+        <p>Don't worry, we bring'll you back to this image afterwards.</p>
       </div>
-      <div class="modal-footer" id="session-footer" style="display: none">
-        <a href="#" class="btn btn-primary" id="session-button"></a>
+      <div class="modal-footer">
+        <a href="index.html" class="btn btn-primary login-trigger">Login...</a>
+      </div>
+    </div>
+    
+    <div class="modal hide" id="message-modal">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="message_header"></h3>
+      </div>
+      <div class="modal-body">
+        <p id="message_text"></p>
+        <p id="message_details"></p>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn btn-primary" data-dismiss="modal">OK</a>
       </div>
     </div>
     
@@ -198,33 +213,40 @@
     spinner = new Spinner({color: "#049cdb"}).spin();
     $('#loading').append(spinner.el);
     $('#loading').removeClass('hide');
-    // get first image data
-    $.get('db.php', $.url().param(), function(data) {
-        var response = $.parseJSON(data);
-        setNextImage(response);
-      })
-    .fail(function() {
-      alert('Failure when loading image');
-    });
+    var urlparams = $.url().param();
     // if user is logged in: show user dropdown
     if (checkSessionCookie()) {
       getMyData();
       setInterval(getMyData, 600000);
       $('#login-li').hide();
       $('#mydata-li').show();
+      // 
+      if ($.cookie('lastfile') !== undefined) {
+        urlparams = $.url($.cookie('lastfile')).param();
+        $.removeCookie('lastfile');
+      }
     }
     else {
+      $('#login-modal').modal({"backdrop": true, "show":false, "keyboard": true});
+      $('a[class*="login-trigger"]').on('click', function(evt) {
+        $.cookie('lastfile', $('#share-url').val(), {expires: 1});
+        window.location.href=this.attr('href');
+      });
       // is not: show message when user clicks on the problem button
       $('#problem-button').on('click', function(evt) {
-        $('#session_header').html("Login required");
-        $('#session_text').html("To report problems you need to <a href='index.html'>log in</a> with your exposure checker credentials.");
-        $('#session_details').html("If you've done that, your session may be expired. Either way, please log in (again)...");
-        $('#session-button').html('Log in').attr('href', 'index.html');
-        $('#session-footer').show();
-        $('#session-modal').modal('show');
+        $('#login-modal').modal('show');
         evt.preventDefault();
       });
     }
+    // get first image data
+    $.get('db.php', urlparams, function(data) {
+        var response = $.parseJSON(data);
+        setNextImage(response);
+      })
+    .fail(function() {
+      alert('Failure when loading image');
+    });
+   
   });
   $('form').submit(function() {
     return false;
@@ -239,7 +261,8 @@
   $('#rank-modal').modal({"backdrop": false, "show":false, "keyboard": true});
   $('#mystats-modal').modal({"backdrop": false, "show":false, "keyboard": true});
   $('#congrats-modal').modal({"backdrop": false, "show":false, "keyboard": true});
-  $('#session-modal').modal({"backdrop": true, "show":false, "keyboard": false});
+  $('#message-modal').modal({"backdrop": true, "show":false, "keyboard": false});
+  //$('#login-modal').modal({"backdrop": true, "show":false, "keyboard": false});
   
   // button actions
   $('button[class*="send"]').on('click', function(evt) {
@@ -273,22 +296,6 @@
       $(this).width(530).height(454).appendTo('#fov-body');
     });
     $('#fov-modal').modal('show');
-  });
-  $('#squad-button').on('click', function() {
-    var expname = $('#image_name').html().split(',').shift();
-    $.get('eyeball_squad_report.php', {'expname': expname }, function(response) {
-        if (response) {
-          $('#squad-wrong-text').html(response.wrong);
-          if (response.comment != "")
-            $('#squad-comment-text').html(response.comment);
-          else
-            $('#squad-comment-text').html('None');
-        } else {
-          $('#squad-wrong-text').html('<i>not available</i>');
-          $('#squad-comment-text').html('<i>not available</i>');
-        }
-      }, 'json');
-    $('#squad-modal').modal('show');
   });
   $('#reported-button').on('click', function() {
     var elem = $($(webfits.reportCtx)[0].canvas);

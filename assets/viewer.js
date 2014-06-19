@@ -232,10 +232,10 @@ function getMyData() {
     
     var rankDetails = "";
     if (uc.class > 0) 
-      rankDetails += "You have the rank of a <span class='badge " + uc.style + "'>" + uc.title + "</span>.<br />";
+      rankDetails += "You have the rank of <span class='badge " + uc.style + "'>" + uc.title + "</span>.<br />";
     if (uc.class < 5) {
       var next_uc = userClass(uc.class + 1);
-      rankDetails += "You need another <strong>" + response.missingfiles + "</strong> images to reach the rank of a <span class='badge " + next_uc.style + "'>" + next_uc.title + "</span>.";
+      rankDetails += "You need another <strong>" + response.missingfiles + "</strong> images to reach the rank of <span class='badge " + next_uc.style + "'>" + next_uc.title + "</span>.";
     }
     $('#user_rank_details').html(rankDetails);
 

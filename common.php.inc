@@ -122,8 +122,8 @@ function missingFilesForNextClass($total_files, $userclass) {
       case 1: return $config['images_per_fp'] - $total_files; break;
       case 2: return 5*$config['images_per_fp'] - $total_files; break;
       case 3: return 10*$config['images_per_fp'] - $total_files; break;
-      case 4: return 100*$config['mages_per_fp'] - $total_files; break;
-      case 5: return 1000*$config['mages_per_fp'] - $total_files; break;
+      case 4: return 100*$config['images_per_fp'] - $total_files; break;
+      case 5: return 1000*$config['images_per_fp'] - $total_files; break;
     }
   }
   

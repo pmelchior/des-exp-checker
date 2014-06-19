@@ -18,25 +18,61 @@ function getDBHandle() {
 }
 
 function getNextImage($dbh) {
-    $sql = 'SELECT files.files.rowid, files.files.expname, ccd, band, name, files.runs.runname FROM files.files JOIN files.runs ON (files.files.expname = files.runs.expname)';
+    global $config;
+    $res = null;
+    $sql = 'SELECT '.$config['release'].'.rowid as fileid, '.$config['release'].'.expname, ccd, band, name, files.runs.runname FROM '.$config['release'].' JOIN files.runs ON ('.$config['release'].'.expname = files.runs.expname)';
     if (isset($_GET['expname']) && isset($_GET['ccd'])) {
-        $sql .= ' WHERE files.files.expname = ? AND ccd = ? LIMIT 1;';
+        $sql .= ' WHERE '.$config['release'].'.expname = ? AND ccd = ? LIMIT 1';
         $stmt = $dbh->prepare($sql);
         $stmt->bindParam(1, $_GET['expname'], PDO::PARAM_STR, 14);
         $stmt->bindParam(2, $_GET['ccd'], PDO::PARAM_INT);
         $stmt->execute();
-        return check_or_abort($stmt);
+        $res = check_or_abort($stmt);
     }
-    if (isset($_GET['problem'])) {
-        $sql .= ' JOIN qa ON (files.rowid = qa.fileid) WHERE qa.problem = ? ORDER BY RANDOM() LIMIT 1;';
+    elseif (isset($_GET['problem'])) {
+        $sql .= ' JOIN qa ON ('.$config['release'].'.rowid = qa.fileid) WHERE qa.problem = ? ORDER BY RANDOM() LIMIT 1';
         $stmt = $dbh->prepare($sql);
         $codes = getProblemCodes();
         $stmt->bindParam(1, $codes[$_GET['problem']], PDO::PARAM_INT);
         $stmt->execute();
-        return check_or_abort($stmt);
+        $res = check_or_abort($stmt);
     }
     // default query
-    return check_or_abort($dbh->query($sql.' ORDER BY RANDOM() LIMIT 1'));
+    else {
+        // to created redundancy: make every 2nd image drawn from list with existing qa
+        if (rand(0,2) < 1) {
+            $sql .= ' JOIN qa ON ('.$config['release'].'.rowid = qa.fileid)';
+        }
+        $res = check_or_abort($dbh->query($sql.' ORDER BY RANDOM() LIMIT 1'));
+    }
+    if ($row = $res->fetch(PDO::FETCH_ASSOC))
+        return $row;
+    else
+        return FALSE;
+}
+
+function getProblems($dbh, $fileid, $qa_id=NULL) {
+    global $config;
+    $sql = 'SELECT problem, x, y, detail FROM qa WHERE release=? AND fileid=?';
+    if (isset($qa_id))
+        $sql .= ' AND rowid=?';
+    else 
+        $sql .= ' AND problem != 0 AND problem >= -1';
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam(1, $config['release'], PDO::PARAM_STR, 4);
+    $stmt->bindParam(2, $fileid, PDO::PARAM_INT);
+    if (isset($qa_id))
+        $stmt->bindParam(3, $qa_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $res = check_or_abort($stmt);
+    $codes = getProblemCodes();
+    $problem_code = array_flip($codes);
+    $problems = array();
+    while($row = $res->fetch(PDO::FETCH_ASSOC)) {
+        $row['problem'] = $problem_code[$row['problem']];
+        array_push($problems, $row);
+    }
+    return $problems;
 }
 
 function getUIDFromSID($dbh) {
@@ -72,9 +108,6 @@ function userClass($total_files) {
       return 4;
     if ($total_files / $config['images_per_fp'] >= 5)
       return 3;
-    if ($total_files == 257) {
-        return 3;
-    }
     if ($total_files / $config['images_per_fp'] >= 1)
       return 2;
     if ($total_files >= 10)
@@ -89,8 +122,8 @@ function missingFilesForNextClass($total_files, $userclass) {
       case 1: return $config['images_per_fp'] - $total_files; break;
       case 2: return 5*$config['images_per_fp'] - $total_files; break;
       case 3: return 10*$config['images_per_fp'] - $total_files; break;
-      case 4: return 100*$config['mages_per_fp'] - $total_files; break;
-      case 5: return 1000*$config['mages_per_fp'] - $total_files; break;
+      case 4: return 100*$config['images_per_fp'] - $total_files; break;
+      case 5: return 1000*$config['images_per_fp'] - $total_files; break;
     }
   }
   
@@ -112,8 +145,8 @@ function getUserData($dbh, $uid) {
 function getActivity($dbh, $uid, $date=FALSE) {
     $activity = array();
     if ($date === FALSE)
-        $date = date('Y-m-d');
-    $sql = "SELECT COUNT(DISTINCT(fileid)) as activity FROM qa WHERE userid=".$uid." AND timestamp LIKE '".$date."%'";
+        $date = date('Y-m-d H:i:s', strtotime('-1 day'));
+    $sql = "SELECT COUNT(DISTINCT(fileid)) as activity FROM qa WHERE userid=".$uid." AND timestamp > '".$date."%'";
     $res = check_or_abort($dbh->query($sql));
     $activity['today'] = array_pop($res->fetch(PDO::FETCH_NUM));
     $sql = "SELECT total_files FROM users WHERE rowid=".$uid;
@@ -153,14 +186,53 @@ function json_output($data) {
 function getProblemCodes() {
     return array(
       "OK" => 0,
-      "Cosmic ray" => 1,
-      "Ghost" => 2,
-      "Cross-talk" => 3,
-      "Satellite" => 4,
-      "Readout" => 5,
-      "Failure" => 128,
+      
+      // Temporary categories, to be re-inspected
+      "Old_Readout" => -5,
+      "Old_Other" => -6,
+      "Old_Sky" => -7,
+      
+      // Instrument
+      "Guiding" => 11,
+      "Shutter" => 12,
+      "Readout" => 13,
+      "Haze" => 14,
+      
+      // Flat fielding
+      "A/B jump" => 21,
+      "Fringing" => 22,
+      "Tape bump" => 23,
+      "Tree rings" => 24,
+      "Vertical jump" => 25,
+      "Vertical stripes" => 26,
+      
+      // Reflections
+      "Ghost" => 32,
+      "Bright spray" => 31,
+      "Brush strokes" => 33,
+      "Bright arc" => 34,
+      
+      // Tracks
+      "Satellite" => 41,
+      "Airplane" => 42,
+      
+      // Masking
+      "Column mask" => 51,
+      // "Mask dots" => 52, // found unneccesary
+      "Excessive mask" => 53,
+      "Cosmic ray" => 54,
+      "Cross-talk" => 55,
+      "Edge-bleed" => 56,
+      
+      // Sky estimation
+      "Dark rim" => 61,
+      "Dark halo" => 62,
+      "Quilted sky" => 63,
+      "Wavy sky" => 64,
+      "Anti-bleed" => 65,
+      
       "Other..." => 255,
-      "Awesome!" => -1
+      "Awesome!" => -1,
     );
 }
 

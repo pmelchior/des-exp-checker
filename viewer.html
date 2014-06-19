@@ -26,12 +26,13 @@
 	<ul class="nav">
           <li class="active"><a href="#">Viewer</a></li>
 	  <li><a href="tutorial.html">Tutorial</a></li>
+          <li><a href="faq.html">FAQ</a></li>
           <li><a href="statistics.html">Statistics</a></li>
           <li><a href="api.html">API</a></li>
           <li><a href="gallery.html">Gallery</a></li>
 	</ul>
         <ul class="nav pull-right hide" id="user-menu" style="margin-right:-20px">
-          <li class="dropdown">
+          <li id="mydata-li" class="dropdown" style="display: none">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <span id="username">Username</span> <span class="badge" id="userrank">#1</span>
             <b class="caret"></b>
@@ -43,6 +44,7 @@
               <li><a tabindex="-1" id="logout" href="#">Logout</a></li>
             </ul>
           </li>
+          <li id="login-li"><a href="index.html" class="login-trigger">Log in ...</a></li>
         </ul>
       </div> 
     </div>
@@ -50,23 +52,7 @@
     <!-- BUTTONS -->
     <div style="margin-top:20px; position:relative;">
       <button id="fine-button" class="btn btn-success send">Next</button>
-      <div class="btn-group">
-        <button id="problem-button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><span id="problem-name"></span>
-        <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-          <li><a class="problem" tabindex="-1" href="#">Cosmic ray</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Ghost</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Cross-talk</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Satellite</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Readout</a></li>
-          <li><a class="problem" tabindex="-1" href="#">Failure</a></li>
-          <li class="divider"></li>
-          <li><a tabindex="-1" class="problem" id="other-problem" href="#">Other...</a></li>
-          <li class="divider"></li>
-          <li><a tabindex="-1" class="problem" id="other-problem" href="#">Awesome!</a></li>
-        </ul>
-      </div>
+      <!--#include file="problem_selector.shtml"-->
       <span id="problem-dialogue" class="hide" style="margin-left: 10px;font-weight:bold;">
         Click to mark in the image
       </span>
@@ -83,7 +69,7 @@
             <li><a tabindex="-1" href="#" id="share-button">Share <u>l</u>ink</a></li>
             <li><a tabindex="-1" href="#" id="desdm-button"><u>D</u>ownload image from DESDM</a></li>
             <li><a tabindex="-1" href="#" id="fov-button">Show entire <u>F</u>oV</a></li>
-            <li><a tabindex="-1" href="#" id="squad-button">Get eyeball squad <u>r</u>eport</a></li>
+            <li><a tabindex="-1" href="#" id="reported-button">Show reported <u>p</u>roblems</a></li>
           </ul>
         </div>
         <button class="btn btn-info" href="#" id="toggle-mask-button">Toggle <u>m</u>ask</button>
@@ -117,19 +103,6 @@
       </div>
       <div class="modal-body" id="fov-body" style="max-height:none;">
       <div id="fov-url" class="hide"></div>
-      </div>
-    </div>
-    
-    <div class="modal hide" id="squad-modal" tabindex="-1">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Eyeball squad report</h3>
-      </div>
-      <div class="modal-body">
-      <strong>Anything wrong?</strong>
-      <p id="squad-wrong-text"></p>
-      <strong>Additional comments</strong>
-      <p id="squad-comment-text"></p>
       </div>
     </div>
     
@@ -189,15 +162,32 @@
       </div>
     </div>
     
-    
-    <div class="modal hide" id="session-modal">
+    <div class="modal hide" id="login-modal">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3>Login required</h3>
       </div>
       <div class="modal-body">
-        <p>To view this page, you need to log in. If you've done that, your session
-        may be expired. Either way, please log in (again)...</p>
+        <p>To report problems you need to log in with your exposure checker credentials.<br>
+        If you've done that, your session may be expired. If you haven't signed up yet, please do so.</p>
+        <p>Don't worry, we bring'll you back to this image afterwards.</p>
+      </div>
+      <div class="modal-footer">
+        <a href="index.html" class="btn btn-primary login-trigger">Login...</a>
+      </div>
+    </div>
+    
+    <div class="modal hide" id="message-modal">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="message_header"></h3>
+      </div>
+      <div class="modal-body">
+        <p id="message_text"></p>
+        <p id="message_details"></p>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn btn-primary" data-dismiss="modal">OK</a>
       </div>
     </div>
     
@@ -206,7 +196,7 @@
   </div>
   <div id="foot">
     <div class="container" style="text-align:right">
-      <div class="breadcrumb muted" style="margin: 24px 0 0 0;">Created by Peter Melchior and Erin Sheldon</div>
+      <div class="breadcrumb muted" style="margin: 24px 0 0 0;">Created by Peter Melchior, Erin Sheldon, Alex Drlica-Wagner</div>
     </div>
   </div>
 </body>
@@ -219,40 +209,60 @@
 <script>
   // initial setup
   $(document).ready(function(){
-    if (!checkSessionCookie())
-        kickOut();
     // define and show spinner
     spinner = new Spinner({color: "#049cdb"}).spin();
     $('#loading').append(spinner.el);
     $('#loading').removeClass('hide');
+    var urlparams = $.url().param();
+    // if user is logged in: show user dropdown
+    if (checkSessionCookie()) {
+      getMyData();
+      setInterval(getMyData, 600000);
+      $('#login-li').hide();
+      $('#mydata-li').show();
+      // 
+      if ($.cookie('lastfile') !== undefined) {
+        urlparams = $.url($.cookie('lastfile')).param();
+        $.removeCookie('lastfile');
+      }
+    }
+    else {
+      $('#login-modal').modal({"backdrop": true, "show":false, "keyboard": true});
+      $('a[class*="login-trigger"]').on('click', function(evt) {
+        $.cookie('lastfile', $('#share-url').val(), {expires: 1});
+        window.location.href=this.attr('href');
+      });
+      // is not: show message when user clicks on the problem button
+      $('#problem-button').on('click', function(evt) {
+        $('#login-modal').modal('show');
+        evt.preventDefault();
+      });
+    }
     // get first image data
-    $.get('db.php', $.url().param(), function(data) {
-            var response = $.parseJSON(data);
-            setNextImage(response);
-          }
-    )
+    $.get('db.php', urlparams, function(data) {
+        var response = $.parseJSON(data);
+        setNextImage(response);
+      })
     .fail(function() {
       alert('Failure when loading image');
     });
-
-    getMyData();
-    setInterval(getMyData, 600000);
+   
   });
   $('form').submit(function() {
     return false;
   });
   
   // initialize fields and modals
-  $('#problem-name').html(problem_default);
+  problem_default = $('#problem-name').html();
   $('#problem-modal').modal({"backdrop": false, "show": false, "keyboard": false });
   $('#fov-modal').modal({"backdrop": false, "show": false, "keyboard": true });
-  $('#squad-modal').modal({"backdrop": false, "show": false, "keyboard": true });
   $('#share-modal').modal({"backdrop": false, "show": false, "keyboard": true });
   $('#desdm-modal').modal({"backdrop": false, "show": false, "keyboard": true });
   $('#rank-modal').modal({"backdrop": false, "show":false, "keyboard": true});
   $('#mystats-modal').modal({"backdrop": false, "show":false, "keyboard": true});
   $('#congrats-modal').modal({"backdrop": false, "show":false, "keyboard": true});
-  $('#session-modal').modal({"backdrop": true, "show":false, "keyboard": false});
+  $('#message-modal').modal({"backdrop": true, "show":false, "keyboard": false});
+  //$('#login-modal').modal({"backdrop": true, "show":false, "keyboard": false});
   
   // button actions
   $('button[class*="send"]').on('click', function(evt) {
@@ -287,21 +297,31 @@
     });
     $('#fov-modal').modal('show');
   });
-  $('#squad-button').on('click', function() {
-    var expname = $('#image_name').html().split(',').shift();
-    $.get('eyeball_squad_report.php', {'expname': expname }, function(response) {
-        if (response) {
-          $('#squad-wrong-text').html(response.wrong);
-          if (response.comment != "")
-            $('#squad-comment-text').html(response.comment);
-          else
-            $('#squad-comment-text').html('None');
-        } else {
-          $('#squad-wrong-text').html('<i>not available</i>');
-          $('#squad-comment-text').html('<i>not available</i>');
-        }
-      }, 'json');
-    $('#squad-modal').modal('show');
+  $('#reported-button').on('click', function() {
+    var elem = $($(webfits.reportCtx)[0].canvas);
+    // if new file: get reported problems
+    if (has_reported_problems === false) {
+      $('#loading').removeClass('hide');
+      setTimeout(function() { // add a little timeout to give feedback to user
+      $.get('problems.php', {'fileid': fileid }, function(response) {
+          if (response) {
+            for (var i=0; i < response.length; i++) {
+              addMark(response[i], webfits.reportCtx);
+            }
+          }
+          $('#loading').addClass('hide');
+          has_reported_problems = true;
+          elem.css('display', 'block');
+        }, 'json');
+      }, 500);
+    }
+    // toggle visibility of the canvas with the reported problems
+    else {
+      if (elem.css('display') == 'block')
+        elem.css('display', 'none');
+      else
+        elem.css('display', 'block');
+    }
   });
   $('#toggle-mask-button').on('click', function() {
     webfits.showMask = !webfits.showMask;
@@ -377,6 +397,9 @@
   });
   jwerty.key('alt+r', function() {
     $('#squad-button').trigger('click');
+  });
+  jwerty.key('alt+p', function() {
+    $('#reported-button').trigger('click');
   });
 
   // Enter and Esc for special keybindings inside the problem modal  

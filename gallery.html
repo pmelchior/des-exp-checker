@@ -60,6 +60,7 @@
 	<ul class="nav">
           <li><a href="viewer.html">Viewer</a></li>
 	  <li><a href="tutorial.html">Tutorial</a></li>
+          <li><a href="faq.html">FAQ</a></li>
           <li><a href="statistics.html">Statistics</a></li>
           <li><a href="api.html">API</a></li>
           <li class="active"><a href="gallery.html">Gallery</a></li>
@@ -101,7 +102,7 @@
     <div class="span6">
       <p class="img-polaroid">
         <a href="viewer.html?expname=DECam_00181220&ccd=54" title="Click to view the original image">
-          <img src="tutorial/comet1.gif"/></a>
+          <img src="material/comet_animated.gif"/></a>
         <small>First reported by: beckermr on 2013-10-07 17:48:40</small>
       </p>
     </div>
@@ -118,14 +119,14 @@
     covering a lot of area to as of yet unreached depths. In other words, the collection of these objects
     is a great source for public outreach and the title slides of our upcoming DES presentations.
     And potentially, you might be able to discover something really new out there.</p>
-    <p>If that sounds like a job for you, please <a href="mailto:DES%20exposure%20checker?subject=%5Bdes-exposure-checker%5D%20I%20like%20to%20help%20with%20the%20gallery">contact us</a>.</p>
+    <p>If that sounds like a job for you, please <a href="#" id="email-anchor">contact us</a>.</p>
     </div>
   </div>
   <div id="push"></div>
   </div>
   <div id="foot">
     <div class="container" style="text-align:right">
-      <div class="breadcrumb muted" style="margin: 24px 0 0 0;">Created by Peter Melchior and Erin Sheldon</div>
+      <div class="breadcrumb muted" style="margin: 24px 0 0 0;">Created by Peter Melchior, Erin Sheldon, Alex Drlica-Wagner</div>
     </div>
   </div>      
 </body>
@@ -135,8 +136,11 @@
     $.get('gallery.php', {'output': 'html'}, function(response) {
       $('#awesome-table').html(response);
     });
-    // coordinate togglers
+    $.get('email.php', function(response) {
+      $('#email-anchor').attr('href', 'mailto:' + response);
+    });
   });
+  // coordinate togglers
   $('span[class*="coords"]').on('click', function(evt) {
     // select all coordinates:
     var nodes = $('span[class*="coords"]');

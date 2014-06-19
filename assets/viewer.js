@@ -4,20 +4,25 @@ var spinner;
 var marks = [];
 var problem = null;
 var fileid = null;
-var problem_default = "Hold on, that's...";
+var problem_default = null;
+var has_reported_problems = false;
 
-function addMark(prob) {
-  var ctx = webfits.overlayCtx;
+function addMark(prob, ctx) {
+  var color = '#FFFF00';
+  if (ctx === undefined)
+    ctx = webfits.overlayCtx;
+  else
+    color = '#FFA500';
   ctx.beginPath();
-  ctx.arc(prob.x, prob.y, 50, 0, 2*Math.PI, true);
+  ctx.arc(prob.x, prob.y, 40, 0, 2*Math.PI, true);
   ctx.lineWidth=2;
-  ctx.strokeStyle='#FF0000';
+  ctx.strokeStyle=color;
   ctx.stroke();
     
-  ctx.font = '12pt Arial';
+  ctx.font = '14px Helvetica';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#FF0000';
+  ctx.fillStyle = color;
   ctx.fillText(prob.problem, prob.x, prob.y);
 }
 
@@ -40,9 +45,12 @@ function overlayCallback(_this, opts, evt) {
   }
 }
 
-function clearMarks() {
-  webfits.overlayCtx.clearRect(0,0,webfits.canvas.width, webfits.canvas.height);
-  marks = [];
+function clearMarks(ctx) {
+  if (ctx === undefined) {
+    ctx = webfits.overlayCtx;
+    marks = [];
+  }
+  ctx.clearRect(0,0,webfits.canvas.width, webfits.canvas.height);
 }
 
 function clearLastMark() {
@@ -72,7 +80,7 @@ function createVisualization(arr, opts) {
   var extent = dataunit.getExtent(arr);
   
   // Get the DOM element
-  var el = $('#' + opts.el).get(0);
+  var el = $('#wicked-science-visualization').get(0);
   
   var callbacks = {
     onclick: overlayCallback
@@ -101,25 +109,40 @@ function createVisualization(arr, opts) {
 function addMaskLayer(arr, opts) {
   webfits.loadImage('bpm', arr, 1024, 512);
   webfits.draw();
-  $('#loading').addClass('hide');
+  completeVisualization(opts);
 }
 
-function renderImage(name) {
-  if (marks.length)
-    clearMarks();
-  var opts = {
-    el: 'wicked-science-visualization'
-  };
-  var f = new astro.FITS.File(name, getImage, opts); 
-}
-
-function setNextImage(response) {
-  fileid = response.rowid;
+// to be done once all elements of webfits are in place
+function completeVisualization(response) {
+    // add marks if present in response
+  if (response.marks !== undefined) {
+    for (var i=0; i < response.marks.length; i++) {
+      addMark(response.marks[i], webfits.reportCtx);
+    }
+    has_reported_problems = true;
+  }
+  // set file-dependent information
+  fileid = response.fileid;
   $('#image_name').html(response.expname + ', CCD ' + response.ccd + ", " + response.band + "-band");
   $('#share-url').val('http://' + window.location.host + window.location.pathname + '?expname=' + response.expname + '&ccd=' + response.ccd);
   $('#desdm-url').val('https://desar2.cosmology.illinois.edu/DESFiles/desardata/OPS/red/' + response.runname + '/red/' + response.expname + '/' + response.expname + '_' + response.ccd +'.fits.fz');
   $('#fov-url').html('https://cosmology.illinois.edu/~mjohns44/SingleEpoch/pngs/' + response.runname + '/mosaics/' + response.expname + '_mosaic.png');
-  renderImage(response.name);
+  // after both image and mask are drawn: remove loading spinner
+  $('#loading').addClass('hide');
+  $('#wicked-science-visualization').find('canvas').fadeTo(200, 1);
+}
+
+function setNextImage(response) {
+  if (response.error === undefined) { 
+    var f = new astro.FITS.File(response.name, getImage, response);
+  }
+  else {
+    $('#message_header').html(response.error);
+    $('#message_text').html(response.message);
+    $('#message_details').html(response.description);
+    $('#message-modal').modal('show');
+    $('#loading').addClass('hide');
+  }
 }
 
 function userClass(uc) {
@@ -134,42 +157,43 @@ function userClass(uc) {
   }
 }
 
+function showCongrats(congrats) {
+  $('#congrats_text').html(congrats.text);
+  if (congrats.detail !== undefined) {
+    $('#congrats_details').html(congrats.detail);
+    if (congrats.userclass !== undefined) {
+      var uc = userClass(congrats.userclass);
+      $('#status_class').addClass(uc.style);
+      $('#status_class').html(uc.title);
+      $('#userrank').removeClass();
+      $('#userrank').addClass("badge");
+      $('#userrank').addClass(uc.style); // set the badge color
+    }
+  }
+  else
+    $('#congrats_details').html();
+  $('#congrats-modal').modal('show');
+}
+
 function sendResponse() {
   // show spinner
   $('#loading').removeClass('hide');
+  $('#wicked-science-visualization').find('canvas').fadeTo(400, 0.05);
   // update counters
   var number = parseInt($('#total-files').html());
   number += 1;
   $('#total-files').html(number);
   
   // post to DB
-  $.post('db.php',
-         {'fileid': fileid, 'problems': marks},
-         function(data) {
-          var response = $.parseJSON(data);
-          if (response.congrats !== undefined) {
-            $('#congrats_text').html(response.congrats.text);
-            if (response.congrats.detail !== undefined) {
-              $('#congrats_details').html(response.congrats.detail);
-              if (response.congrats.userclass !== undefined) {
-                var uc = userClass(response.congrats.userclass);
-                $('#status_class').addClass(uc.style);
-                $('#status_class').html(uc.title);
-                $('#userrank').removeClass();
-                $('#userrank').addClass("badge");
-                $('#userrank').addClass(uc.style); // set the badge color
-              }
-            }
-            else
-              $('#congrats_details').html();
-            $('#congrats-modal').modal('show');
-          }
-          setNextImage(response);
-        }
-  )
-  .fail(function() {
-    alert('Failure when saving response');
-    clearMarks();
+  $.post('db.php', {'fileid': fileid, 'problems': marks},
+    function(data) {
+      var response = $.parseJSON(data);
+      if (response.congrats !== undefined)
+        showCongrats(response.congrats);
+      setNextImage(response);
+    })
+    .fail(function() {
+      alert('Failure when saving response');
   });
   
   // clear UI
@@ -177,19 +201,17 @@ function sendResponse() {
   $('#mark-buttons').addClass('hide');
   $('#problem-text').val('');
   $('#problem-name').html(problem_default);
+  if (marks.length)
+    clearMarks();
+  if (has_reported_problems) {
+    clearMarks(webfits.reportCtx);
+    has_reported_problems = false;
+  }
   problem = null;
 }
 
 function checkSessionCookie() {
   return ($.cookie('sid') != null);    
-}
-
-function kickOut() {
-  $('#session-modal').modal('show');
-  setTimeout(function() {
-    // kick out
-    window.location.href = "index.html";
-  }, 3000);
 }
 
 function getMyData() {
@@ -210,10 +232,10 @@ function getMyData() {
     
     var rankDetails = "";
     if (uc.class > 0) 
-      rankDetails += "You have the rank of a <span class='badge " + uc.style + "'>" + uc.title + "</span>.<br />";
+      rankDetails += "You have the rank of <span class='badge " + uc.style + "'>" + uc.title + "</span>.<br />";
     if (uc.class < 5) {
       var next_uc = userClass(uc.class + 1);
-      rankDetails += "You need another <strong>" + response.missingfiles + "</strong> images to reach the rank of a <span class='badge " + next_uc.style + "'>" + next_uc.title + "</span>.";
+      rankDetails += "You need another <strong>" + response.missingfiles + "</strong> images to reach the rank of <span class='badge " + next_uc.style + "'>" + next_uc.title + "</span>.";
     }
     $('#user_rank_details').html(rankDetails);
 

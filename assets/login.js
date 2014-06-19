@@ -21,7 +21,7 @@ function sendPassword(params, button) {
     }, 'json');
 }
     
-function logIn() {
+function logIn(evt) {
     var button = $('#login_button');
     button.button('loading');
     var params = $('#log-in-form').serializeArray();
@@ -42,7 +42,7 @@ function logIn() {
         // if successfull: server sets session cookie and we change location
         sendPassword(p, button);
     }
-    return false;
+    return evt.preventDefault();
 }
 
 function showLogIn() {
@@ -50,7 +50,7 @@ function showLogIn() {
     $('#log-in').find('#username').focus();
 }
 
-function signUp() {
+function signUp(evt) {
     var button = $('#signup_button');
     button.button('loading');
     var params = $('#sign-up-form').serializeArray();
@@ -80,5 +80,5 @@ function signUp() {
           }
       }
     ,'json');
-    return false;
+    return evt.preventDefault();
 }

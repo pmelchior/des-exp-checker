@@ -22,6 +22,7 @@
 	<ul class="nav">
           <li><a href="viewer.html">Viewer</a></li>
 	  <li class="active"><a href="#">Tutorial</a></li>
+          <li><a href="faq.html">FAQ</a></li>
           <li><a href="statistics.html">Statistics</a></li>
           <li><a href="api.html">API</a></li>
           <li><a href="gallery.html">Gallery</a></li>
@@ -30,81 +31,87 @@
     </div>
     
     <!-- content area -->
-    <div class="span7">
+    <div class="span12">
       <h1>Tutorial</h1>
-      <p>The <a href="viewer.html">Viewer</a> automatically pulls an image,
-      which you should inspect and determine if it's fine. If so, simply press "Next". If not, select one of the
-      predefined artifacts from the "Hold on, that's..." button. Once you're done marking the problems, click "Next".
-      </p>
+      <a id="tutorial-anchor"></a>
+    </div>
+    <div class="span12">
+      <p>The <a href="viewer.html">Viewer</a> displays an image from a single DECam CCD for you to inspect.
+      Two primary buttons are provided:</p>
       <button id="fine-button" class="btn btn-success">Next</button>
+      <!--#include file="problem_selector.shtml"-->
+      <p style="margin-top:10px">
+      If there are no obvious issues with the image displayed, simply press <span style="font-weight: bold; color:#46a546">Next</span>. 
+      Otherwise, click the <span style="font-weight: bold; color:#9d261d">Problem</span> button and select one of the predefined problem categories. 
+      Click on the problematic location(s) to mark the image.
+      Once you are done marking all problems, click <span style="font-weight: bold; color:#46a546">Next</span> to submit the problems and advance to the next image.
+      </p>
+      <p>
+        Additionally, we allow you to further investigate the single CCD image using the buttons:</p>
+      <p>
       <div class="btn-group">
-        <button id="problem-button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"><span id="problem-name">Hold on, that's...</span>
-        <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-          <li><a class="problem" tabindex="-1" href="#cosmic">Cosmic ray</a></li>
-          <li><a class="problem" tabindex="-1" href="#ghost">Ghost</a></li>
-          <li><a class="problem" tabindex="-1" href="#crosstalk">Cross-talk</a></li>
-          <li><a class="problem" tabindex="-1" href="#satellite">Satellite</a></li>
-          <li><a class="problem" tabindex="-1" href="#readout">Readout</a></li>
-          <li><a class="problem" tabindex="-1" href="#failure">Failure</a></li>
-          <li class="divider"></li>
-          <li><a tabindex="-1" class="problem" id="other-problem" href="#other">Other...</a></li>
-          <li class="divider"></li>
-          <li><a tabindex="-1" class="problem" id="other-problem" href="#awesome">Awesome!</a></li>
-        </ul>
+      <button id="info-button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Info</span><span class="caret"></span></button>
+      <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+        <li><a tabindex="-1" href="#tutorial-anchor" id="share-button">Share <u>l</u>ink</a></li>
+        <li><a tabindex="-1" href="#tutorial-anchor" id="desdm-button"><u>D</u>ownload image from DESDM</a></li>
+        <li><a tabindex="-1" href="#tutorial-anchor" id="fov-button">Show entire <u>F</u>oV</a></li>
+        <li><a tabindex="-1" href="#tutorial-anchor" id="reported-button">Show reported <u>p</u>roblems</a></li>
+      </ul>
       </div>
+      <button class="btn btn-info">Toggle <u>m</u>ask</button>
+      <button class="btn btn-info">Toggle <u>s</u>caling</button>
+      </p>
+      <p>
+        The <span style="font-weight: bold; color:#4CB1CF">Info</span> button provides a link to the image you are currently viewing, the path to the full resolution FITS file from DESDM, a PNG showing the entire focal plane, and access to problems previously reported for this image by other users.
+        The <span style="font-weight: bold; color:#4CB1CF">Toggle Mask</span> button allows you to turn on and off the image mask, while the <span style="font-weight: bold; color:#4CB1CF">Toggle Scaling</span> button lets you change the image scaling.
+      </p>
+      <p>
+      You now have everything you need to start looking at images.
+      If you still have questions, go the <a href="faq.html">FAQ</a> page and see if we cover it already.<br>
+      The remainder of this tutorial goes into more detail about the various imaging artifacts commonly found in the SV-A1 data set.
+      </p>
     </div>
     
-    <div class="span7">
-      <a name="cosmic"></a>
+    <div class="span12">
+      <a id="masking-anchor"></a>
+      <h2>Masking</h2>
+    </div>
+    <div class="span7" >
+      <a id="column-mask-anchor"></a>
+      <h3>Column Mask</h3>
+      <p> There are a number of columns that behave differently than their neighbors.
+        Often this occurs when a hot pixel in the column bleeds over during readout. 
+        We attempt to mask these columns with a "bad pixel mask" and it is useful to know when we are missing bad columns.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00157811&ccd=28" title="Click to view the original image"><img src="material/column_mask.gif" /></a>
+        <small>Partially masked bad column</small>
+      </p>
+    </div>
+     
+    <div class="span7" >
+      <a id="cosmic-ray-anchor"></a>
       <h3>Cosmic rays</h3>
-      <p>They are an inevitable contaminant to images from our deep red-sensitive CCDs, so the
-      problem is not that they are there. It's when they are not properly masked.
-      The good thing about them: they are easy to spot.</p>
-      <p>
-        <button class="btn btn-info">Toggle <u>m</u>ask</button>
-        <button class="btn btn-info">Toggle <u>s</u>caling</button>
-      </p>
-      <p>
-      Use the buttons showns above to switch to a scaling that focusses on the bright
-      aspects of the image and to blink the mask, and the cosmic rays
-      will become very apparent.
-      </p>
-      <p>It's perfectly fine to mark multiple cosmic rays per image
-      (including those that are only partially masked) or
-      multiple different problems on the same image. If you want to redo your selection,
-      simply <button class="btn btn-mini btn-info">Clear</button>
-      the markings from the image. If you're satisfied, save it and move
-      on the the next image by clicking on <button class="btn btn-mini btn-success">Next</button>.
+      <p>Cosmic-ray contamination is unavoidable in our deep red-sensitive CCDs.
+      The good thing about unmasked cosmic rays: they are easy to spot.
+      Unmasked cosmic rays should become apparent when you use the
+      <button class="btn btn-small btn-info">Toggle <u>s</u>caling</button> button
+      to switch to a scaling that focuses on the bright aspects of the image and the
+      <button class="btn btn-small btn-info">Toggle <u>m</u>ask</button> to blink the existing mask.
+      It's perfectly fine to mark multiple cosmic rays per image,
+      including those that are only partially masked.</p>
     </div>
-    <div class="span4 offset1">
+    <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00159614&ccd=32" title="Click to view the original image"><img src="tutorial/cosmic_partial.png" /></a>
-        <small>Partially masked cosmic ray (center)</small>
+        <a href="viewer.html?expname=DECam_00161501&ccd=18" title="Click to view the original image"><img src="material/cosmic_ray.gif" /></a>
+        <small>Several partially masked cosmic rays</small>
       </p>
     </div>
-    
+     
     <div class="span7">
-      <a name="ghost"></a>
-      <h3>Ghosts</h3>
-      <p>Ghost are reflections of the optics, basically an undesired additional path
-      from the outside of the telescope to CCD. They occur all the time,
-      but only show up if a bright object provides enough illumination for this
-      extra optical path. Then, often very large areas (from parts of a chip to the
-      entire focal plane) show ring-like features, which are brighter or fainter than the
-      surrounding sky. Whether ghosts are of concern depends strongly on the kind
-      of science analysis you're after. In either case, we need to know where they are.
-    </div>
-    <div class="span4 offset1">
-      <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00158404&ccd=19" title="Click to view the original image"><img src="tutorial/ghost.png" /></a>
-        <small>Factor 2 zoom-out of a pupil ghost next to a bright star.</small>
-      </p>
-    </div>
-    
-    <div class="span7">
-      <a name="crosstalk"></a>
+      <a id="cross-talk-anchor"></a>
       <h3>Cross-talk</h3>
       <p>Cross-talk is a readout issue, which occurs in the electronics.
       The visual imprint of cross-talk is a long, horizontal excess of counts,
@@ -118,88 +125,404 @@
       visible imprint. Toggle the image scaling to dig deeper into noise. Since the feature can be very extended,
       mark the region where it has it's widest vertical extension: the knot in the middle.
     </div>
-    <div class="span4 offset1">
+    <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00169293&ccd=7" title="Click to view the original image"><img src="tutorial/cross_talk.png" /></a>
-        <small>Cross-talk from the bright star in the bottom onto the top amplifier.</small>
+        <a href="viewer.html?expname=DECam_00161873&ccd=2" title="Click to view the original image"><img src="material/cross_talk.gif" /></a>
+        <small>Cross-talk from several bright stars</small>
       </p>
     </div>
-    
+     
     <div class="span7">
-      <a name="satellite"></a>
+      <a id="edge-bleed-anchor"></a>
+      <h3>Edge-bleed</h3>
+      <p> Very bright stars saturate the readout electronics leading to bright bleeds on the readout side of the CCD.
+        Edge-bleeds should be automatically identified and masked with a rectangular strip.
+        If this mask is too big, too small, or not present at all, please tag the location of the error.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00157575&ccd=9" title="Click to view the original image"><img src="material/edge_bleed.gif" /></a>
+        <small>Edge-bleed on left side from bright star further right</small>
+      </p>
+    </div>
+     
+    <div class="span7">
+      <a id="excessive-mask-anchor"></a>
+      <h3>Excessive mask</h3>
+      <p> Occasionally large regions of a CCD get masked for no apparent reason.
+        Sometimes this is a failure in edge-bleed masking, other times the cause is uncertain.
+        Toggle the mask and flag excessive masks when you see them.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00170637&ccd=16" title="Click to view the original image"><img src="material/excessive_mask.gif" /></a>
+        <small>Excessive masking likely due to a failed edge-bleed mask</small>
+      </p>
+    </div>
+
+    <div class="span12">
+      <h2>Sky Estimation</h2>
+    </div>
+    <div class="span7">
+      <a id="dark-rim-anchor"></a>
+      <h3>Dark rim</h3>
+      <p> It is fairly common for dark regions to appear in the corners and around the edges of images.
+        These reflect an over-subtraction of the sky background in these regions.
+        These dark rims are often correlated with bright stars or dense fields.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00169958&ccd=50" title="Click to view the original image"><img src="material/dark_rim.gif" /></a>
+        <small>Dark area at the top-left corner</small>
+      </p>
+    </div>
+     
+    <div class="span7">
+      <a id="dark-halo-anchor"></a>
+      <h3>Dark halo</h3>
+      <p> Dark halos occasionally appear surrounding bright objects. 
+        This results from the sky background being over-estimated close to these objects.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00168969&ccd=53" title="Click to view the original image"><img src="material/dark_halo.gif" /></a>
+        <small>A dark halo appears around the bright star in this image</small>
+      </p>
+    </div>
+     
+    <div class="span7">
+      <a id="Quilted-sky-anchor"></a>
+      <h3>Quilted sky</h3>
+      <p> Occasionally images show strong rectilinear patterning, and in the worst cases a CCD will appear as a 4x8 quilt of light and dark regions.
+        This quilting is introduced by a mismatch in the normalization factor between the pupil and illumination correction (both of which are calculated in 512 pixel blocks).
+        This artifact often appears strongest near the sides of the CCD, and can manifest itself as a single vertical line inset by roughly 1/8th of a CCD length.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00164761&ccd=20" title="Click to view the original image"><img src="material/quilted_sky.gif" /></a>
+        <small>Quilted sky (factor 2 downsampled)</small>
+      </p>
+    </div>
+     
+    <div class="span7">
+      <a id="wavy-sky-anchor"></a>
+      <h3>Wavy sky</h3>
+      <p> Wavy sky appears as large-scale structures contributing a high-level of sky background.
+        These features are often correlated over the entire focal plane and can occur for several exposures in a row (they may be the result of poor observing conditions).
+        We don't understand the root cause of this this yet...
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00163508&ccd=62" title="Click to view the original image"><img src="material/wavy_sky.gif" /></a>
+        <small>Wavy sky (factor 2 downsampled)</small>
+      </p>
+    </div>
+     
+    <div class="span7">
+      <a id="anti-bleed-anchor"></a>
+      <h3>Anti-bleed</h3>
+      <p> Anti-bleeds are dark streaks extending vertical from bright stars towards the long edges of the CCD.
+        They have a width roughly comparable to the masked region of the star.
+        They appear in the reduced images themselves and are thus not purely an artifact of the sky background subtraction.
+        We don't understand the root cause of this this yet...
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00169331&ccd=55" title="Click to view the original image"><img src="material/anti_bleed.gif" /></a>
+        <small>Dark anti-bleed around bright stars</small>
+      </p>
+    </div>
+
+    <div class="span12">
+      <h2>Flat Field</h2>
+    </div>
+    <div class="span7">
+      <a id="ab-jump-anchor"></a>
+      <h3>A/B jump</h3>
+      <p> The top and bottom halves of the DECam CCDs are read out by two different amplifiers.
+        The gains on these amplifiers are different leading to a different background level on the two halves of each CCD.
+        This should be corrected for in flat fielding; however, a failure can lead to a strong change in the background level at the horizontal mid-plane of the CCDs.
+        This is most pronounced with the low-light-level non-linearity of CCD 31.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00152743&ccd=31" title="Click to view the original image"><img src="material/ab_jump.gif" /></a>
+        <small>A/B bias jump characteristic of CCD 31 (factor 2 downsampled)</small>
+      </p>
+    </div>
+     
+    <div class="span7">
+      <a id="fringing-anchor"></a>
+      <h3>Fringing</h3>
+      <p> Fringes are an interference pattern that occur at red wavelengths when the CCDs become transparent (think of the fringes on the surface of an oily puddle). 
+        Fringes are known to be variable (relative to the rest of sky brightness) and the pipeline does not currently deal with them too well.
+        They occur most commonly in the z-band.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00181120&ccd=49" title="Click to view the original image"><img src="material/fringing.gif" /></a>
+        <small>Strong fringing pattern</small>
+      </p>
+    </div>
+     
+    <div class="span7">
+      <a id="tape-bump-anchor"></a>
+      <h3>Tape bump</h3>
+      <p> The silicon wafers are attached to the CCD backplanes by six pieces of double-sided tape (three along each long edge of the CCD).
+        Physical stresses on the silicon lattice distort the electric field in these regions changing the effective size of the pixels in these regions.
+        A failure in flat-fielding can lead to one or often more of these tape bumps being visible in the reduced image.
+        For more information, see <a href="http://arxiv.org/abs/1403.6127">this paper</a>.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00181151&ccd=16" title="Click to view the original image"><img src="material/tape_bumps.gif" /></a>
+        <small>Tape bump at the bottom center, together with fringing</small>
+      </p>
+    </div>
+     
+    <div class="span7">
+      <a id="tree-rings-anchor"></a>
+      <h3>Tree rings</h3>
+      <p> Tree rings are concentric, circularly symmetric features arising changes in the effective pixel size resulting from transverse electric fields in the CCDs.
+        Tree rings originate from variations in the doping impurities during single-crystal silicon growth.
+        Thus, the tree ring pattern of each CCD will depend on its relative position in the silicon wafer.
+        Tree rings appear most strongly in the z-band.
+        For more information, see <a href="http://arxiv.org/abs/1403.6127">this paper</a>.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00181154&ccd=24" title="Click to view the original image"><img src="material/tree_rings.gif" /></a>
+        <small>Strong concentric tree ring pattern</small>
+      </p>
+    </div>
+     
+    <div class="span7">
+      <a id="vertical-jump-anchor"></a>
+      <h3>Vertical jump</h3>
+      <p>
+        The vertical jump arises from the incorporation of a few bad flats into the calibration sets.
+        These flats contain a strong gradient caused by the shutter failing to close during readout.
+        Due to the clipping algorithm when combining multiple flats, this results in a vertical "jump" near the center of flat-fielded images.
+        More information on the vertical jump feature can be found <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Central_Bias_Jump">here</a>.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00181033&ccd=1" title="Click to view the original image"><img src="material/vertical_jump.gif" /></a>
+        <small>Vertical jump from bad flats</small>
+      </p>
+    </div>
+     
+    <div class="span7">
+      <a id="vertical-stripes-anchor"></a>
+      <h3>Vertical stripes</h3>
+      <p> Some images contain a grainy vertical striping.
+        Sometimes, this striping can be so bad that the image gets excessively masked.
+        We don't understand the root cause of these yet...        
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00147580&ccd=22" title="Click to view the original image"><img src="material/vertical_stripes.gif" /></a>
+        <small>Vertical stripes, resulting in excessive masking</small>
+      </p>
+    </div>
+
+    <div class="span12">
+      <h2>Reflections</h2>
+    </div>
+    <div class="span7">
+      <a id="bright-spray-anchor"></a>
+      <h3>Bright spray</h3>
+      <p> The worst scattered light features come bright off-axis stars scattering off of the wall of the shutter.
+        This leads to broad bright sprays fanning out from the edge of the focal plane.
+        These features can be most easily identified on the full focal plane images via the <button class="btn btn-small btn-info">Info</button> button.
+        After Year 1, we applied an anti-reflective paint to the shutter wall and this issues should be corrected for Year 2 and beyond.
+        More information can be found <a href="http://des-docdb.fnal.gov:8080/cgi-bin/ShowDocument?docid=7002">here</a>.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00153949&ccd=3" title="Click to view the original image"><img src="material/bright_spray.gif" /></a>
+        <small>Example of strong spray of scattered light (factor 2 downsampled)</small>
+      </p>
+    </div>
+     
+    <div class="span7">
+      <a id="ghost-anchor"></a>
+      <h3>Ghosts</h3>
+      <p>Ghost are reflections off the internal camera optics. 
+        They dominantly appear when a bright object is in the field of view and often occupy very large areas (from parts of a chip to the entire focal plane).
+        Small ghosts can be identified on a single chip by their characteristic "tie-fighter window" pattern; however, often it is helpful to look at images of the full focal play.
+        More information on ghosts can be found <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Ghosts">here</a>.
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00158404&ccd=19" title="Click to view the original image"><img src="material/ghost.gif" /></a>
+        <small>Pupil ghost next to a bright star (factor 2 downsampled)</small>
+      </p>
+    </div>
+     
+    <div class="span7">
+      <a id="brush-strokes-anchor"></a>
+      <h3>Brush strokes</h3>
+      <p> In addition to Bright Sprays, less intense scattered light features appear on smaller scales.
+        These have been termed "Brush Strokes" due to their diffuse, sweeping appearance.
+        We don't understand the root cause of these yet...
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00163439&ccd=31" title="Click to view the original image"><img src="material/brush_strokes.gif" /></a>
+        <small>Brush strokes of scattered light</small>
+      </p>
+    </div>
+     
+    <div class="span7">
+      <a id="bright-arc-anchor"></a>
+      <h3>Bright arc</h3>
+      <p> The origin of the bright arcs is not 100% clear, but they appear to come from light passing through the uncoated edge of the filters (type II spray) and scattering off of the filter cage. 
+        More information can be found <a href="http://des-docdb.fnal.gov:8080/cgi-bin/ShowDocument?docid=7002">here</a>.
+        This issue may be corrected in Year 2.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00179358&ccd=44" title="Click to view the original image"><img src="material/bright_arc.gif" /></a>
+        <small>Bright arc of scattered light (factor 2 downsampled)</small>
+      </p>
+    </div>
+
+    <div class="span12">
+      <h2>Tracks</h2>
+    </div>
+    <div class="span7">
+      <a id="satellite-anchor"></a>
       <h3>Satellite</h3>
-      <p>Satellite, planes, orbital stages of rockets, and other reflecting bodies
-      are expected to cross our focal plane several times per hour.
-      They create long streaks on the images, much longer and wider than cosmic rays. Since they are so
-      large, you can mark the track whereever you want. Sometimes, however, 
-      the tracks are broken into segments (remember: planes have blinking lights,
-      <a href="http://www.satobs.org/tumble/tumbleintro.html">rocket parts may tumble</a>),
+      <p>Satellite, orbital stages of rockets, and other reflecting bodies
+      often cross our focal plane.
+      They create long, unsaturated streaks on the images, much longer and wider than cosmic rays. Since they are so
+      large, you can mark the track wherever you want. Sometimes, however, 
+      the tracks are broken into segments (note: <a href="http://www.satobs.org/tumble/tumbleintro.html">rocket parts may tumble</a>),
       in which case we'd like to have marks on each of the segments.
       </p>
     </div>
-    <div class="span4 offset1">
+    <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00170663&ccd=10" title="Click to view the original image"><img src="tutorial/satellite.png" /></a>
-        <small>Satellite or plane track</small>
+        <a href="viewer.html?expname=DECam_00170663&ccd=10" title="Click to view the original image"><img src="material/satellite.gif" /></a>
+        <small>Satellite streak</small>
       </p>
     </div>
-      
+     
     <div class="span7">
-      <a name="readout"></a>
+      <a id="airplane-anchor"></a>
+      <h3>Airplane</h3>
+      <p> Unfortunately, CTIO lies along a regional Chilean airline flight path. 
+        We expect that roughly 15 planes will cross the DECam focal plane per season. 
+        Planes have a much larger impact that satellites, often destroying the sky background estimation.
+        When lights on a airplane blink, they appear as out-of-focus donuts (and can be used to determine the height of the plane...).
+        Slightly more information on airplanes can be found <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Airplanes">here</a>.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00162832&ccd=15" title="Click to view the original image"><img src="material/airplane.gif" /></a>
+        <small>An airplane trail (factor 2 downsampled)</small>
+      </p>
+    </div>
+
+    <div class="span12">
+      <h2>Instrument/Telescope</h2>
+    </div>
+    <div class="span7">
+      <a id="guiding-anchor"></a>
+      <h3>Guiding Failure</h3>
+      <p> Failures in the telescope guiding can lead to extended and elongated sources.
+        These issues will hopefully be solved in Year 1.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00176838&ccd=6" title="Click to view the original image"><img src="material/guiding.gif" /></a>
+        <small>A guiding error leading to blurred sources.</small>
+      </p>
+    </div>
+     
+    <div class="span7">
+      <a id="shutter-anchor"></a>
+      <h3>Shutter Failure</h3>
+      <p> Star bleeds are often symptomatic of the camera being readout with the shutter still open.
+        Star bleeds caused by shutter errors can be identified by looking at the full focal plane image, where the direction of the star bleeds will change between the top and bottom of the focal plane (due to a switch in the readout direction).
+        Shutter errors should be solved by Year 2.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00148339&ccd=21" title="Click to view the original image"><img src="material/shutter.gif" /></a>
+        <small>A shutter failure leading to star trails</small>
+      </p>
+    </div>
+     
+    <div class="span7">
+      <a id="readout-anchor"></a>
       <h3>Readout</h3>
-      <p>There are additional readout glitches, which can simply be found by looking
-      for horizontal (= readout direction) features, almost always exactly one pixel
-      wide. Mark it where it is most evident on the image.
+      <p>There are additional readout glitches, which are usually manifest as nearly vertical hatched lines near the edges of the CCDs.
+        These issues should be fixed early in SV.
       </p>
     </div>
-    <div class="span4 offset1">
+    <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00163200&ccd=57" title="Click to view the original image"><img src="tutorial/readout_with_benefits.png" /></a>
-        <small>Unmasked readout glitch (top). In addition, there is also a cosmic ray hit and a fainter cross-talk.</small>
+        <a href="viewer.html?expname=DECam_00146941&ccd=27" title="Click to view the original image"><img src="material/readout.gif" /></a>
+        <small>Image with a readout glitch on the left side</small>
+      </p>
+    </div>
+     
+    <div class="span7">
+      <a id="haze-anchor"></a>
+      <h3>Haze</h3>
+      <p> Haze appears as large diffuse blurs around bright objects.
+      It affects the entire focal plane and can thus be seen well from the FoV images.
+      The reason could be a slightly overcast sky, but we don't fully understand the root cause of this this yet...
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?expname=DECam_00176250&ccd=62" title="Click to view the original image"><img src="material/haze.gif" /></a>
+        <small>Image with haze around bright stars (plus dark halos)</small>
       </p>
     </div>
     
     <div class="span7">
-      <a name="failure"></a>
-      <h3>Failure</h3>
-      <p>Sometimes a large portion of the entire image is affected by, well, something.
-      It would be too bothersome to mark each single feature on such an image, and
-      even if, it would probably be hard to train a piece of software to distinguish between
-      the contaminated parts and the usable rest. So, we'll settle for finding them first.
+      <a id="other-anchor"></a>
+      <h2>Other...</h2>
+      <p>Sometimes none of the existing categories fit. 
+        In this case, you can describe the problem in your own words.
+        Please do so in a way that is as comprehensible and consistent as possible (e.g., if you see feature multiple times, try to use the same description). 
+        We will give you a list of free-word categories of other users so that you can see what kinds of problems have been found so far.
       </p>
-      <p>Before marking an image as catastrophic failure, please make sure that it is not just
-      a conincidence of several other features. As a guideline, estimate the remaining usable
-      area after everything problematic has been masked (which may or may not be the case in
-      the image you're are looking at). If this remainder is less than 50%, mark the image
-      as catastrophic.</p>
     </div>
-    <div class="span4 offset1">
+    <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00164747&ccd=57" title="Click to view the original image"><img src="tutorial/catastrophic.png" /></a>
-        <small>Multiple streaks (in pairs of two stacked vertically) scattered across the image.</small>
+        <a href="viewer.html?expname=DECam_00179119&ccd=58" title="Click to view the original image"><img src="material/other.gif" /></a> 
+        <small>Image with "bizarre PSF" (possibly a guider fault)</small>
       </p>
     </div>
     
     <div class="span7">
-      <a name="other"></a>
-      <h3>Other...</h3>
-      <p>Sometimes, none of the other categories fit. In this case, you can
-      describe the problem in your own words. Please do so in a way that is comprehensible inasmuch
-      as possible. Later on, we will attempt to categorize the problems you have identified and incorporate
-      reocurring issues for later versions of this application.
-      </p>
-    </div>
-    <div class="span4 offset1">
-      <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00179119&ccd=58" title="Click to view the original image"><img src="tutorial/other_bizarre_psf.png" /></a> 
-        <small>Image with "bizarre PSF" (possibly a guider jump)</small>
-      </p>
-    </div>
-    
-    <div class="span7">
-      <a name="awesome"></a>
-      <h3>Awesome!</h3>
-      <p>Rarely, you'll come across a truely phenomenal sight, maybe of a bunch of interacting galaxies
+      <a name="awesome-anchor"></a>
+      <h2>Awesome!</h2>
+      <p>Rarely, you'll come across a truly phenomenal sight, maybe of a bunch of interacting galaxies
       or of a comet, a star cluster, etc. Please do report these objects by selecting "Awesome!" from the drop-down,
       then describe what you see and click on the object. We collect these objects, and present the most fabulous ones
       in our <a href="gallery.html">Gallery</a>.</p>
@@ -207,25 +530,46 @@
       for our website and outreach purposes, please contact us. 
       </p>
     </div>
-    <div class="span4 offset1">
+    <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00181220&ccd=54" title="Click to view the original image"><img src="tutorial/awesome_comet.png" /></a> 
+        <a href="viewer.html?expname=DECam_00181220&ccd=54" title="Click to view the original image"><img src="material/awesome.gif" /></a> 
         <small>Comet C/2010 R1</small>
       </p>
     </div>
     
     <div class="span12">
-    <h3>Can I help?</h3>
-    Certainly. If you think you found a new class of artifacts, let us know. If you know where these artefacts come from, let us know. How? Go to <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Problem_classes_from_the_SV-A1_eyeball_website">the redmine wiki</a>, where we list and discuss such cases.
+    <h2>Can I help?</h2>
+    Certainly. If you think you found a new class of artifacts, let us know. If you know where these artifacts come from, let us know. How? Go to <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Problem_classes_from_the_SV-A1_eyeball_website">the redmine wiki</a>, where we list and discuss such cases.
   </div>
   <div id="push"></div>
   </div>
   <div id="foot">
     <div class="container" style="text-align:right">
-      <div class="breadcrumb muted" style="margin: 24px 0 0 0;">Created by Peter Melchior and Erin Sheldon</div>
+      <div class="breadcrumb muted" style="margin: 24px 0 0 0;">Created by Peter Melchior, Erin Sheldon, Alex Drlica-Wagner</div>
     </div>
   </div>
 </body>
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  // initial setup
+  $(document).ready(function(){
+    // connect problem selector to anchor in page
+    $('a[class*="problem"]').on('click', function(evt) {
+      var problem = evt.target.innerHTML;
+      if (problem == "Other...")
+        problem = "Other";
+      var anchor_name = problem.replace(" ", "-").replace("!","").toLowerCase() + '-anchor';
+      var node = $('#' + anchor_name);
+      console.log(node);
+      if (node.length) {
+        $(document.body).scrollTop(node.offset().top);
+      } else {
+        // FIXME: need to refer to redmine...
+        alert(problem);
+      }
+      evt.preventDefault();
+    });
+  });
+</script>
 </html>

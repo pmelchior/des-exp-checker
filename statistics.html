@@ -27,6 +27,7 @@
 	<ul class="nav">
           <li><a href="viewer.html">Viewer</a></li>
 	  <li><a href="tutorial.html">Tutorial</a></li>
+          <li><a href="faq.html">FAQ</a></li>
           <li class="active"><a href="statistics.html">Statistics</a></li>
           <li><a href="api.html">API</a></li>
           <li><a href="gallery.html">Gallery</a></li>
@@ -37,17 +38,16 @@
     <!-- content area -->
     <div class="span6">
       <h1>Statistics</h1>
-      <p>The first pie chart on the right shows how many images have been
-        <span style="color:#000">checked</span> so far, in
-        relation to the entire set of images we have in our database.
-        The second chart shows how many of the checked images have been found
-        <span style="color:#46a546">Fine</span> or
-        <span style="color:#9d261d">Problematic</span>.</p>
+      <p>On the right, you can see how many images have been checked so far,
+        and how many of them during the last 24 hours.
+        The pie chart shows how many of the checked images have been found
+        <span style="font-weight: bold; color:#46a546">Fine</span> or
+        <span style="font-weight: bold; color:#9d261d">Problematic</span>.</p>
       <p>Below you find a break-up of the images that have been found problematic.
-      The reason each of these problem classes are shown
-      independently is that there can be multiple problems in any given image,
-      so that the sum of all of these problems is in general larger than the sum of all
-      checked files.</p>
+        When you click on any of the pie charts, you can see examples of images
+        that have been found with this kind of problem.</p>
+      <small class="muted">There can be multiple problems in any given image,
+        therefore the proportion do not necessarily add up to one.</small>
     </div>
     <div class="span6" id="basic_stats" style="padding-top: 40px">
     </div>
@@ -60,7 +60,7 @@
   </div>
   <div id="foot">
     <div class="container" style="text-align:right">
-      <div class="breadcrumb muted" style="margin: 24px 0 0 0;">Created by Peter Melchior and Erin Sheldon</div>
+      <div class="breadcrumb muted" style="margin: 24px 0 0 0;">Created by Peter Melchior, Erin Sheldon, Alex Drlica-Wagner</div>
     </div>
   </div>
 
@@ -75,40 +75,54 @@ var arc2 = d3.svg.arc()
     .innerRadius(radius2 - 24);
 var pie = d3.layout.pie();
  
-d3.json("stats.php?total&breakup", function(error, response) {
-  
-  // checked chart
+d3.json("stats.php?total&today&breakup", function(error, response) {
+  // checked chart: simply show the numbers as text
   var svg = d3.select("#basic_stats").append("svg")
     .attr("width", radius1*2)
     .attr("height", radius1*2);
     
   var g = svg.selectAll(".arc")
-    .data(pie([response.done/response.total, (response.total - response.done)/response.total]))
-    .enter().append("g")
-      .attr("transform", "translate(" + radius1 + "," + radius1 + ")");
-  g.append("path")
-    .attr("class", "arc")
-    .attr("d", arc1)
-    .style("fill", function(d, i) { if (i == 0) return '#000'; else return '#ddd'; });
+    .data([response.total])
+    .enter().append("g");
   g.append("text")
-    .attr("transform", function(d) { return "translate(" + arc1.centroid(d) + ")"; })
-    .attr("dy", ".35em")
+    .attr("transform", "translate(" + radius1 + ", 0)")
     .style("text-anchor", "middle")
-    .style("fill", "#fff")
-    .style("font-size", "10px")
-    .text(function(d, i) { if (i==0 && d.data > 0.05) return (100*d.data).toString().split(".").shift() + '%'; else return null; });
-  svg.append("text")
-    .attr("dy", ".35em")
-    .attr("transform", "translate(" + radius1 + "," + radius1 + ")")
+    .attr("dy", "55px")
+    .style("font-size", "60px")
+    .style("font-weight", "bold")
+    .text(function(d) { return d.toString(); });
+  g.append("text")
+    .attr("transform", "translate(" + radius1 + ", 0)")
     .style("text-anchor", "middle")
-    .text("Checked");
+    .attr("dy", "75px")
+    .style("font-size", "14px")
+    .text("images checked");
+    
+  var g = svg.selectAll(".arc")
+    .data([response.today])
+    .enter().append("g");
+  g.append("text")
+    .attr("transform", "translate(" + radius1 + ", 0)")
+    .style("text-anchor", "middle")
+    .attr("dy", "148px")
+    .style("fill", "#46a546")
+    .style("font-size", "60px")
+    .style("font-weight", "bold")
+    .text(function(d) { return d.toString(); });
+  g.append("text")
+    .attr("transform", "translate(" + radius1 + ", 0)")
+    .style("text-anchor", "middle")
+    .attr("dy", "168px")
+    .style("font-size", "14px")
+    .style("fill", "#46a546")
+    .text("today");
   
   // fine chart
   svg = d3.select("#basic_stats").append("svg")
     .attr("width", radius1*2)
     .attr("height", radius1*2);  
   g = svg.selectAll(".arc")
-    .data(pie([response.fine/response.done, (response.done - response.fine)/response.done]))
+    .data(pie([response.fine/response.checked, (response.checked - response.fine)/response.checked]))
     .enter().append("g")
       .attr("transform", "translate(" + radius1 + "," + radius1 + ")")
       //.attr("class", "arc");
@@ -122,7 +136,7 @@ d3.json("stats.php?total&breakup", function(error, response) {
       .style("text-anchor", "middle")
       .style("fill", "#fff")
       .style("font-size", "10px")
-      .text(function(d, i) { if (i==0 && d.data > 0.05) return (100*d.data).toString().split(".").shift() + '%'; else return null; });
+      .text(function(d, i) { if (d.data > 0.05) return (100*d.data).toString().split(".").shift() + '%'; else return null; });
   svg.append("text")
     .attr("dy", ".35em")
     .attr("transform", "translate(" + radius1 + "," + radius1 + ")")
@@ -137,7 +151,7 @@ d3.json("stats.php?total&breakup", function(error, response) {
       .attr("width", radius2 * 2)
       .attr("height", radius2 * 2);
   g = svg.selectAll(".arc")
-    .data(function(d) { return pie([d.distinct/(response.done - response.fine), (response.done - response.fine - d.distinct)/(response.done - response.fine)]); })
+    .data(function(d) { return pie([d.distinct/(response.checked - response.fine), (response.checked - response.fine - d.distinct)/(response.checked - response.fine)]); })
     .enter().append("g")
     .attr("transform", "translate(" + radius2 + "," + radius2 + ")")      .attr("class", "arc");    
   g.append("path")
@@ -151,11 +165,13 @@ d3.json("stats.php?total&breakup", function(error, response) {
     .style("fill", "#fff")
     .style("font-size", "10px")
     .text(function(d, i) { if (i==0 && d.data > 0.05) return (100*d.data).toString().split(".").shift() + '%'; else return null; });
-  svg.append("text")
-    .attr("dy", ".35em")
-    .attr("transform", "translate(" + radius2 + "," + radius2 + ")")
-    .style("text-anchor", "middle")
-    .text(function(d) { return d.name; });
+  svg.append("a")
+    .attr("xlink:href", function(d) {return "viewer.html?problem=" + d.name + "&show_marks"})
+    .append("text")
+      .attr("dy", ".35em")
+      .attr("transform", "translate(" + radius2 + "," + radius2 + ")")
+      .style("text-anchor", "middle")
+      .text(function(d) { return d.name; });
 
 });
 </script>

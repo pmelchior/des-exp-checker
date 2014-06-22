@@ -4,6 +4,8 @@
   <title>DES exposure checker | Viewer</title>
   <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
+  <link rel="stylesheet" media="screen" href="http://qtip2.com/v/nightly/jquery.qtip.css" type="text/css" charset="utf-8">
+  <!-- <link rel="stylesheet" media="screen" href="assets/tooltipster/css/tooltipster.css" type="text/css" charset="utf-8"> -->
   <meta charset="utf-8">
   <meta name="author" content="Peter Melchior, Erin Sheldon">
   <link rel="icon" href="assets/DES_logo_trans.png" type="image/png">
@@ -11,9 +13,6 @@
   <!--[if lt IE 9]
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
-  <script type="text/javascript" src="assets/fits.js"></script>
-  <script type="text/javascript" src="assets/webfits-canvas.0.3.1.js"></script>
-  <script type="text/javascript" src="assets/viewer.js"></script>
 </head>
 
 <body>
@@ -206,9 +205,49 @@
 <script type="text/javascript" src="assets/purl.js"></script>
 <script type="text/javascript" src="assets/spin.min.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="assets/fits.js"></script>
+<script type="text/javascript" src="assets/webfits-canvas.0.3.1.js"></script>
+<!--script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.map"></script-->
+<script type="text/javascript" src="http://qtip2.com/v/nightly/jquery.qtip.js"></script>
+<!-- <script type="text/javascript" src="assets/tooltipster/js/jquery.tooltipster.min.js"></script> -->
+<script type="text/javascript" src="assets/raphael-min.js"></script>
+<!-- <script type="text/javascript" src="assets/g.raphael-min.js"></script> -->
+<script type="text/javascript" src="assets/viewer.js"></script>
 <script>
   // initial setup
+  var OverlayCanvas,ReportCanvas;
+  var el = $('#wicked-science-visualization').get(0);
+  OverlayDiv = document.createElement('div');
+  OverlayDiv.setAttribute('width', 1024);
+  OverlayDiv.setAttribute('height', 512);
+  OverlayDiv.setAttribute('class', 'overlay');
+  OverlayDiv.setAttribute('id', 'OverlayDiv');
+  
+  ReportDiv = document.createElement('div');
+  ReportDiv.setAttribute('width', 1024);
+  ReportDiv.setAttribute('height', 512);
+  ReportDiv.setAttribute('class', 'report');
+  ReportDiv.setAttribute('id', 'ReportDiv');
+  
+  OverlayCanvas =  Raphael(OverlayDiv, 1024, 512);
+  ReportCanvas =  Raphael(ReportDiv, 1024, 512);
+
   $(document).ready(function(){
+    $('#wicked-science-visualization').click(function (e) { //Default mouse Position 
+      var rect = webfits.canvas.getBoundingClientRect();
+      if(problem != null){
+        var prob = {
+          x: (e.clientX - rect.left + 0.5), // for unknown reasons, there is a 0.5 pixel shift in rect.left/right
+          y: (e.clientY - rect.top),
+          problem: problem,
+          detail: $('#problem-text').val() == "" ? "" : " : " + $('#problem-text').val()
+        };
+        marks.push(prob);
+        addMark(marks.length,prob);  // passing marks.length as id to new mark element
+        $('#problem-dialogue').addClass('hide');
+        $('#mark-buttons').removeClass('hide');
+      }
+    });
     // define and show spinner
     spinner = new Spinner({color: "#049cdb"}).spin();
     $('#loading').append(spinner.el);
@@ -298,7 +337,6 @@
     $('#fov-modal').modal('show');
   });
   $('#reported-button').on('click', function() {
-    var elem = $($(webfits.reportCtx)[0].canvas);
     // if new file: get reported problems
     if (has_reported_problems === false) {
       $('#loading').removeClass('hide');
@@ -306,21 +344,21 @@
       $.get('problems.php', {'fileid': fileid }, function(response) {
           if (response) {
             for (var i=0; i < response.length; i++) {
-              addMark(response[i], webfits.reportCtx);
+              addMark(i+1,response[i], ReportCanvas);  //using Report Canvas
             }
           }
           $('#loading').addClass('hide');
           has_reported_problems = true;
-          elem.css('display', 'block');
+          $('#ReportDiv').css('display', 'block');
         }, 'json');
       }, 500);
     }
     // toggle visibility of the canvas with the reported problems
     else {
-      if (elem.css('display') == 'block')
-        elem.css('display', 'none');
+      if ($('#ReportDiv').css('display') == 'block')
+        $('#ReportDiv').css('display', 'none');
       else
-        elem.css('display', 'block');
+        $('#ReportDiv').css('display', 'block');
     }
   });
   $('#toggle-mask-button').on('click', function() {

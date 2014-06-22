@@ -21,27 +21,18 @@
       var canvasStyle, overlayStyle, parentStyle;
       this.el = el;
       this.wheelHandler = __bind(this.wheelHandler, this);
-
       this._reset();
       this.width = width;
       this.height = height;
+
+
       this.canvas = document.createElement('canvas');
       this.canvas.setAttribute('width', this.width);
       this.canvas.setAttribute('height', this.height);
       this.canvas.setAttribute('class', 'visualization');
-      this.overlay = document.createElement('canvas');
-      this.overlay.setAttribute('width', this.width);
-      this.overlay.setAttribute('height', this.height);
-      this.overlay.setAttribute('class', 'overlay');
-      this.overlayCtx = this.overlay.getContext('2d');
-      this.report = document.createElement('canvas');
-      this.report.setAttribute('width', this.width);
-      this.report.setAttribute('height', this.height);
-      this.report.setAttribute('class', 'report');
-      this.reportCtx = this.report.getContext('2d');
       this.el.appendChild(this.canvas);
-      this.el.appendChild(this.overlay);
-      this.el.appendChild(this.report);
+      el.appendChild(OverlayDiv);
+      el.appendChild(ReportDiv);
       this.nImages = 0;
       if (!this.getContext()) {
         return null;
@@ -56,13 +47,7 @@
       parentStyle.backgroundColor = '#252525';
       parentStyle.position = 'relative';
       canvasStyle = this.canvas.style;
-      overlayStyle = this.overlay.style;
-      reportStyle = this.report.style;
       canvasStyle.position = 'absolute';
-      overlayStyle.position = 'absolute';
-      reportStyle.position = 'absolute';
-      overlayStyle.pointerEvents = 'none';
-      reportStyle.pointerEvents = 'none';
     }
 
     BaseApi.prototype.setupControls = function(callbacks, opts) {
@@ -74,14 +59,51 @@
       if (opts == null) {
         opts = null;
       }
-      
+      console.log(callbacks,opts);
+      if ((callbacks != null ? callbacks.ondblclick : void 0) != null) {
+        console.log("ondblclick : " + callbacks.ondblclick);
+        this.canvas.ondblclick = function(e) {
+          return callbacks.ondblclick.call(_this,_this, opts, e);
+        };
+      }
       if ((callbacks != null ? callbacks.onclick : void 0) != null) {
+        console.log("click : " + callbacks.onclick);
         this.canvas.onclick = function(e) {
           return callbacks.onclick.call(_this, _this, opts, e);
         };
       }
+      if ((callbacks != null ? callbacks.onmouseover : void 0) != null) {
+        console.log("mouseover : " + callbacks.onmouseover);
+        this.canvas.onmouseover = function(e) {
+          return callbacks.onmouseover.call(_this,_this, opts, e);
+        };
+      }
+      if ((callbacks != null ? callbacks.onmouseout : void 0) != null) {
+        console.log("mouseout : " + callbacks.onmouseout);
+        this.canvas.onmouseout = function(e) {
+          return callbacks.onmouseout.call(_this,_this, opts, e);
+        };
+      }
+      if ((callbacks != null ? callbacks.onmousemove : void 0) != null) {
+        console.log("onmousemove : " + callbacks.onmousemove);
+        this.canvas.onmousemove = function(e) {
+          return callbacks.onmousemove.call(_this,_this, opts, e);
+        };
+      }
+      if ((callbacks != null ? callbacks.onmousedown : void 0) != null) {
+        console.log("onmousedown : " + callbacks.onmousedown);
+        this.canvas.onmousedown = function(e) {
+          return callbacks.onmousedown.call(_this,_this, opts, e);
+        };
+      }
+      if ((callbacks != null ? callbacks.onmouseup : void 0) != null) {
+        console.log("onmouseup : " + callbacks.onmouseup);
+        this.canvas.onmouseup = function(e) {
+          return callbacks.onmouseout.call(_this,_this, opts, e);
+        };
+      }
+      
     };
-    
     return BaseApi;
 
   })();

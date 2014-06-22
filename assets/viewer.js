@@ -6,58 +6,84 @@ var problem = null;
 var fileid = null;
 var problem_default = null;
 var has_reported_problems = false;
-
-function addMark(prob, ctx) {
-  var color = '#FFFF00';
-  if (ctx === undefined)
-    ctx = webfits.overlayCtx;
-  else
-    color = '#FFA500';
-  ctx.beginPath();
-  ctx.arc(prob.x, prob.y, 40, 0, 2*Math.PI, true);
-  ctx.lineWidth=2;
-  ctx.strokeStyle=color;
-  ctx.stroke();
-    
-  ctx.font = '14px Helvetica';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillStyle = color;
-  ctx.fillText(prob.problem, prob.x, prob.y);
+// Problem Color Dictionary
+var colors = {
+  "Column mask"   : "#ee8c37",
+  "Cosmic ray"    : "#ee8c37",
+  "Cross-talk"    : "#ee8c37",
+  "Edge-bleed"    : "#ee8c37",
+  "Excessive mask": "#ee8c37",
+  "Dark rim"      : "#b7ee70",
+  "Dark halo"     : "#b7ee70",
+  "Quilted sky"   : "#b7ee70",
+  "Wavy sky"      : "#b7ee70",
+  "Anti-bleed"    : "#b7ee70",
+  "A/B jump"      : "#4569ee",
+  "Fringing"      : "#4569ee",
+  "Tape bump"     : "#4569ee",
+  "Tree rings"    : "#4569ee",
+  "Vertical jump" : "#4569ee",
+  "Vertical stripes": "#4569ee",
+  "Ghost"         : "#49e7ee",
+  "Bright spray"  : "#49e7ee",
+  "Brush strokes" : "#49e7ee",
+  "Bright arc"    : "#49e7ee",
+  "Satellite"     : "#ab95ee",
+  "Airplane"      : "#ab95ee",
+  "Guiding"       : "#eee083",
+  "Shutter"       : "#eee083",
+  "Readout"       : "#eee083",
+  "Haze"          : "#eee083",
+  "Other..."      : "#2a00ee",
+  "Awesome!"      : "#ee4b00"
 }
-
-function overlayCallback(_this, opts, evt) {
-  if (problem !== null) {
-    // add circle around dbl-clicked location
-    var rect = _this.canvas.getBoundingClientRect();
-    var prob = {
-      x: (evt.clientX - rect.left + 0.5), // for unknown reasons, there is a 0.5 pixel shift in rect.left/right
-      y: (evt.clientY - rect.top),
-      problem: problem,
-      detail: $('#problem-text').val() == "" ? null : $('#problem-text').val()
-    };
-    marks.push(prob);
-    addMark(prob);
-    
-    // remove "mark the image" text and show the save/clear buttons instead
-    $('#problem-dialogue').addClass('hide');
-    $('#mark-buttons').removeClass('hide');
+// String for generating Cross Mark on SVG
+var cross_mark = "M24.778,21.419 19.276,15.917 24.777,10.415 21.949,7.585 16.447,13.087 10.945,7.585 8.117,10.415 13.618,15.917 8.116,21.419 10.946,24.248 16.447,18.746 21.948,24.248z";
+function addMark(id, prob, ctx) {
+  var glow = false;
+  if (ctx === undefined)
+      ctx = OverlayCanvas;
+  else
+    glow = true; //Add Glow stroke to reported problems
+  
+  var color = colors[prob.problem];  //get problem color
+  var cross = ctx.path(cross_mark)
+  var bb = cross.getBBox(true); //get bounding box
+  var translation = "t"+(prob.x-2*bb.x)+","+(prob.y-2*bb.y);  //set translation string
+  cross.attr("fill",color).transform(translation);
+  cross.node.setAttribute('id',id);
+  if(glow){
+    cross.glow({color:"#e01"})
   }
+  // Adding Qtip to Cross Mark
+  $('#'+id).qtip({
+    content: prob.problem + prob.detail,
+      style: {
+          classes: 'qtip-blue qtip-shadow qtip-rounded'
+      }
+  });
+
+  //Adding Tooltipster to Cross Mark
+  // $('#'+id).tooltipster({
+  //   content: prob.problem + prob.detail,
+  //   delay: 50,
+  //   position: 'top'
+  // });
 }
 
 function clearMarks(ctx) {
   if (ctx === undefined) {
-    ctx = webfits.overlayCtx;
+    ctx = OverlayCanvas;
     marks = [];
   }
-  ctx.clearRect(0,0,webfits.canvas.width, webfits.canvas.height);
+  ctx.clear();
 }
 
 function clearLastMark() {
   marks.pop();
-  webfits.overlayCtx.clearRect(0,0,webfits.canvas.width, webfits.canvas.height);
+  OverlayCanvas.clear();
   for (var i=0; i < marks.length; i++) {
-    addMark(marks[i]);
+    addMark(i+1, marks[i]);
   }
 }
 
@@ -81,15 +107,12 @@ function createVisualization(arr, opts) {
   
   // Get the DOM element
   var el = $('#wicked-science-visualization').get(0);
-  
-  var callbacks = {
-    onclick: overlayCallback
-  };
+
   // Initialize the WebFITS context with a viewer of size width
   if (webfits === null) {
     webfits = new astro.WebFITS(el,width, height);
     // Add pan and zoom controls
-    webfits.setupControls(callbacks, opts);
+    //webfits.setupControls(callbacks, opts);
   }
   
   // Load array representation of image
@@ -117,7 +140,7 @@ function completeVisualization(response) {
     // add marks if present in response
   if (response.marks !== undefined) {
     for (var i=0; i < response.marks.length; i++) {
-      addMark(response.marks[i], webfits.reportCtx);
+      addMark(i+1, response.marks[i], ReportCanvas);
     }
     has_reported_problems = true;
   }
@@ -204,7 +227,7 @@ function sendResponse() {
   if (marks.length)
     clearMarks();
   if (has_reported_problems) {
-    clearMarks(webfits.reportCtx);
+    clearMarks(ReportCanvas);
     has_reported_problems = false;
   }
   problem = null;

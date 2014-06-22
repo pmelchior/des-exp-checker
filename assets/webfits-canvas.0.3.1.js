@@ -24,7 +24,20 @@
       this._reset();
       this.width = width;
       this.height = height;
+      OverlayDiv = document.createElement('div');
+      OverlayDiv.setAttribute('width', this.width);
+      OverlayDiv.setAttribute('height', this.height);
+      OverlayDiv.setAttribute('class', 'overlay');
+      OverlayDiv.setAttribute('id', 'OverlayDiv');
 
+      ReportDiv = document.createElement('div');
+      ReportDiv.setAttribute('width', this.width);
+      ReportDiv.setAttribute('height', this.height);
+      ReportDiv.setAttribute('class', 'report');
+      ReportDiv.setAttribute('id', 'ReportDiv');
+  
+      OverlayCanvas =  Raphael(OverlayDiv, this.width, this.height);
+      ReportCanvas =  Raphael(ReportDiv, this.width, this.height);
 
       this.canvas = document.createElement('canvas');
       this.canvas.setAttribute('width', this.width);

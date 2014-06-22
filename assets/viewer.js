@@ -6,6 +6,7 @@ var problem = null;
 var fileid = null;
 var problem_default = null;
 var has_reported_problems = false;
+var OverlayCanvas,ReportCanvas;
 // Problem Color Dictionary
 var colors = {
   "Column mask"   : "#ee8c37",

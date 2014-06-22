@@ -215,24 +215,8 @@
 <script type="text/javascript" src="assets/viewer.js"></script>
 <script>
   // initial setup
-  var OverlayCanvas,ReportCanvas;
-  var el = $('#wicked-science-visualization').get(0);
-  OverlayDiv = document.createElement('div');
-  OverlayDiv.setAttribute('width', 1024);
-  OverlayDiv.setAttribute('height', 512);
-  OverlayDiv.setAttribute('class', 'overlay');
-  OverlayDiv.setAttribute('id', 'OverlayDiv');
-  
-  ReportDiv = document.createElement('div');
-  ReportDiv.setAttribute('width', 1024);
-  ReportDiv.setAttribute('height', 512);
-  ReportDiv.setAttribute('class', 'report');
-  ReportDiv.setAttribute('id', 'ReportDiv');
-  
-  OverlayCanvas =  Raphael(OverlayDiv, 1024, 512);
-  ReportCanvas =  Raphael(ReportDiv, 1024, 512);
-
   $(document).ready(function(){
+    //click event on wicked-science-visualization div rather than canvas
     $('#wicked-science-visualization').click(function (e) { //Default mouse Position 
       var rect = webfits.canvas.getBoundingClientRect();
       if(problem != null){

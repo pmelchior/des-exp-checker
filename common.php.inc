@@ -191,6 +191,7 @@ function getProblemCodes() {
       "Old_Readout" => -5,
       "Old_Other" => -6,
       "Old_Sky" => -7,
+      "Mask dots" => -52, // found unneccesary
       
       // Instrument
       "Guiding" => 11,
@@ -218,7 +219,6 @@ function getProblemCodes() {
       
       // Masking
       "Column mask" => 51,
-      // "Mask dots" => 52, // found unneccesary
       "Excessive mask" => 53,
       "Cosmic ray" => 54,
       "Cross-talk" => 55,

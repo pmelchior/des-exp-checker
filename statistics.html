@@ -32,6 +32,12 @@
           <li><a href="api.html">API</a></li>
           <li><a href="gallery.html">Gallery</a></li>
 	</ul>
+        <ul class="nav pull-right hide">
+          <div class="btn-group" id="release-switch">
+            <button class="btn btn-small release-button" id="release-button-SVA1">SVA1</button>
+            <button class="btn btn-small release-button" id="release-button-Y1A1">Y1A1</button>
+          </div>
+        </ul>
       </div> 
     </div>
     
@@ -63,7 +69,19 @@
       <div class="breadcrumb muted" style="margin: 24px 0 0 0;">Created by Peter Melchior, Erin Sheldon, Alex Drlica-Wagner</div>
     </div>
   </div>
-
+</body>
+      
+<script type="text/javascript" src="assets/jquery.cookie.js"></script>
+<script type="text/javascript" src="assets/common.js"></script>
+<script>
+  $(document).ready(function () {
+    // set up release
+    setRelease($.cookie('default-release'));
+    $('button[class*="release-button"]').on('click', function(evt) {
+      setRelease(this.id.split("-").pop());
+    });
+  });
+</script>
 <script>      
 var radius1 = 100;
 var arc1 = d3.svg.arc()
@@ -175,7 +193,4 @@ d3.json("stats.php?total&today&breakup", function(error, response) {
 
 });
 </script>
-      
-</body>
-<!--script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script-->
 </html>

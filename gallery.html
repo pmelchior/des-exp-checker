@@ -65,6 +65,12 @@
           <li><a href="api.html">API</a></li>
           <li class="active"><a href="gallery.html">Gallery</a></li>
 	</ul>
+        <ul class="nav pull-right hide">
+          <div class="btn-group" id="release-switch">
+            <button class="btn btn-small release-button" id="release-button-SVA1">SVA1</button>
+            <button class="btn btn-small release-button" id="release-button-Y1A1">Y1A1</button>
+          </div>
+        </ul>
       </div> 
     </div>
     
@@ -130,6 +136,8 @@
     </div>
   </div>      
 </body>
+<script type="text/javascript" src="assets/jquery.cookie.js"></script>
+<script type="text/javascript" src="assets/common.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script>
   $(document).ready(function () {
@@ -138,6 +146,12 @@
     });
     $.get('email.php', function(response) {
       $('#email-anchor').attr('href', 'mailto:' + response);
+    });
+        
+    // set up release
+    setRelease($.cookie('default-release'));
+    $('button[class*="release-button"]').on('click', function(evt) {
+      setRelease(this.id.split("-").pop());
     });
   });
   // coordinate togglers

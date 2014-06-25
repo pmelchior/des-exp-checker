@@ -40,6 +40,12 @@
             <ul class="dropdown-menu">
               <li><a tabindex="-1" href="#" id="mystats-anchor">My statistics</a></li>
               <li><a tabindex="-1" href="#" id="leaderboard-anchor">Leaderboard</a></li>
+              <li>
+                <div class="btn-group" id="release-switch" style="margin:0; padding:3px 20px">
+                  <button class="btn btn-small release-button" id="release-button-SVA1">SVA1</button>
+                  <button class="btn btn-small release-button" id="release-button-Y1A1">Y1A1</button>
+                </div>
+              </li>
               <li class="divider"></li>
               <li><a tabindex="-1" id="logout" href="#">Logout</a></li>
             </ul>
@@ -205,6 +211,7 @@
 <script type="text/javascript" src="assets/jwerty.js"></script>
 <script type="text/javascript" src="assets/purl.js"></script>
 <script type="text/javascript" src="assets/spin.min.js"></script>
+<script type="text/javascript" src="assets/common.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script>
   // initial setup
@@ -220,7 +227,7 @@
       setInterval(getMyData, 600000);
       $('#login-li').hide();
       $('#mydata-li').show();
-      // 
+      // return to last image the user has seen before he logged in
       if ($.cookie('lastfile') !== undefined) {
         urlparams = $.url($.cookie('lastfile')).param();
         $.removeCookie('lastfile');
@@ -238,6 +245,13 @@
         evt.preventDefault();
       });
     }
+    
+    // set up release
+    setRelease($.cookie('default-release'));
+    $('button[class*="release-button"]').on('click', function(evt) {
+      setRelease(this.id.split("-").pop());
+    });
+    
     // get first image data
     $.get('db.php', urlparams, function(data) {
         var response = $.parseJSON(data);

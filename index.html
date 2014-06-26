@@ -169,14 +169,12 @@
 <script type="text/javascript" src="assets/common.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script>
-  function checkSessionCookie() {
-    return ($.cookie('sid') != null);    
-  }
   $(document).ready(function () {
     $.get('ranking.php', {'limit': 15, 'output': 'html', 'short':true}, function(response) {
       $('#leaderboard').html(response);
     });
     
+    // set up release
     setRelease($.cookie('default-release'));
     $('button[class*="release-button"]').on('click', function(evt) {
       setRelease(this.id.split("-").pop());

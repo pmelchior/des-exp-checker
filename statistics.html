@@ -80,117 +80,118 @@
     $('button[class*="release-button"]').on('click', function(evt) {
       setRelease(this.id.split("-").pop());
     });
-  });
-</script>
-<script>      
-var radius1 = 100;
-var arc1 = d3.svg.arc()
-    .outerRadius(radius1)
-    .innerRadius(radius1 - 40);
-var radius2 = 60;
-var arc2 = d3.svg.arc()
-    .outerRadius(radius2)
-    .innerRadius(radius2 - 24);
-var pie = d3.layout.pie();
- 
-d3.json("stats.php?total&today&breakup", function(error, response) {
-  // checked chart: simply show the numbers as text
-  var svg = d3.select("#basic_stats").append("svg")
-    .attr("width", radius1*2)
-    .attr("height", radius1*2);
-    
-  var g = svg.selectAll(".arc")
-    .data([response.total])
-    .enter().append("g");
-  g.append("text")
-    .attr("transform", "translate(" + radius1 + ", 0)")
-    .style("text-anchor", "middle")
-    .attr("dy", "55px")
-    .style("font-size", "60px")
-    .style("font-weight", "bold")
-    .text(function(d) { return d.toString(); });
-  g.append("text")
-    .attr("transform", "translate(" + radius1 + ", 0)")
-    .style("text-anchor", "middle")
-    .attr("dy", "75px")
-    .style("font-size", "14px")
-    .text("images checked");
-    
-  var g = svg.selectAll(".arc")
-    .data([response.today])
-    .enter().append("g");
-  g.append("text")
-    .attr("transform", "translate(" + radius1 + ", 0)")
-    .style("text-anchor", "middle")
-    .attr("dy", "148px")
-    .style("fill", "#46a546")
-    .style("font-size", "60px")
-    .style("font-weight", "bold")
-    .text(function(d) { return d.toString(); });
-  g.append("text")
-    .attr("transform", "translate(" + radius1 + ", 0)")
-    .style("text-anchor", "middle")
-    .attr("dy", "168px")
-    .style("font-size", "14px")
-    .style("fill", "#46a546")
-    .text("today");
-  
-  // fine chart
-  svg = d3.select("#basic_stats").append("svg")
-    .attr("width", radius1*2)
-    .attr("height", radius1*2);  
-  g = svg.selectAll(".arc")
-    .data(pie([response.fine/response.checked, (response.checked - response.fine)/response.checked]))
-    .enter().append("g")
-      .attr("transform", "translate(" + radius1 + "," + radius1 + ")")
-      //.attr("class", "arc");
-  g.append("path")  
-      .attr("class", "arc")
-      .attr("d", arc1)
-      .style("fill", function(d, i) { if (i == 0) return '#46a546'; else return '#9d261d'; });
-  g.append("text")
-      .attr("transform", function(d) { return "translate(" + arc1.centroid(d) + ")"; })
-      .attr("dy", ".35em")
-      .style("text-anchor", "middle")
-      .style("fill", "#fff")
-      .style("font-size", "10px")
-      .text(function(d, i) { if (d.data > 0.05) return (100*d.data).toString().split(".").shift() + '%'; else return null; });
-  svg.append("text")
-    .attr("dy", ".35em")
-    .attr("transform", "translate(" + radius1 + "," + radius1 + ")")
-    .style("text-anchor", "middle")
-    .text("OK");
-  
-  // one chart per problem
-  svg = d3.select("#problem_stats").selectAll(".pie")
-    .data(response.breakup)
-    .enter().append("svg")
-      .attr("class", "pie")
-      .attr("width", radius2 * 2)
-      .attr("height", radius2 * 2);
-  g = svg.selectAll(".arc")
-    .data(function(d) { return pie([d.distinct/(response.checked - response.fine), (response.checked - response.fine - d.distinct)/(response.checked - response.fine)]); })
-    .enter().append("g")
-    .attr("transform", "translate(" + radius2 + "," + radius2 + ")")      .attr("class", "arc");    
-  g.append("path")
-    .attr("class", "arc")
-    .attr("d", arc2)
-    .style("fill", function(d, i) { if (i == 0) return '#9d261d'; else return '#fdd'; });
-  g.append("text")
-    .attr("transform", function(d) { return "translate(" + arc2.centroid(d) + ")"; })
-    .attr("dy", ".35em")
-    .style("text-anchor", "middle")
-    .style("fill", "#fff")
-    .style("font-size", "10px")
-    .text(function(d, i) { if (i==0 && d.data > 0.05) return (100*d.data).toString().split(".").shift() + '%'; else return null; });
-  svg.append("a")
-    .attr("xlink:href", function(d) {return "viewer.html?problem=" + d.name + "&show_marks"})
-    .append("text")
-      .attr("dy", ".35em")
-      .attr("transform", "translate(" + radius2 + "," + radius2 + ")")
-      .style("text-anchor", "middle")
-      .text(function(d) { return d.name; });
 
-});
+    // define donut shapes 
+    var radius1 = 100;
+    var arc1 = d3.svg.arc()
+        .outerRadius(radius1)
+        .innerRadius(radius1 - 40);
+    var radius2 = 60;
+    var arc2 = d3.svg.arc()
+        .outerRadius(radius2)
+        .innerRadius(radius2 - 24);
+    var pie = d3.layout.pie();
+    
+    // get data and show stats
+    d3.json("stats.php?release="+ release + "&total&today&breakup", function(error, response) {
+      // checked chart: simply show the numbers as text
+      var svg = d3.select("#basic_stats").append("svg")
+        .attr("width", radius1*2)
+        .attr("height", radius1*2);
+        
+      var g = svg.selectAll(".arc")
+        .data([response.total])
+        .enter().append("g");
+      g.append("text")
+        .attr("transform", "translate(" + radius1 + ", 0)")
+        .style("text-anchor", "middle")
+        .attr("dy", "55px")
+        .style("font-size", "60px")
+        .style("font-weight", "bold")
+        .text(function(d) { return d.toString(); });
+      g.append("text")
+        .attr("transform", "translate(" + radius1 + ", 0)")
+        .style("text-anchor", "middle")
+        .attr("dy", "75px")
+        .style("font-size", "14px")
+        .text("images checked");
+        
+      var g = svg.selectAll(".arc")
+        .data([response.today])
+        .enter().append("g");
+      g.append("text")
+        .attr("transform", "translate(" + radius1 + ", 0)")
+        .style("text-anchor", "middle")
+        .attr("dy", "148px")
+        .style("fill", "#46a546")
+        .style("font-size", "60px")
+        .style("font-weight", "bold")
+        .text(function(d) { return d.toString(); });
+      g.append("text")
+        .attr("transform", "translate(" + radius1 + ", 0)")
+        .style("text-anchor", "middle")
+        .attr("dy", "168px")
+        .style("font-size", "14px")
+        .style("fill", "#46a546")
+        .text("today");
+      
+      // fine chart
+      svg = d3.select("#basic_stats").append("svg")
+        .attr("width", radius1*2)
+        .attr("height", radius1*2);  
+      g = svg.selectAll(".arc")
+        .data(pie([response.fine/response.checked, (response.checked - response.fine)/response.checked]))
+        .enter().append("g")
+          .attr("transform", "translate(" + radius1 + "," + radius1 + ")")
+          //.attr("class", "arc");
+      g.append("path")  
+          .attr("class", "arc")
+          .attr("d", arc1)
+          .style("fill", function(d, i) { if (i == 0) return '#46a546'; else return '#9d261d'; });
+      g.append("text")
+          .attr("transform", function(d) { return "translate(" + arc1.centroid(d) + ")"; })
+          .attr("dy", ".35em")
+          .style("text-anchor", "middle")
+          .style("fill", "#fff")
+          .style("font-size", "10px")
+          .text(function(d, i) { if (d.data > 0.05) return (100*d.data).toString().split(".").shift() + '%'; else return null; });
+      svg.append("text")
+        .attr("dy", ".35em")
+        .attr("transform", "translate(" + radius1 + "," + radius1 + ")")
+        .style("text-anchor", "middle")
+        .text("OK");
+      
+      // one chart per problem
+      svg = d3.select("#problem_stats").selectAll(".pie")
+        .data(response.breakup)
+        .enter().append("svg")
+          .attr("class", "pie")
+          .attr("width", radius2 * 2)
+          .attr("height", radius2 * 2);
+      g = svg.selectAll(".arc")
+        .data(function(d) { return pie([d.distinct/(response.checked - response.fine), (response.checked - response.fine - d.distinct)/(response.checked - response.fine)]); })
+        .enter().append("g")
+        .attr("transform", "translate(" + radius2 + "," + radius2 + ")")      .attr("class", "arc");    
+      g.append("path")
+        .attr("class", "arc")
+        .attr("d", arc2)
+        .style("fill", function(d, i) { if (i == 0) return '#9d261d'; else return '#fdd'; });
+      g.append("text")
+        .attr("transform", function(d) { return "translate(" + arc2.centroid(d) + ")"; })
+        .attr("dy", ".35em")
+        .style("text-anchor", "middle")
+        .style("fill", "#fff")
+        .style("font-size", "10px")
+        .text(function(d, i) { if (i==0 && d.data > 0.05) return (100*d.data).toString().split(".").shift() + '%'; else return null; });
+      svg.append("a")
+        .attr("xlink:href", function(d) {return "viewer.html?release=" + release + "&problem=" + d.name + "&show_marks"})
+        .append("text")
+          .attr("dy", ".35em")
+          .attr("transform", "translate(" + radius2 + "," + radius2 + ")")
+          .style("text-anchor", "middle")
+          .text(function(d) { return d.name; });
+    
+    });
+  });
 </script>
 </html>

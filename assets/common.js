@@ -15,3 +15,7 @@ function setRelease(release_) {
     });
 }
 
+function checkSessionCookie() {
+  return ($.cookie('sid') != null);    
+}
+

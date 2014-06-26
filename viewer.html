@@ -220,6 +220,7 @@
     spinner = new Spinner({color: "#049cdb"}).spin();
     $('#loading').append(spinner.el);
     $('#loading').removeClass('hide');
+
     var urlparams = $.url().param();
     // if user is logged in: show user dropdown
     if (checkSessionCookie()) {
@@ -250,7 +251,9 @@
     setRelease($.cookie('default-release'));
     $('button[class*="release-button"]').on('click', function(evt) {
       setRelease(this.id.split("-").pop());
+      window.location.reload(true);
     });
+    urlparams['release'] = release;
     
     // get first image data
     $.get('db.php', urlparams, function(data) {

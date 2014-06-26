@@ -141,18 +141,19 @@
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script>
   $(document).ready(function () {
-    $.get('gallery.php', {'output': 'html'}, function(response) {
+    // set up release
+    setRelease($.cookie('default-release'));
+    $('button[class*="release-button"]').on('click', function(evt) {
+      setRelease(this.id.split("-").pop());
+    });
+
+    $.get('gallery.php', {'output': 'html', 'release': release}, function(response) {
       $('#awesome-table').html(response);
     });
     $.get('email.php', function(response) {
       $('#email-anchor').attr('href', 'mailto:' + response);
     });
         
-    // set up release
-    setRelease($.cookie('default-release'));
-    $('button[class*="release-button"]').on('click', function(evt) {
-      setRelease(this.id.split("-").pop());
-    });
   });
   // coordinate togglers
   $('span[class*="coords"]').on('click', function(evt) {

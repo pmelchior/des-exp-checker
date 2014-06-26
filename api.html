@@ -69,16 +69,16 @@
 <script>
   // initial setup
   $(document).ready(function(){
-    // connect problem selector to anchor in page
-    $('a[class*="problem"]').on('click', function(evt) {
-      var problem = evt.target.innerHTML;
-      window.open('api.php?problem=' + encodeURI(problem));
-    });
-        
     // set up release
     setRelease($.cookie('default-release'));
     $('button[class*="release-button"]').on('click', function(evt) {
       setRelease(this.id.split("-").pop());
+    });
+    
+    // connect problem selector to anchor in page
+    $('a[class*="problem"]').on('click', function(evt) {
+      var problem = evt.target.innerHTML;
+      window.open('api.php?release=' + release + '&problem=' + encodeURI(problem));
     });
   });
 </script>

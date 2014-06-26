@@ -123,6 +123,7 @@ function completeVisualization(response) {
   }
   // set file-dependent information
   fileid = response.fileid;
+  release = response.release; // locally overwrite the default release to make sure it's from this file
   $('#image_name').html(response.expname + ', CCD ' + response.ccd + ", " + response.band + "-band");
   $('#share-url').val('http://' + window.location.host + window.location.pathname + '?expname=' + response.expname + '&ccd=' + response.ccd);
   $('#desdm-url').val('https://desar2.cosmology.illinois.edu/DESFiles/desardata/OPS/red/' + response.runname + '/red/' + response.expname + '/' + response.expname + '_' + response.ccd +'.fits.fz');
@@ -185,7 +186,7 @@ function sendResponse() {
   $('#total-files').html(number);
   
   // post to DB
-  $.post('db.php', {'fileid': fileid, 'problems': marks},
+  $.post('db.php', {'fileid': fileid, 'problems': marks, 'release': release},
     function(data) {
       var response = $.parseJSON(data);
       if (response.congrats !== undefined)
@@ -208,10 +209,6 @@ function sendResponse() {
     has_reported_problems = false;
   }
   problem = null;
-}
-
-function checkSessionCookie() {
-  return ($.cookie('sid') != null);    
 }
 
 function getMyData() {

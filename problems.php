@@ -8,16 +8,15 @@ function getCountOfProblem($dbh, $problem, $uid=NULL) {
     $codes = getProblemCodes();
     if (in_array($problem, array_keys($codes))) {
         $code = $codes[$problem];
-        $sql = 'SELECT problem, detail, COUNT(*) as count FROM qa WHERE release=? AND problem=?';
+        $sql = 'SELECT problem, detail, COUNT(*) as count FROM qa WHERE problem=?';
         if (isset($uid))
             $sql .= ' AND userid=?';
         if ($code == 255)
             $sql .= ' GROUP BY detail ORDER BY COUNT(*) DESC';
         $stmt = $dbh->prepare($sql);
-        $stmt->bindParam(1, $config['release'], PDO::PARAM_STR, 4);
-        $stmt->bindParam(2, $code, PDO::PARAM_INT);
+        $stmt->bindParam(1, $code, PDO::PARAM_INT);
         if (isset($uid))
-            $stmt->bindParam(3, $uid, PDO::PARAM_INT);
+            $stmt->bindParam(2, $uid, PDO::PARAM_INT);
         $stmt->execute();
         $res = check_or_abort($stmt);
         $problems = array();

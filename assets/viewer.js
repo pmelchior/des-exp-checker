@@ -39,8 +39,7 @@ function overlayCallback(_this, opts, evt) {
     marks.push(prob);
     addMark(prob);
     
-    // remove "mark the image" text and show the save/clear buttons instead
-    $('#problem-dialogue').addClass('hide');
+    // show the clear button instead
     $('#mark-buttons').removeClass('hide');
   }
 }
@@ -124,8 +123,10 @@ function completeVisualization(response) {
   // set file-dependent information
   fileid = response.fileid;
   release = response.release; // locally overwrite the default release to make sure it's from this file
-  $('#image_name').html(response.expname + ', CCD ' + response.ccd + ", " + response.band + "-band");
-  $('#share-url').val('http://' + window.location.host + window.location.pathname + '?expname=' + response.expname + '&ccd=' + response.ccd);
+  $('#image_name').html(response.expname + ', CCD ' + response.ccd + ", " + response.band + "-band, " + release);
+  var newurl=window.location.pathname + '?release=' + release + '&expname=' + response.expname + '&ccd=' + response.ccd;
+  window.history.replaceState(null, "Title", newurl); // update browser url field
+  $('#share-url').val('http://' + window.location.host + newurl);
   $('#desdm-url').val('https://desar2.cosmology.illinois.edu/DESFiles/desardata/OPS/red/' + response.runname + '/red/' + response.expname + '/' + response.expname + '_' + response.ccd +'.fits.fz');
   $('#fov-url').html('https://cosmology.illinois.edu/~mjohns44/SingleEpoch/pngs/' + response.runname + '/mosaics/' + response.expname + '_mosaic.png');
   // after both image and mask are drawn: remove loading spinner
@@ -198,7 +199,6 @@ function sendResponse() {
   });
   
   // clear UI
-  $("#problem-dialogue").addClass("hide");
   $('#mark-buttons').addClass('hide');
   $('#problem-text').val('');
   $('#problem-name').html(problem_default);

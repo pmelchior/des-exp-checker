@@ -8,7 +8,7 @@ if ($_POST) {
     $uid = getUIDFromSID($dbh);
     if ($uid && isset($_POST['fileid']) && $_POST['fileid'] != '') {
         // parse POST data and store each element in table qa
-        $sth = $dbh->prepare('INSERT INTO qa (release, fileid, userid, problem, x, y, detail) VALUES (?, ?, ?, ?, ?, ?, ?)');
+        $sth = $dbh->prepare('INSERT INTO qa (fileid, userid, problem, x, y, detail) VALUES (?, ?, ?, ?, ?, ?)');
         if (isset($_POST['problems'])) {
             $codes = getProblemCodes();
             foreach ($_POST['problems'] as $problem) {
@@ -18,13 +18,13 @@ if ($_POST) {
                 if ($problem['detail'] == '')
                    $problem['detail'] = null;
                 // stores x,y, and (occasionally a free-form comment)
-                $sth->execute(array($config['release'], $_POST['fileid'], $uid, $code, $problem['x'], $problem['y'], $problem['detail']));
+                $sth->execute(array($_POST['fileid'], $uid, $code, $problem['x'], $problem['y'], $problem['detail']));
             }
             // update attached user database to reflect user action
             $sth2 = $dbh->prepare('UPDATE users SET total_files = total_files + 1, flagged_files = flagged_files + 1 WHERE rowid = ?');
             $sth2->execute(array($uid));
         } else {
-            $sth->execute(array($config['release'], $_POST['fileid'], $uid, 0, null, null, null));
+            $sth->execute(array($_POST['fileid'], $uid, 0, null, null, null));
             $sth2 = $dbh->prepare('UPDATE users SET total_files = total_files + 1 WHERE rowid = ?');
             $sth2->execute(array($uid));
         }
@@ -63,7 +63,7 @@ if ($row) {
 else {
     $row['error'] = "File missing";
     $row['message'] = "The requested image cannot be retrieved.";
-    $row['description'] = "This is likely caused by our catalog only comprising SV-A1 images in griz bands.";
+    $row['description'] = "Either it's not in griz bands or the file is not part of the requested release.";
 }
 if (isset($congrats))
     $row['congrats'] = $congrats;

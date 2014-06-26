@@ -59,9 +59,6 @@
     <div style="margin-top:20px; position:relative;">
       <button id="fine-button" class="btn btn-success send">Next</button>
       <!--#include file="problem_selector.shtml"-->
-      <span id="problem-dialogue" class="hide" style="margin-left: 10px;font-weight:bold;">
-        Click to mark in the image
-      </span>
       <span id="mark-buttons" class="hide" style="margin-left: 10px;">
         <button class="btn btn-info" id="clear-button">Clear Last</button>
       </span>
@@ -320,7 +317,7 @@
     if (has_reported_problems === false) {
       $('#loading').removeClass('hide');
       setTimeout(function() { // add a little timeout to give feedback to user
-      $.get('problems.php', {'fileid': fileid }, function(response) {
+      $.get('problems.php', {'fileid': fileid , 'release': release}, function(response) {
           if (response) {
             for (var i=0; i < response.length; i++) {
               addMark(response[i], webfits.reportCtx);
@@ -356,8 +353,6 @@
     $('#problem-name').html(problemName);
   });
   $('a[class*="problem"]').on('click', function(evt) {
-    if (problem === null)
-      $("#problem-dialogue").removeClass("hide");
     problem = evt.target.innerHTML;
     $('#problem-name').html(problem);
     if (problem == "Other..." || problem == "Failure" || problem =="Awesome!") {
@@ -375,7 +370,6 @@
     clearLastMark();
     if (marks.length == 0) {
       $('#mark-buttons').addClass('hide');
-      $('#problem-dialogue').removeClass('hide');
     }
   });
   
@@ -385,7 +379,7 @@
     $('#mystats-modal').modal('show');
   });
   $('#leaderboard-anchor').on('click', function() {
-    $.get('ranking.php', {'output': 'html'}, function(response) {
+    $.get('ranking.php', {'output': 'html', 'release': release}, function(response) {
       $('#rank-modal').find('[class*="modal-body"]').html(response);
       $('#rank-modal').modal('show');
     });

@@ -10,19 +10,35 @@ function check_or_abort($dbh) {
     return $dbh;
 }
 
+function setRelease() {
+    global $config;
+    if (isset($_GET['release']))
+        $config['release'] = $_GET['release'];
+    elseif (isset($_POST['release']))
+        $config['release'] = $_POST['release'];
+    else
+        $config['release'] = "SVA1";
+}
+
 function getDBHandle() {
+    setRelease();
     global $config;
     $dbh = new PDO('sqlite:'. $config['userdb']);
-    $dbh->query('ATTACH DATABASE "' . $config['filedb'].'" AS files');
-    return check_or_abort($dbh);
+    $filedbfile = str_replace('%s', $config['release'], $config['filedb']);
+    if (file_exists($filedbfile)) {
+        $dbh->query('ATTACH DATABASE "' . $filedbfile .'" AS files');
+        return check_or_abort($dbh);
+    }
+    else
+        check_or_abort(FALSE);    
 }
 
 function getNextImage($dbh) {
     global $config;
     $res = null;
-    $sql = 'SELECT '.$config['release'].'.rowid as fileid, '.$config['release'].'.expname, ccd, band, name, files.runs.runname FROM '.$config['release'].' JOIN files.runs ON ('.$config['release'].'.expname = files.runs.expname)';
+    $sql = 'SELECT "' . $config['release'] . '" as release, files.rowid as fileid, files.expname, ccd, band, name, files.runs.runname FROM files JOIN files.runs ON (files.expname = files.runs.expname)';
     if (isset($_GET['expname']) && isset($_GET['ccd'])) {
-        $sql .= ' WHERE '.$config['release'].'.expname = ? AND ccd = ? LIMIT 1';
+        $sql .= ' WHERE files.expname = ? AND ccd = ? LIMIT 1';
         $stmt = $dbh->prepare($sql);
         $stmt->bindParam(1, $_GET['expname'], PDO::PARAM_STR, 14);
         $stmt->bindParam(2, $_GET['ccd'], PDO::PARAM_INT);
@@ -30,7 +46,7 @@ function getNextImage($dbh) {
         $res = check_or_abort($stmt);
     }
     elseif (isset($_GET['problem'])) {
-        $sql .= ' JOIN qa ON ('.$config['release'].'.rowid = qa.fileid) WHERE qa.problem = ? ORDER BY RANDOM() LIMIT 1';
+        $sql .= ' JOIN qa ON (files.rowid = qa.fileid) WHERE qa.problem = ? ORDER BY RANDOM() LIMIT 1';
         $stmt = $dbh->prepare($sql);
         $codes = getProblemCodes();
         $stmt->bindParam(1, $codes[$_GET['problem']], PDO::PARAM_INT);
@@ -41,7 +57,7 @@ function getNextImage($dbh) {
     else {
         // to created redundancy: make every 2nd image drawn from list with existing qa
         if (rand(0,2) < 1) {
-            $sql .= ' JOIN qa ON ('.$config['release'].'.rowid = qa.fileid)';
+            $sql .= ' JOIN qa ON (files.rowid = qa.fileid)';
         }
         $res = check_or_abort($dbh->query($sql.' ORDER BY RANDOM() LIMIT 1'));
     }
@@ -53,16 +69,15 @@ function getNextImage($dbh) {
 
 function getProblems($dbh, $fileid, $qa_id=NULL) {
     global $config;
-    $sql = 'SELECT problem, x, y, detail FROM qa WHERE release=? AND fileid=?';
+    $sql = 'SELECT problem, x, y, detail FROM qa WHERE fileid=?';
     if (isset($qa_id))
         $sql .= ' AND rowid=?';
     else 
         $sql .= ' AND problem != 0 AND problem >= -1';
     $stmt = $dbh->prepare($sql);
-    $stmt->bindParam(1, $config['release'], PDO::PARAM_STR, 4);
-    $stmt->bindParam(2, $fileid, PDO::PARAM_INT);
+    $stmt->bindParam(1, $fileid, PDO::PARAM_INT);
     if (isset($qa_id))
-        $stmt->bindParam(3, $qa_id, PDO::PARAM_INT);
+        $stmt->bindParam(2, $qa_id, PDO::PARAM_INT);
     $stmt->execute();
     $res = check_or_abort($stmt);
     $codes = getProblemCodes();

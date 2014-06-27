@@ -200,7 +200,7 @@ function showCongrats(congrats) {
   $('#congrats-modal').modal('show');
 }
 
-function sendResponse() {
+function sendResponse(new_image) {
   // show spinner
   $('#loading').hide();
   $('#wicked-science-visualization').find('canvas').fadeTo(400, 0.05);
@@ -209,14 +209,18 @@ function sendResponse() {
   number += 1;
   $('#total-files').html(number);
   
-  // post to DB
-  $.post('db.php', {'fileid': fileid, 'problems': marks, 'release': release},
-    function(data) {
-      var response = $.parseJSON(data);
+  // send to DB
+  var params = {'fileid': fileid, 'problems': marks, 'release': release};
+  if (new_image !== undefined) {
+    for (var attr in new_image)
+      params[attr] = new_image[attr];
+  }
+  $.post('db.php', params,
+    function(response) {
       if (response.congrats !== undefined)
         showCongrats(response.congrats);
       setNextImage(response);
-    })
+    }, 'json')
     .fail(function() {
       alert('Failure when saving response');
   });

@@ -388,21 +388,14 @@
   // Connect the ccd outline in FoV image to image loading
   $('#ccdmap').children('.ccdshape').on('click', function(evt) {
     var ccdnum = evt.target.title.split(" ").pop();
-    $('#loading').removeClass('hide');
-    $('#wicked-science-visualization').find('canvas').fadeTo(400, 0.05);
-    $.get('db.php', {'release': release, 'expname': expname, 'ccd': ccdnum}, function(response) {
-        setNextImage(response);
-      }, 'json')
-    .fail(function() {
-      alert('Failure when loading image');
-    });
+    sendResponse({'release': release, 'expname': expname, 'ccd': ccdnum});
     $('#fov-modal').modal('hide');
   });
   $('#reported-button').on('click', function() {
     var elem = $($(webfits.reportCtx)[0].canvas);
     // if new file: get reported problems
     if (has_reported_problems === false) {
-      $('#loading').removeClass('hide');
+      $('#loading').show();
       setTimeout(function() { // add a little timeout to give feedback to user
       $.get('problems.php', {'fileid': fileid , 'release': release}, function(response) {
           if (response) {
@@ -410,7 +403,7 @@
               addMark(response[i], webfits.reportCtx);
             }
           }
-          $('#loading').addClass('hide');
+          $('#loading').hide();
           has_reported_problems = true;
           elem.css('display', 'block');
         }, 'json');

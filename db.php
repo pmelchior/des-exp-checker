@@ -3,10 +3,10 @@
 include "common.php.inc";
 $dbh = getDBHandle();
 
-// check if POST data is present
-if ($_POST) {
+// check if problem marks are present
+if (isset($_POST['fileid'])) {
     $uid = getUIDFromSID($dbh);
-    if ($uid && isset($_POST['fileid']) && $_POST['fileid'] != '') {
+    if ($uid && $_POST['fileid'] != '') {
         // parse POST data and store each element in table qa
         $sth = $dbh->prepare('INSERT INTO qa (fileid, userid, problem, x, y, detail) VALUES (?, ?, ?, ?, ?, ?)');
         if (isset($_POST['problems'])) {
@@ -62,8 +62,8 @@ $row = getNextImage($dbh);
 if ($row) {
     $row['name'] = "getImage.php?name=".$row['name'];
     // problem marks are requested
-    if(isset($_GET['show_marks']) || isset($_GET['qa_id']))
-        $row['marks'] = getProblems($dbh, $row['fileid'], $_GET['qa_id']);
+    if(isset($_POST['show_marks']) || isset($_POST['qa_id']))
+        $row['marks'] = getProblems($dbh, $row['fileid'], $_POST['qa_id']);
 }
 else {
     $row['error'] = "File missing";

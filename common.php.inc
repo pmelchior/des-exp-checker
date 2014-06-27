@@ -10,13 +10,18 @@ function check_or_abort($dbh) {
     return $dbh;
 }
 
+function GETorPOST($param) {
+    if (isset($_GET[$param]))
+        return $_GET[$param];
+    if (isset($_POST[$param]))
+        return $_POST[$param];
+    return FALSE;
+}
+
 function setRelease() {
     global $config;
-    if (isset($_GET['release']))
-        $config['release'] = $_GET['release'];
-    elseif (isset($_POST['release']))
-        $config['release'] = $_POST['release'];
-    else
+    $config['release'] = GETorPOST('release');
+    if ($config['release'] === FALSE)
         $config['release'] = "SVA1";
 }
 
@@ -37,11 +42,13 @@ function getNextImage($dbh) {
     global $config;
     $res = null;
     $sql = 'SELECT "' . $config['release'] . '" as release, files.rowid as fileid, files.expname, ccd, band, name, files.runs.runname FROM files JOIN files.runs ON (files.expname = files.runs.expname)';
-    if (isset($_GET['expname']) && isset($_GET['ccd'])) {
+    $expname = GETorPOST('expname');
+    $ccd = GETorPOST('ccd');
+    if ($expname && $ccd) {
         $sql .= ' WHERE files.expname = ? AND ccd = ? LIMIT 1';
         $stmt = $dbh->prepare($sql);
-        $stmt->bindParam(1, $_GET['expname'], PDO::PARAM_STR, 14);
-        $stmt->bindParam(2, $_GET['ccd'], PDO::PARAM_INT);
+        $stmt->bindParam(1, $expname, PDO::PARAM_STR, 14);
+        $stmt->bindParam(2, $ccd, PDO::PARAM_INT);
         $stmt->execute();
         $res = check_or_abort($stmt);
     }
@@ -55,8 +62,11 @@ function getNextImage($dbh) {
     }
     // default query
     else {
-        // to created redundancy: make every 2nd image drawn from list with existing qa
-        if (rand(0,2) < 1) {
+        // to created redundancy: make every n-th image drawn from list with existing qa
+        $upper = 50;
+        if ($config['release'] == "SVA1")
+            $upper = 2; // consolidate SVA1 results
+        if (rand(0,$upper) < 1) {
             $sql .= ' JOIN qa ON (files.rowid = qa.fileid)';
         }
         $res = check_or_abort($dbh->query($sql.' ORDER BY RANDOM() LIMIT 1'));

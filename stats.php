@@ -22,7 +22,7 @@ if (isset($_GET['breakup'])) {
     $problems = array();
     $stats['checked'] = 0;
     foreach ($codes as $name => $code) {
-        if ($code >= 0) {
+        if ($code >= 0 && $code < 1000) {
             $stmt->bindParam(1, $code, PDO::PARAM_INT);
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_NUM);

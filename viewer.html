@@ -60,12 +60,13 @@
       <button id="fine-button" class="btn btn-success send">Next</button>
       <!--#include file="problem_selector.shtml"-->
       <span id="mark-buttons" class="hide" style="margin-left: 10px;">
-        <button class="btn btn-info" id="clear-button">Clear Last</button>
+        <button class="btn btn-primary" id="negative-button" data-toggle="button">False</button>
+        <button class="btn btn-primary hide" id="clear-button">Clear Last</button>
       </span>
       <span style="position:absolute; right: 0px; top:0px;">
         <span class="muted" id="image_name"></span>
         <div class="btn-group" style="margin-left:10px;">
-          <button id="info-button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Info</span>
+          <button id="info-button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Info</span>
           <span class="caret"></span>
           </button>
           <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -75,8 +76,8 @@
             <li><a tabindex="-1" href="#" id="reported-button">Show reported <u>p</u>roblems</a></li>
           </ul>
         </div>
-        <button class="btn btn-info" href="#" id="toggle-mask-button">Toggle <u>m</u>ask</button>
-        <button class="btn btn-info" href="#" id="scaling-button">Toggle <u>s</u>caling</button>
+        <button class="btn btn-primary" href="#" id="toggle-mask-button">Toggle <u>m</u>ask</button>
+        <button class="btn btn-primary" href="#" id="scaling-button">Toggle <u>s</u>caling</button>
       </span>
     </div>
     
@@ -282,7 +283,7 @@
     // define and show spinner
     spinner = new Spinner({color: "#049cdb"}).spin();
     $('#loading').append(spinner.el);
-    $('#loading').removeClass('hide');
+    $('#loading').show();
 
     var urlparams = $.url().param();
     // if user is logged in: show user dropdown
@@ -448,6 +449,11 @@
     } else {
       $('#problem-text').val('');
     }
+    var neg_button = $('#negative-button');
+    if (neg_button.hasClass('active')) {
+      neg_button.button('toggle');
+    }
+    $('#mark-buttons').show();
   });
   $('#problem-close-button').on('click', function() {
     closeProblemModal();
@@ -455,7 +461,7 @@
   $('#clear-button').on('click', function() {
     clearLastMark();
     if (marks.length == 0) {
-      $('#mark-buttons').addClass('hide');
+      $('#clear-button').hide();
     }
   });
   

@@ -73,7 +73,7 @@ function getProblems($dbh, $fileid, $qa_id=NULL) {
     if (isset($qa_id))
         $sql .= ' AND rowid=?';
     else 
-        $sql .= ' AND problem != 0 AND problem >= -1';
+        $sql .= ' AND problem > 0 AND problem < 1000';
     $stmt = $dbh->prepare($sql);
     $stmt->bindParam(1, $fileid, PDO::PARAM_INT);
     if (isset($qa_id))
@@ -203,10 +203,10 @@ function getProblemCodes() {
       "OK" => 0,
       
       // Temporary categories, to be re-inspected
-      "Old_Readout" => -5,
-      "Old_Other" => -6,
-      "Old_Sky" => -7,
-      "Mask dots" => -52, // found unneccesary
+      "Old_Readout" => 1005,
+      "Old_Other" => 1006,
+      "Old_Sky" => 1007,
+      "Mask dots" => 1008, // found unneccesary
       
       // Instrument
       "Guiding" => 11,
@@ -247,7 +247,7 @@ function getProblemCodes() {
       "Anti-bleed" => 65,
       
       "Other..." => 255,
-      "Awesome!" => -1,
+      "Awesome!" => 1000,
     );
 }
 

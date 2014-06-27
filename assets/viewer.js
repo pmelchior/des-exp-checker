@@ -16,15 +16,30 @@ function addMark(prob, ctx) {
   else
     color = '#FFA500';
   ctx.beginPath();
-  ctx.arc(prob.x, prob.y, 40, 0, 2*Math.PI, true);
+  if (prob.problem[0] == "-") {
+    ctx.moveTo(prob.x-28, prob.y-28);
+    ctx.lineTo(prob.x+28, prob.y+28);
+    ctx.moveTo(prob.x-28, prob.y+28);
+    ctx.lineTo(prob.x+28, prob.y-28);
+  }
+  else
+    ctx.arc(prob.x, prob.y, 40, 0, 2*Math.PI, true);
   ctx.lineWidth=2;
   ctx.strokeStyle=color;
+  ctx.shadowColor = '#000000';
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetX = 6;
+  ctx.shadowOffsetY = 3;
   ctx.stroke();
-    
+
   ctx.font = '14px Helvetica';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = color;
+  ctx.shadowColor = '#000000';
+  ctx.shadowBlur = 3;
+  ctx.shadowOffsetX = 2;
+  ctx.shadowOffsetY = 1;
   ctx.fillText(prob.problem, prob.x, prob.y);
 }
 
@@ -32,17 +47,20 @@ function overlayCallback(_this, opts, evt) {
   if (problem !== null) {
     // add circle around dbl-clicked location
     var rect = _this.canvas.getBoundingClientRect();
+    var negative = '';
+    if ($('#negative-button').hasClass('active'))
+      negative = '-';
     var prob = {
       x: (evt.clientX - rect.left + 0.5), // for unknown reasons, there is a 0.5 pixel shift in rect.left/right
       y: (evt.clientY - rect.top),
-      problem: problem,
+      problem: negative + problem,
       detail: $('#problem-text').val() == "" ? null : $('#problem-text').val()
     };
     marks.push(prob);
     addMark(prob);
     
-    // show the clear button instead
-    $('#mark-buttons').removeClass('hide');
+    // show the clear button
+    $('#clear-button').show();
   }
 }
 
@@ -135,7 +153,7 @@ function completeVisualization(response) {
   $('#desdm-url').val('https://desar2.cosmology.illinois.edu/DESFiles/desardata/OPS/red/' + response.runname + '/red/' + expname + '/' + expname + '_' + ccd +'.fits.fz');
   $('#fov-url').html('https://cosmology.illinois.edu/~mjohns44/SingleEpoch/pngs/' + response.runname + '/mosaics/' + expname + '_mosaic.png');
   // after both image and mask are drawn: remove loading spinner
-  $('#loading').addClass('hide');
+  $('#loading').hide();
   $('#wicked-science-visualization').find('canvas').fadeTo(200, 1);
 }
 
@@ -148,7 +166,7 @@ function setNextImage(response) {
     $('#message_text').html(response.message);
     $('#message_details').html(response.description);
     $('#message-modal').modal('show');
-    $('#loading').addClass('hide');
+    $('#loading').hide();
   }
 }
 
@@ -184,7 +202,7 @@ function showCongrats(congrats) {
 
 function sendResponse() {
   // show spinner
-  $('#loading').removeClass('hide');
+  $('#loading').hide();
   $('#wicked-science-visualization').find('canvas').fadeTo(400, 0.05);
   // update counters
   var number = parseInt($('#total-files').html());
@@ -204,7 +222,8 @@ function sendResponse() {
   });
   
   // clear UI
-  $('#mark-buttons').addClass('hide');
+  $('#mark-buttons').hide();
+  $('#clear-button').hide();
   $('#problem-text').val('');
   $('#problem-name').html(problem_default);
   if (marks.length)

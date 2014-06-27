@@ -12,7 +12,12 @@ if ($_POST) {
         if (isset($_POST['problems'])) {
             $codes = getProblemCodes();
             foreach ($_POST['problems'] as $problem) {
-                $code = $codes[$problem['problem']];
+                if ($problem['problem'][0] == "-") {
+                    $problem['problem'] = substr($problem['problem'], 1);
+                    $code = -$codes[$problem['problem']];
+                }
+                else 
+                    $code = $codes[$problem['problem']];
                 $problem['x'] = (int) $problem['x'];
                 $problem['y'] = (int) $problem['y'];
                 if ($problem['detail'] == '')

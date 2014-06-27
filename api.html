@@ -45,9 +45,18 @@
       any programming language. If you need at different format,
       open a <a href="https://github.com/pmelchior/des-exp-checker/issues">github issue</a>.
       </p>
-      <p>Select the problem class below:</p>
+      <p>Select the problem class below for an example:</p>
       <!--#include file="problem_selector.shtml"-->
     
+      <h3>Query parameters</h3>
+      <p>
+        The basic URL for GET requests is <a href="api.php">api.php</a>. We support/require the following parameters:
+        <ul>
+          <li><code>release</code> The four-letter name of the release, e.g. Y1A1</li>
+          <li><code>problem</code> The name of the problem as it appear in the problem selector (URL encoding is required, e.g. whitespace becomes <code>%20</code>)</li>
+          <li><code>[false]</code> Whether false positives should be returned (optional, no value needs to be set)</li>
+        </ul>
+      </p>
       <h3>Any other queries?</h3>
       The set of queries we currently allow is restricted to global queries based on the problem class.
       If you want to be able to quiery our database differently, tell us by

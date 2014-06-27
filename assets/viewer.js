@@ -4,6 +4,8 @@ var spinner;
 var marks = [];
 var problem = null;
 var fileid = null;
+var expname = null;
+var ccd = null;
 var problem_default = null;
 var has_reported_problems = false;
 
@@ -122,13 +124,16 @@ function completeVisualization(response) {
   }
   // set file-dependent information
   fileid = response.fileid;
+  expname = response.expname;
+  ccd = response.ccd;
   release = response.release; // locally overwrite the default release to make sure it's from this file
-  $('#image_name').html(response.expname + ', CCD ' + response.ccd + ", " + response.band + "-band, " + release);
-  var newurl=window.location.pathname + '?release=' + release + '&expname=' + response.expname + '&ccd=' + response.ccd;
-  window.history.replaceState(null, "Title", newurl); // update browser url field
+  $('#image_name').html(expname + ', CCD ' + ccd + ", " + response.band + "-band, " + release);
+  var newurl=window.location.pathname + '?release=' + release + '&expname=' + expname + '&ccd=' + ccd;
+  // update browser url field
+  window.history.replaceState(null, "Title", newurl);
   $('#share-url').val('http://' + window.location.host + newurl);
-  $('#desdm-url').val('https://desar2.cosmology.illinois.edu/DESFiles/desardata/OPS/red/' + response.runname + '/red/' + response.expname + '/' + response.expname + '_' + response.ccd +'.fits.fz');
-  $('#fov-url').html('https://cosmology.illinois.edu/~mjohns44/SingleEpoch/pngs/' + response.runname + '/mosaics/' + response.expname + '_mosaic.png');
+  $('#desdm-url').val('https://desar2.cosmology.illinois.edu/DESFiles/desardata/OPS/red/' + response.runname + '/red/' + expname + '/' + expname + '_' + ccd +'.fits.fz');
+  $('#fov-url').html('https://cosmology.illinois.edu/~mjohns44/SingleEpoch/pngs/' + response.runname + '/mosaics/' + expname + '_mosaic.png');
   // after both image and mask are drawn: remove loading spinner
   $('#loading').addClass('hide');
   $('#wicked-science-visualization').find('canvas').fadeTo(200, 1);

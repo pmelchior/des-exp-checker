@@ -16,4 +16,7 @@ body,html { height: 100%; }
 .timecol {width: 134px;}
 .modal {top: 60px; }
 #des-hero {position: relative; padding: 30px 60px; border: 1px solid #ddd; border-top: 0px; margin-top: -20px; }
-.ccdshape { border: 2px solid red; background-color: red;}
+#ccdmap { position:absolute; top: 15px; left: 15px; width:530px; height: 454px; }
+.ccdshape { position: absolute; width:74px; height:36px; border: 1px solid transparent;}
+.ccdshape-current { border: 1px solid red}
+.ccdshape:hover { border: 1px solid #46a546; cursor: pointer;}

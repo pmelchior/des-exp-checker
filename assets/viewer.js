@@ -202,7 +202,7 @@ function showCongrats(congrats) {
 
 function sendResponse(new_image) {
   // show spinner
-  $('#loading').hide();
+  $('#loading').show();
   $('#wicked-science-visualization').find('canvas').fadeTo(400, 0.05);
   // update counters
   var number = parseInt($('#total-files').html());

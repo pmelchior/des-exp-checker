@@ -1,6 +1,18 @@
 <?php
 
 include_once("config.php.inc");
+/* config only defines  the variable $config:
+$config = array(
+    "adminemail" => T_STRING,   // email address used for contact and internal emails
+    "adminname" => T_STRING,    // name used for internal emails
+    "domain" => T_STRING,       // webserver domain name
+    "userdb" => T_STRING,       // path to the user sqlite database
+    "filedb" => T_STRING,       // path for file data, should contain '%s' as release placeholder
+    "release" => NULL,          // empty, set by setRelease()
+    "images_per_fp" => T_INT,   // size of focal plane, used for congrats
+    "fitsdomain" => T_STRING    // path to get the fits files
+);
+*/
 
 function check_or_abort($dbh) {
     if (!$dbh) {

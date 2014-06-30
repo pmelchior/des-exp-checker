@@ -67,10 +67,11 @@ function getNextImage($dbh, $uid) {
             $fallback = $sql;
             $sql .= ' JOIN qa ON (files.rowid = qa.fileid)';
             if ($uid) {
-                $sql .= ' WHERE qa.userid!=' . $uid;
+                $sql .= ' WHERE qa.userid != ' . $uid;
+                $sql .= ' GROUP BY qa.fileid ORDER BY COUNT(distinct(qa.userid)) ASC, RANDOM() LIMIT 1';
                 // need to check if there are actually images found:
                 // only relevant for early stages of a new release
-                $res = check_or_abort($dbh->query($sql.' ORDER BY RANDOM() LIMIT 1'));
+                $res = check_or_abort($dbh->query($sql));
                 if ($row = $res->fetch(PDO::FETCH_ASSOC))
                     return $row;
                 else

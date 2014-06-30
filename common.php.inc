@@ -21,7 +21,7 @@ function GETorPOST($param) {
 function setRelease() {
     global $config;
     $config['release'] = GETorPOST('release');
-    if ($config['release'] === FALSE)
+    if ($config['release'] === FALSE || in_array($config['release'], array('SVA1', 'Y1A1')) === FALSE)
         $config['release'] = "SVA1";
 }
 
@@ -38,7 +38,7 @@ function getDBHandle() {
         check_or_abort(FALSE);    
 }
 
-function getNextImage($dbh) {
+function getNextImage($dbh, $uid) {
     global $config;
     $res = null;
     $sql = 'SELECT "' . $config['release'] . '" as release, files.rowid as fileid, files.expname, ccd, band, name, files.runs.runname FROM files JOIN files.runs ON (files.expname = files.runs.expname)';
@@ -63,11 +63,19 @@ function getNextImage($dbh) {
     // default query
     else {
         // to created redundancy: make every n-th image drawn from list with existing qa
-        $upper = 50;
-        if ($config['release'] == "SVA1")
-            $upper = 2; // consolidate SVA1 results
-        if (rand(0,$upper) < 1) {
+        if (rand(0,2) < 1) {
+            $fallback = $sql;
             $sql .= ' JOIN qa ON (files.rowid = qa.fileid)';
+            if ($uid) {
+                $sql .= ' WHERE qa.userid!=' . $uid;
+                // need to check if there are actually images found:
+                // only relevant for early stages of a new release
+                $res = check_or_abort($dbh->query($sql.' ORDER BY RANDOM() LIMIT 1'));
+                if ($row = $res->fetch(PDO::FETCH_ASSOC))
+                    return $row;
+                else
+                    $sql = $fallback;
+            }
         }
         $res = check_or_abort($dbh->query($sql.' ORDER BY RANDOM() LIMIT 1'));
     }

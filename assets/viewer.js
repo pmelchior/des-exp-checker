@@ -96,7 +96,7 @@ function createVisualization(arr, opts) {
   var dataunit = opts.dataunit;
   var width = dataunit.width;
   var height = dataunit.height;
-  var extent = dataunit.getExtent(arr);
+  var extent = [-1, 1000]; // default values to prevent crazy pixels ruining min/max values
   
   // Get the DOM element
   var el = $('#wicked-science-visualization').get(0);
@@ -200,6 +200,20 @@ function showCongrats(congrats) {
   $('#congrats-modal').modal('show');
 }
 
+function clearUI() {
+  $('#mark-buttons').hide();
+  $('#clear-button').hide();
+  $('#problem-text').val('');
+  $('#problem-name').html(problem_default);
+  if (marks.length)
+    clearMarks();
+  if (has_reported_problems) {
+    clearMarks(webfits.reportCtx);
+    has_reported_problems = false;
+  }
+  problem = null;
+}
+
 function sendResponse(new_image) {
   // show spinner
   $('#loading').show();
@@ -224,19 +238,7 @@ function sendResponse(new_image) {
     .fail(function() {
       alert('Failure when saving response');
   });
-  
-  // clear UI
-  $('#mark-buttons').hide();
-  $('#clear-button').hide();
-  $('#problem-text').val('');
-  $('#problem-name').html(problem_default);
-  if (marks.length)
-    clearMarks();
-  if (has_reported_problems) {
-    clearMarks(webfits.reportCtx);
-    has_reported_problems = false;
-  }
-  problem = null;
+  clearUI();
 }
 
 function getMyData() {

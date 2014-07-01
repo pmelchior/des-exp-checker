@@ -287,7 +287,14 @@
     setRelease($.cookie('default-release'));
     $('button[class*="release-button"]').on('click', function(evt) {
       setRelease(this.id.split("-").pop());
-      window.location.reload(true);
+      $('#loading').show();
+      $.get('db.php', {'release': release}, function(response) {
+        setNextImage(response);
+      }, 'json')
+      .fail(function() {
+        alert('Failure when loading image');
+      });
+      clearUI();
     });
     $(".release_name").html(release);
     

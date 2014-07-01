@@ -79,6 +79,7 @@
     setRelease($.cookie('default-release'));
     $('button[class*="release-button"]').on('click', function(evt) {
       setRelease(this.id.split("-").pop());
+      window.location.reload(true);
     });
 
     // define donut shapes 

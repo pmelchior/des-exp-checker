@@ -11,6 +11,9 @@ function download_file($file) { // $file = include path
         readfile($file);
         exit;
 }
-include("config.php.inc");
-download_file($config['fitsdomain'].$_GET['name']);
+include("common.php.inc");
+setRelease();
+$path = array("SVA1"=> "se001grizt", "Y1A1"=>"se004grizY");
+$path = str_replace('%s', $path[$config['release']], $config['fitspath']);
+download_file($path.$_GET['name']);
 ?>

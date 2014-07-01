@@ -12,11 +12,12 @@ CREATE TABLE sessions (
 );
 
 CREATE TABLE submissions (
- userid INTEGER PRIMARY KEY ASC,
+ userid INTEGER NO NULL,
  release TEXT NOT NULL,
  total_files INT NOT NULL DEFAULT 0,
  flagged_files INT NOT NULL DEFAULT 0
 );
+CREATE UNIQUE INDEX submissions_unique_idx ON users(userid, release);
 
 CREATE TABLE users (
  userid INTEGER PRIMARY KEY ASC,
@@ -26,5 +27,5 @@ CREATE TABLE users (
  timestamp TEXT NOT NULL default CURRENT_TIMESTAMP
 );
 -- enforce username & email unique
-CREATE UNIQUE INDEX users_email_ids ON users(email);
+CREATE UNIQUE INDEX users_email_idx ON users(email);
 CREATE UNIQUE INDEX users_username_idx ON users(username);

@@ -240,7 +240,7 @@ function sendResponse(new_image) {
 }
 
 function getMyData() {
-  $.get('mydata.php', function(response) {
+  $.get('mydata.php', {'release': release}, function(response) {
     // check if server has just invalidated session
     if (!checkSessionCookie())
       kickOut();

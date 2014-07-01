@@ -183,7 +183,7 @@
       <div class="modal-body">
         <p>You've checked a total of <strong id="total-files"></strong> images
         and found <strong id="flagged-files"></strong> of them problematic.<br />
-        You are currently at position <strong id="user-rank"></strong> of the leaderboard.
+        You are currently at position <strong id="user-rank"></strong> of the <span class="release_name"></span> leaderboard.
         </p>
         <p id="user_rank_details"></p>
       </div>
@@ -192,7 +192,7 @@
     <div class="modal hide" id="rank-modal" tabindex="-1">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Leaderboard</h3>
+        <h3>Leaderboard of <span class="release_name"></span></h3>
       </div>
       <div class="modal-body"></div>
     </div>
@@ -283,7 +283,17 @@
     $('#loading').append(spinner.el);
     $('#loading').show();
 
+    // set up release
+    setRelease($.cookie('default-release'));
+    $('button[class*="release-button"]').on('click', function(evt) {
+      setRelease(this.id.split("-").pop());
+      window.location.reload(true);
+    });
+    $(".release_name").html(release);
+    
     var urlparams = $.url().param();
+    urlparams['release'] = release;
+    
     // if user is logged in: show user dropdown
     if (checkSessionCookie()) {
       getMyData();
@@ -308,14 +318,6 @@
         evt.preventDefault();
       });
     }
-    
-    // set up release
-    setRelease($.cookie('default-release'));
-    $('button[class*="release-button"]').on('click', function(evt) {
-      setRelease(this.id.split("-").pop());
-      window.location.reload(true);
-    });
-    urlparams['release'] = release;
     
     // get first image data
     $.get('db.php', urlparams, function(response) {

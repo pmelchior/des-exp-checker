@@ -67,12 +67,14 @@ DROP TABLE SVA1;
 -- This has to be done on the users db!
 -- Move user submission statistics into own table
 CREATE TABLE submissions (
- userid INTEGER PRIMARY KEY ASC,
+ userid INTEGER NOT NULL,
  release TEXT NOT NULL,
  total_files INT NOT NULL DEFAULT 0,
  flagged_files INT NOT NULL DEFAULT 0
 );
 INSERT INTO submissions (userid, release, total_files, flagged_files) SELECT rowid, "SVA1", total_files, flagged_files FROM users;
+CREATE UNIQUE INDEX submissions_unique_idx ON users(userid, release);
+
 ALTER TABLE users RENAME TO backup;
 CREATE TABLE users (
  userid INTEGER PRIMARY KEY ASC,

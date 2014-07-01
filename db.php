@@ -60,8 +60,8 @@ $row = getNextImage($dbh, $uid);
 if ($row) {
     $row['name'] = "getImage.php?name=".$row['name'];
     // problem marks are requested
-    if(isset($_POST['show_marks']) || isset($_POST['qa_id']))
-        $row['marks'] = getProblems($dbh, $row['fileid'], $_POST['qa_id']);
+    if(isset($_GET['show_marks']) || isset($_GET['qa_id']))
+        $row['marks'] = getProblems($dbh, $row['fileid'], $_GET['qa_id']);
 }
 else {
     $row['error'] = "File missing";

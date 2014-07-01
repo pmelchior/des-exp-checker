@@ -53,19 +53,19 @@ function getDBHandle() {
 function getNextImage($dbh, $uid) {
     global $config;
     $res = null;
-    $sql = 'SELECT "' . $config['release'] . '" as release, files.rowid as fileid, files.expname, ccd, band, name, files.runs.runname FROM files JOIN files.runs ON (files.expname = files.runs.expname)';
+    $sql = 'SELECT "' . $config['release'] . '" as release, files.fileid, files.expname, ccd, band, name, files.runs.runname FROM files JOIN files.runs ON (files.expname = files.runs.expname)';
     $expname = GETorPOST('expname');
     $ccd = GETorPOST('ccd');
     if ($expname && $ccd) {
-        $sql .= ' WHERE files.expname = ? AND ccd = ? LIMIT 1';
+        $sql .= ' WHERE ccd= ? AND files.expname = ? LIMIT 1';
         $stmt = $dbh->prepare($sql);
-        $stmt->bindParam(1, $expname, PDO::PARAM_STR, 14);
-        $stmt->bindParam(2, $ccd, PDO::PARAM_INT);
+        $stmt->bindParam(1, $ccd, PDO::PARAM_INT);
+        $stmt->bindParam(2, $expname, PDO::PARAM_STR, 14);
         $stmt->execute();
         $res = check_or_abort($stmt);
     }
     elseif (isset($_GET['problem'])) {
-        $sql .= ' JOIN qa ON (files.rowid = qa.fileid) WHERE qa.problem = ? ORDER BY RANDOM() LIMIT 1';
+        $sql .= ' JOIN qa ON (files.fileid = qa.fileid) WHERE qa.problem = ? ORDER BY RANDOM() LIMIT 1';
         $stmt = $dbh->prepare($sql);
         $codes = getProblemCodes();
         $stmt->bindParam(1, $codes[$_GET['problem']], PDO::PARAM_INT);
@@ -77,7 +77,7 @@ function getNextImage($dbh, $uid) {
         // to created redundancy: make every n-th image drawn from list with existing qa
         if (rand(0,2) < 1) {
             $fallback = $sql;
-            $sql .= ' JOIN qa ON (files.rowid = qa.fileid)';
+            $sql .= ' JOIN qa ON (files.fileid = qa.fileid)';
             if ($uid) {
                 $sql .= ' WHERE qa.userid != ' . $uid;
                 $sql .= ' GROUP BY qa.fileid ORDER BY COUNT(distinct(qa.userid)) ASC, RANDOM() LIMIT 1';
@@ -102,9 +102,9 @@ function getProblems($dbh, $fileid, $qa_id=NULL) {
     global $config;
     $sql = 'SELECT problem, x, y, detail FROM qa WHERE fileid=?';
     if (isset($qa_id))
-        $sql .= ' AND rowid=?';
+        $sql .= ' AND qaid=?';
     else 
-        $sql .= ' AND problem > 0 AND problem < 1000';
+        $sql .= ' AND problem > 0 AND problem <= 1000';
     $stmt = $dbh->prepare($sql);
     $stmt->bindParam(1, $fileid, PDO::PARAM_INT);
     if (isset($qa_id))
@@ -174,7 +174,7 @@ function missingFilesForNextClass($total_files, $userclass) {
   }
   
 function getUserData($dbh, $uid) {
-    $stmt = $dbh->prepare("SELECT username, total_files, flagged_files, (SELECT COUNT(*)+1 from users WHERE total_files > (SELECT total_files FROM users WHERE rowid = ?)) as rank FROM  users WHERE rowid = ?");
+    $stmt = $dbh->prepare("SELECT username, total_files, flagged_files, (SELECT COUNT(*)+1 from submissions WHERE total_files > (SELECT total_files FROM submissions WHERE rowid = ?)) as rank FROM users JOIN submissions ON (users.userid = submissions.userid) WHERE users.userid = ?");
     $stmt->bindParam(1, $uid, PDO::PARAM_INT);
     $stmt->bindParam(2, $uid, PDO::PARAM_INT);
     $stmt->execute();
@@ -195,14 +195,14 @@ function getActivity($dbh, $uid, $date=FALSE) {
     $sql = "SELECT COUNT(DISTINCT(fileid)) as activity FROM qa WHERE userid=".$uid." AND timestamp > '".$date."%'";
     $res = check_or_abort($dbh->query($sql));
     $activity['today'] = array_pop($res->fetch(PDO::FETCH_NUM));
-    $sql = "SELECT total_files FROM users WHERE rowid=".$uid;
+    $sql = "SELECT total_files FROM submissions WHERE userid=".$uid;
     $res = check_or_abort($dbh->query($sql));
     $activity['alltime'] = array_pop($res->fetch(PDO::FETCH_NUM));
     return $activity;
 }
 
 function giveBonusPoints($dbh, $uid, $points) {
-    $stmt = $dbh->prepare("UPDATE users SET total_files = total_files + ? WHERE rowid = ?");
+    $stmt = $dbh->prepare("UPDATE submissions SET total_files = total_files + ? WHERE userid = ?");
     $stmt->bindParam(1, $points, PDO::PARAM_INT);
     $stmt->bindParam(2, $uid, PDO::PARAM_INT);
     check_or_abort($stmt->execute());

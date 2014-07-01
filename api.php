@@ -16,7 +16,7 @@ if (isset($_GET['problem'])) {
         $code = $codes[$_GET['problem']];
         if ($negative)
             $code *= -1;
-        $stm = $dbh->prepare('SELECT qa.rowid as qa_id, expname, ccd, band, problem, x, y, detail FROM qa JOIN files ON (files.rowid=qa.fileid) WHERE problem=' . $code . ' ORDER BY expname, ccd ASC');
+        $stm = $dbh->prepare('SELECT qa.qaid as qa_id, expname, ccd, band, problem, x, y, detail FROM qa JOIN files ON (files.fileid=qa.fileid) WHERE problem=' . $code . ' ORDER BY expname, ccd ASC');
         $stm->execute();
         $result = array();
         while($row = $stm->fetch(PDO::FETCH_ASSOC)) {

@@ -24,6 +24,7 @@ DELETE FROM qa WHERE fileid='';
 
 -- Re-organize the DB structure: qa is now in file db
 -- files db's filename contains the release name, making it easy to switch
+-- Open file db:
 ATTACH DATABASE "users.db" as users;
 CREATE TABLE qa (
  qaid INTEGER PRIMARY KEY ASC,
@@ -47,7 +48,6 @@ UPDATE qa SET problem=1007 WHERE problem=-7; -- old sky
 UPDATE qa SET problem=1008 WHERE problem=-52; -- old maks dots
 
 -- make fileid safe for vacuum by declaring an explicit integer primary key
-ALTER TABLE files RENAME TO backup;
 CREATE TABLE files (
  fileid INTEGER PRIMARY KEY ASC,
  expname TEXT,
@@ -55,12 +55,13 @@ CREATE TABLE files (
  band TEXT,
  name TEXT
 );
-INSERT INTO files (fileid, expname, ccd, band, name) SELECT (rowid, expname, ccd, band, name) FROM backup;
+INSERT INTO files (fileid, expname, ccd, band, name) SELECT rowid, expname, ccd, band, name FROM SVA1;
 DROP INDEX files_band_idx;
 DROP INDEX files_expname_idx;
 DROP INDEX files_ccd_idx;
 CREATE INDEX files_expname_idx ON "files" (expname);
 CREATE INDEX files_ccd_idx ON "files" (ccd);
+DROP TABLE SVA1;
 -- rename file db now to contain release name
 
 -- This has to be done on the users db!

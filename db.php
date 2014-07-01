@@ -25,12 +25,12 @@ if ($uid && isset($_POST['fileid']) && $_POST['fileid'] != '') {
             $sth->execute(array($_POST['fileid'], $uid, $code, $problem['x'], $problem['y'], $problem['detail']));
         }
         // update attached user database to reflect user action
-        $sth2 = $dbh->prepare('UPDATE users SET total_files = total_files + 1, flagged_files = flagged_files + 1 WHERE rowid = ?');
-        $sth2->execute(array($uid));
+        $sth2 = $dbh->prepare('UPDATE submissions SET total_files = total_files + 1, flagged_files = flagged_files + 1 WHERE userid = ? AND release= ?');
+        $sth2->execute(array($uid, $config['release']));
     } else {
         $sth->execute(array($_POST['fileid'], $uid, 0, null, null, null));
-        $sth2 = $dbh->prepare('UPDATE users SET total_files = total_files + 1 WHERE rowid = ?');
-        $sth2->execute(array($uid));
+        $sth2 = $dbh->prepare('UPDATE submissions SET total_files = total_files + 1 WHERE userid = ? AND release = ?');
+        $sth2->execute(array($uid, $config['release']));
     }
     $activity = getActivity($dbh, $uid);
     

@@ -31,6 +31,7 @@
           <li class="active"><a href="statistics.html">Statistics</a></li>
           <li><a href="api.html">API</a></li>
           <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="hodgepodge.html">Hodge-podge</a></li>
 	</ul>
         <ul class="nav pull-right hide">
           <div class="btn-group" id="release-switch">
@@ -185,7 +186,12 @@
         .style("font-size", "10px")
         .text(function(d, i) { if (i==0 && d.data > 0.05) return (100*d.data).toString().split(".").shift() + '%'; else return null; });
       svg.append("a")
-        .attr("xlink:href", function(d) {return "viewer.html?release=" + release + "&problem=" + d.name + "&show_marks"})
+        .attr("xlink:href", function(d) {
+          if (d.name != "Other...")
+            return "viewer.html?release=" + release + "&problem=" + d.name + "&show_marks";
+          else
+            return "hodgepodge.html";
+          })
         .append("text")
           .attr("dy", ".35em")
           .attr("transform", "translate(" + radius2 + "," + radius2 + ")")

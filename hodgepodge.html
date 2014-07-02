@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DES exposure checker | Gallery</title>
+  <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
+  <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
+  <meta charset="utf-8">
+  <meta name="author" content="Peter Melchior, Erin Sheldon">
+  <link rel="icon" href="assets/DES_logo_trans.png" type="image/png">
+  <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <style>
+  </style>
+</head>
+
+<body>
+  <div id="wrapper">
+  <div class='container'>
+    <div class="navbar">
+      <div class="navbar-inner">
+	<a class="brand" href="index.html">DES exposure checker</a>
+	<ul class="nav">
+          <li><a href="viewer.html">Viewer</a></li>
+	  <li><a href="tutorial.html">Tutorial</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="statistics.html">Statistics</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li class="active"><a href="#">Hodge-podge</a></li>
+	</ul>
+        <ul class="nav pull-right hide">
+          <div class="btn-group" id="release-switch">
+            <button class="btn btn-small release-button" id="release-button-SVA1">SVA1</button>
+            <button class="btn btn-small release-button" id="release-button-Y1A1">Y1A1</button>
+          </div>
+        </ul>
+      </div> 
+    </div>
+    
+    <!-- content area -->
+    <div class="span12">
+      <h1>Hodge-podge<small style="margin-left: 20px">or: the things called "Other..."</small></h1>
+      <p>We make every attempt at providing categories for all problem cases we know of.
+      However, if we learned one thing from this website, it's that many things can go wrong in many ways.
+      It is therefore not unexpected that unknown problems surface or that previously corrected problems
+      reappear after a change in the DESDM pipelines. These are the kinds of problems we collect under
+      the catch-all category <b>Other...</b>, where you can and should provide a short descriptive explanation
+      of what you found weird in any given image.</p>
+      <p>But this is only the first step that only becomes useful if we can find patterns or re-occurrances
+      of such problems in the data. Think of an unexpected failure mode. To make it easier to find such case,
+      we ask you to see what problems have been marked by yourself and other users. Below you'll find the
+      list of problems labelled as <b>Other...</b>, ordered by how many images show this problem.
+      You can click on the link and get to an image that shows this problem. If you find the same problem
+      again, you can help us identify that failure mode by using the same description text that is already in use.
+      <span style="color:red">[how to bookmark the description...]</span></p>
+    </div>
+    
+    <div class="span10">
+    <h3>What's in the bag</h3>
+    <div id="hodgepodge-table"></div>
+    </div>
+    
+    <div class="span12">
+    <h3>Do you need help?</h3>
+    <p>Always. Consolidating the descriptions is not difficult, but it requires some familiarity with the
+    set of known problems (as we list them in our <a href="tutorial.html">Turorial</a>) and judgement to decide
+    if two or more descriptions actually refer to one problem.</p>
+    <p>If that sounds like a job for you, please <a href="#" id="email-anchor">contact us</a>.</p>
+    </div>
+  </div>
+  <div id="push"></div>
+  </div>
+  <div id="foot">
+    <div class="container" style="text-align:right">
+      <div class="breadcrumb muted" style="margin: 24px 0 0 0;">Created by Peter Melchior, Erin Sheldon, Alex Drlica-Wagner</div>
+    </div>
+  </div>      
+</body>
+<script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="assets/jquery.cookie.js"></script>
+<script type="text/javascript" src="assets/common.js"></script>
+<script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function () {
+    // set up release
+    setRelease($.cookie('default-release'));
+    $('button[class*="release-button"]').on('click', function(evt) {
+      setRelease(this.id.split("-").pop());
+      window.location.reload(true);
+    });
+
+    $.get('problems.php', {'output': 'html', 'release': release, 'problem':'Other...'}, function(response) {
+      var html = "<table class='table table-condensed table-striped'><thead><tr><th>Description</th><th># of images found</th></tr></thead><tbody>";
+        for (var i=0; i < response.length; i++) {
+          html += "<tr><td><a href='viewer.html?problem=Other...&detail=" + encodeURI(response[i].detail) + "&show_marks'>" + response[i].detail + "</a></td><td>" + response[i].count + "</td></tr>";
+        }
+      html += "</table>";
+      $('#hodgepodge-table').html(html);
+    }, 'json');
+    $.get('email.php', function(response) {
+      $('#email-anchor').attr('href', 'mailto:' + response);
+    });
+        
+  });
+  // coordinate togglers
+  $('span[class*="coords"]').on('click', function(evt) {
+    // select all coordinates:
+    var nodes = $('span[class*="coords"]');
+    var visible = nodes.find('span:not([class*="hide"])');
+    nodes.find('span[class*="hide"]').removeClass('hide');
+    visible.addClass('hide');
+  });
+  
+  
+  </script>
+</html>

@@ -65,10 +65,15 @@ function getNextImage($dbh, $uid) {
         $res = check_or_abort($stmt);
     }
     elseif (isset($_GET['problem'])) {
-        $sql .= ' JOIN qa ON (files.fileid = qa.fileid) WHERE qa.problem = ? ORDER BY RANDOM() LIMIT 1';
+        $sql .= ' JOIN qa ON (files.fileid = qa.fileid) WHERE qa.problem = ?';
+        if (isset($_GET['detail']))
+            $sql .= ' AND detail = ?';
+        $sql .= ' ORDER BY RANDOM() LIMIT 1';
         $stmt = $dbh->prepare($sql);
         $codes = getProblemCodes();
         $stmt->bindParam(1, $codes[$_GET['problem']], PDO::PARAM_INT);
+        if (isset($_GET['detail']))
+            $stmt->bindParam(2, $_GET['detail'], PDO::PARAM_STR);
         $stmt->execute();
         $res = check_or_abort($stmt);
     }

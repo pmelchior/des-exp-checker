@@ -7,10 +7,12 @@ $config = array(
     "adminname" => T_STRING,    // name used for internal emails
     "domain" => T_STRING,       // webserver domain name
     "userdb" => T_STRING,       // path to the user sqlite database
-    "filedb" => T_STRING,       // path for file data, should contain '%s' as release placeholder
+    "filedb" => T_SRING,        // path for file database, should contain '%s' to be replace by release
+    "fovpath" => T_ARRAY,       // path to FoV images, one entry per release
     "release" => NULL,          // empty, set by setRelease()
     "images_per_fp" => T_INT,   // size of focal plane, used for congrats
-    "fitsdomain" => T_STRING    // path to get the fits files
+    "fitspath" => T_ARRAY,      // path to get the fits files, one entry per release
+    "fovpath" => T_ARRAY        // path to FoV images, one entry per release
 );
 */
 

@@ -13,7 +13,14 @@ function download_file($file) { // $file = include path
 }
 include("common.php.inc");
 setRelease();
-$path = array("SVA1"=> "se001grizt", "Y1A1"=>"se004grizY");
-$path = str_replace('%s', $path[$config['release']], $config['fitspath']);
-download_file($path.$_GET['name']);
+
+if ($_GET['type'] == "fov") {
+        $path = str_replace("%r", $_GET['runname'], $config['fovpath'][$config['release']]);
+        $path = str_replace("%e", $_GET['expname'], $path);
+        download_file($path);
+}
+else {
+        $path = $config['fitspath'][$config['release']];
+        download_file($path.$_GET['name']);
+}
 ?>

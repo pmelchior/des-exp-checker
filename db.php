@@ -75,7 +75,7 @@ if ($row) {
 else {
     $row['error'] = "File missing";
     $row['message'] = "The requested image cannot be retrieved.";
-    $row['description'] = "Either it's not in griz bands or the file is not part of the requested release.";
+    $row['description'] = "Either we don't have the band or the file is not part of the requested release.";
 }
 if (isset($congrats))
     $row['congrats'] = $congrats;

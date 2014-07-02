@@ -243,9 +243,11 @@ function sendResponse(new_image) {
 
 function getMyData() {
   $.get('mydata.php', {'release': release}, function(response) {
-    // check if server has just invalidated session
-    if (!checkSessionCookie())
-      kickOut();
+    // initial call: create typeahead
+    if ($('#total_files').html() == "")
+      $('#problem-text').typeahead({source: response.problems});
+    else // just update array afterwards
+      $('#problem-text').typeahead().data('typeahead').source = response.problems;
     
     $('#username').html(response.username);
     $('#userrank').html("#"+response.rank);

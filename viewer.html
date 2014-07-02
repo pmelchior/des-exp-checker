@@ -91,8 +91,8 @@
         <button type="button" class="close" id="problem-close-button">&times;</button>
         <h3>Describe what you see</h3>
       </div>
-      <div class="modal-body">
-        <textarea style="width:516px;" type="text" id="problem-text" placeholder="Describe in your own words. Be as specific as you see fit."></textarea>
+      <div class="modal-body" style="overflow: visible">
+        <input style="width:516px;" type="text" id="problem-text" placeholder="Describe in your own words. Be as specific as you see fit.">
       </div>
       <div class="modal-footer">
         <span style="padding-right:20px">When done, click on the image to mark the problematic area</span>
@@ -295,6 +295,8 @@
         alert('Failure when loading image');
       });
       clearUI();
+      if (checkSessionCookie())
+        getMyData();
     });
     $(".release_name").html(release);
     
@@ -435,6 +437,10 @@
   $('#problem-text-button').on('click', function() {
     $('#problem-modal').modal('hide');
     var problemName = $('#problem-text').val();
+    // update typeahead
+    var typeahead_source = $('#problem-text').typeahead().data('typeahead').source;
+    if ($.inArray(problemName, typeahead_source) == -1)
+      typeahead_source.push(problemName); 
     if (problemName.length > 11)
       problemName = problemName.substring(0,10) + "...";
     $('#problem-name').html(problemName);

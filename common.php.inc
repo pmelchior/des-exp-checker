@@ -173,23 +173,6 @@ function missingFilesForNextClass($total_files, $userclass) {
     }
   }
   
-function getUserData($dbh, $uid) {
-    global $config;
-    $stmt = $dbh->prepare("SELECT username, sum(total_files) as total_files, sum(flagged_files) as flagged_files, (SELECT COUNT(*)+1 from submissions WHERE release=? AND total_files > (SELECT total_files FROM submissions WHERE userid = ? and release = ?)) as rank FROM users JOIN submissions ON (users.userid = submissions.userid) WHERE users.userid = ?");
-    $stmt->bindParam(1, $config['release'], PDO::PARAM_STR, 4);
-    $stmt->bindParam(2, $uid, PDO::PARAM_INT);
-    $stmt->bindParam(3, $config['release'], PDO::PARAM_STR, 4);
-    $stmt->bindParam(4, $uid, PDO::PARAM_INT);
-    $stmt->execute();
-    if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $row['userclass'] = userClass($row['total_files']);
-        $row['missingfiles'] = missingFilesForNextClass($row['total_files'], $row['userclass']);
-        return $row;
-    }
-    else {
-        return FALSE;
-    }
-}
 
 function getActivity($dbh, $uid, $date=FALSE) {
     $activity = array();
@@ -209,27 +192,6 @@ function giveBonusPoints($dbh, $uid, $points) {
     $stmt->bindParam(1, $points, PDO::PARAM_INT);
     $stmt->bindParam(2, $uid, PDO::PARAM_INT);
     check_or_abort($stmt->execute());
-}
-
-// mimics json formatting
-function json_output($data) {
-    if (gettype($data) == "string")
-        return "\"". $data . "\"";
-    if (gettype($data) == "array") {
-        $chunks = array();
-        // from http://stackoverflow.com/questions/5996749/determine-whether-an-array-is-associative-hash-or-not
-        // finding a indexed = non-associative array
-        if (array_keys($data) === range(0, count($data) - 1)) {
-            foreach ($data as $d)
-                array_push($chunks, json_output($d));
-            return "[" . implode(",", $chunks) . "]";
-        } else {
-            foreach ($data as $k => $v)
-                array_push($chunks, "\"" . $k . "\":" . json_output($v));
-            return "{" . implode(",", $chunks) . "}";
-        }
-    }
-    else return $data;
 }
 
 function getProblemCodes() {

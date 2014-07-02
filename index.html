@@ -179,9 +179,24 @@
     });
     $(".release_name").html(release);
     
-    $.get('ranking.php', {'release': release, 'limit': 15, 'output': 'html', 'short':true}, function(response) {
-      $('#leaderboard').html(response);
-    });
+    $.get('ranking.php', {'release': release, 'limit': 15, },
+      function(response) {
+        var html = "<table class='table table-condensed table-striped'>";
+        var total = null, counter = 1, width_flagged, width_total;
+        for (var i=0; i < response.length; i++) {
+          if (total == null)
+            total = response[i]['total_files'];
+          width_flagged = (100*response[i]['flagged_files']/total) + "%";
+          width_total = (100*(response[i]['total_files']-response[i]['flagged_files'])/total) + "%";
+          html += "<tr><td># "+ counter +"</td><td><span class='namecol'>" + response[i]['username'] + "</span></td>";
+          html += "<td><div class='ratingcol'><span class='ratingbar bad' style='width:" + width_flagged +"'></span>";
+          html += "<span class='ratingbar good' style='left:" + width_flagged +"; width:" + width_total +"'></span></div></td>";
+          html += "<td>" + response[i]['total_files'] + "</td></tr>";
+          counter++ ;
+        }
+        html += "</tbody></table>";
+        $('#leaderboard').html(html);
+    }, 'json');
     
     if (checkSessionCookie()) {
       $('#getin-buttons').show();

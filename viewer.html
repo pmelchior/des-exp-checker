@@ -478,10 +478,25 @@
     $('#mystats-modal').modal('show');
   });
   $('#leaderboard-anchor').on('click', function() {
-    $.get('ranking.php', {'output': 'html', 'release': release}, function(response) {
-      $('#rank-modal').find('[class*="modal-body"]').html(response);
+    $.get('ranking.php', {'release': release}, function(response) {
+      var html = "<table class='table table-condensed table-striped'><thead><tr><th>Rank</th><th>Username</th><th>Problematic/Total</th><th># Files</th></tr></thead><tbody>";
+        var total = null, counter = 1, width_flagged, width_total;
+        for (var i=0; i < response.length; i++) {
+          if (total == null)
+            total = response[i]['total_files'];
+          width_flagged = (100*response[i]['flagged_files']/total) + "%";
+          width_total = (100*(response[i]['total_files']-response[i]['flagged_files'])/total) + "%";
+          html += "<tr><td># "+ counter +"</td><td><span class='namecol'>" + response[i]['username'] + "</span></td>";
+          html += "<td><div class='ratingcol'><span class='ratingbar bad' style='width:" + width_flagged +"'></span>";
+          html += "<span class='ratingbar good' style='left:" + width_flagged +"; width:" + width_total +"'></span></div></td>";
+          html += "<td>" + response[i]['total_files'] + "</td></tr>";
+          counter++ ;
+        }
+        html += "</tbody></table>";
+        $('#leaderboard').html(html);
+      $('#rank-modal').find('[class*="modal-body"]').html(html);
       $('#rank-modal').modal('show');
-    });
+    }, 'json');
   });
   $('#logout').on('click', function() {
     $.post('login.php',{'logout':true}, function() {

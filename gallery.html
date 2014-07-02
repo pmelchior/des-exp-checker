@@ -149,9 +149,16 @@
       window.location.reload(true);
     });
 
-    $.get('gallery.php', {'output': 'html', 'release': release}, function(response) {
-      $('#awesome-table').html(response);
-    });
+    $.get('gallery.php', {'release': release},
+      function(response) {
+        var html = "<table class='table table-condensed table-striped'><thead><tr><th>Image</th><th>Description</th><th>Username</th><th>Timestamp</th></tr></thead><tbody>";
+        for (var i=0; i < response.length; i++) {
+          html += "<td class='imagenamecol'><a href='viewer.html?release=" + release + "&expname=" + response[i]['expname'] + "&ccd=" + response[i]['ccd'] + "&qa_id=" + response[i]['qa_id'] + "'>" + response[i]['expname'] + ", CCD " + response[i]['ccd'] + "</a></td>";
+          html += "<td>" + response[i]['detail'] + "</td><td>" + response[i]['username'] + "</td><td class='timecol'>" + response[i]['timestamp'] + "</td></tr>";
+        }
+        html += "</tbody></table>";
+        $('#awesome-table').html(html);
+    }, 'json');
     $.get('email.php', function(response) {
       $('#email-anchor').attr('href', 'mailto:' + response);
     });

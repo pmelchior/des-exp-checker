@@ -10,7 +10,7 @@ if (isset($_GET['problem'])) {
         $_GET['problem'] = substr($_GET['problem'], 1);
         $negative = TRUE;
     }
-    if (isset($_GET['negative']))
+    if (isset($_GET['false']))
         $negative = TRUE;
     if (array_search($_GET['problem'], array_keys($codes)) !== FALSE) {
         $code = $codes[$_GET['problem']];

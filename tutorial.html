@@ -5,7 +5,7 @@
   <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
-  <meta name="author" content="Peter Melchior, Erin Sheldon">
+  <meta name="author" content="Peter Melchior, Erin Sheldon, Alex Drlica-Wagner">
   <link rel="icon" href="assets/DES_logo_trans.png" type="image/png">
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
@@ -45,18 +45,22 @@
       If there are no obvious issues with the image displayed, simply press <span style="font-weight: bold; color:#46a546">Next</span>. 
       Otherwise, click the <span style="font-weight: bold; color:#9d261d">Problem</span> button and select one of the predefined problem categories. 
       Click on the problematic location(s) to mark the image.</p>
+
+      <p>In the course of marking problem regions, two new buttons will appear:</p>
       <div id="mark-buttons">
         <button class="btn btn-primary" data-toggle="button">False</button>
         <button class="btn btn-primary">Clear Last</button>
       </div>
       <p style="margin-top:10px">
-      When you select a problem category, you'll see the <span style="font-weight: bold; color:#006dcc">False</span> button appearing.
-      With it, you can report that something has been falsely processed by DESDM in the sense of a false positive treatment on a non-existing problem,
-      e.g. a mask that covers an area that appears otherwise totally fine. From the shape of the mask you can often guess what problem has been masked there,
-      so chose the appropriate category and click on this button to report it. The mark on the image will appear differently to indicate that you report a false positive.<br>
-      After you've marked the first problem, another button <span style="font-weight: bold; color:#006dcc">Clear Last</span> will appear that lets you undo your mark(s).
+      With the <span style="font-weight: bold; color:#006dcc">False</span> button, you can report a non-existent problem that has been falsely flagged by DESDM,
+      e.g. a mask that covers an area that appears totally fine. 
+      From the shape of the mask you can often guess which problem was mistakenly masked.
+      If so, chose the appropriate category and click on this button to report it. 
+      When you click on the image, a mark will appear to indicate that you are reporting a false positive.
+      After you've marked the first problem, another button <span style="font-weight: bold; color:#006dcc">Clear Last</span> will appear to let you undo your mark(s).</br>
       Once you are done marking all problems, click <span style="font-weight: bold; color:#46a546">Next</span> to submit the problems and advance to the next image.
       </p>
+      
       <p>
         Additionally, we give you the means to further investigate the single CCD image using these buttons:</p>
       <p>
@@ -79,7 +83,7 @@
       <p>
       You now have everything you need to start looking at images.
       If you still have questions, go the <a href="faq.html">FAQ</a> page and see if we cover it already.<br>
-      The remainder of this tutorial goes into more detail about the various imaging artifacts commonly found in the SV-A1 data set.
+      The remainder of this tutorial goes into more detail about the various imaging artifacts commonly found in the DES data set.
       </p>
     </div>
     
@@ -112,7 +116,8 @@
       to switch to a scaling that focuses on the bright aspects of the image and the
       <button class="btn btn-small btn-primary">Toggle <u>m</u>ask</button> to blink the existing mask.
       It's perfectly fine to mark multiple cosmic rays per image,
-      including those that are only partially masked.</p>
+      including those that are only partially masked.
+      In Y1A1, cosmic-ray tracks are interpolated over after masking, so you should not see any sign of them when the mask is toggled off (in SVA1 they should still be visible).</p>
     </div>
     <div class="span5">
       <p class="img-polaroid">
@@ -163,6 +168,8 @@
       <h3>Excessive mask</h3>
       <p> Occasionally large regions of a CCD get masked for no apparent reason.
         Sometimes this is a failure in edge-bleed masking, other times the cause is uncertain.
+        Additionally, sometimes the circular regions around bright stars are excessiely masked. 
+        For more on star masking, see the <a href="faq.html#star-mask-anchor">FAQ</a>
         Toggle the mask and flag excessive masks when you see them.
       </p>
     </div>
@@ -427,6 +434,7 @@
       large, you can mark the track wherever you want. Sometimes, however, 
       the tracks are broken into segments (note: <a href="http://www.satobs.org/tumble/tumbleintro.html">rocket parts may tumble</a>),
       in which case we'd like to have marks on each of the segments.
+      In Y1A1, be sure to keep an eye out for falsely masked streaks (i.e., streak masks when no streak is present). 
       </p>
     </div>
     <div class="span5">
@@ -550,7 +558,7 @@
     
     <div class="span12">
     <h2>Can I help?</h2>
-    Certainly. If you think you found a new class of artifacts, let us know. If you know where these artifacts come from, let us know. How? Go to <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Problem_classes_from_the_SV-A1_eyeball_website">the redmine wiki</a>, where we list and discuss such cases.
+    Certainly. If you think you found a new class of artifacts, let us know. If you know where these artifacts come from, let us know. How? Go to <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Feedback_from_DES_Exposure_Checker">the redmine wiki</a>, where we list and discuss such cases.
   </div>
   <div id="push"></div>
   </div>

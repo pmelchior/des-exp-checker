@@ -109,7 +109,7 @@
       <div class="modal-body" style="max-height:none;">
         <div id="fov-body" style="position: relative"></div>
         <div id="ccdmap">
-          <div class="ccdshape" style="left:151px; top:416px" title="CCD 1"></div>
+          <!--div class="ccdshape" style="left:151px; top:416px" title="CCD 1"></div>
           <div class="ccdshape" style="left:227px; top:416px" title="CCD 2"></div>
           <div class="ccdshape" style="left:302px; top:416px" title="CCD 3"></div>
           <div class="ccdshape" style="left:113px; top:378px" title="CCD 4"></div>
@@ -170,7 +170,7 @@
           <div class="ccdshape" style="left:340px; top:37px" title="CCD 59"></div>
           <div class="ccdshape" style="left:151px; top:0px" title="CCD 60"></div>
           <div class="ccdshape" style="left:227px; top:0px" title="CCD 61"></div>
-          <div class="ccdshape" style="left:302px; top:0px" title="CCD 62"></div>
+          <div class="ccdshape" style="left:302px; top:0px" title="CCD 62"></div-->
         </div>
       </div>
       <div id="fov-url" class="hide"></div>
@@ -286,20 +286,25 @@
 
     // set up release
     setRelease($.cookie('default-release'));
-    $('button[class*="release-button"]').on('click', function(evt) {
-      setRelease(this.id.split("-").pop());
-      $('#loading').show();
-      $.get('db.php', {'release': release}, function(response) {
-        setNextImage(response);
-      }, 'json')
-      .fail(function() {
-        alert('Failure when loading image');
-      });
-      clearUI();
-      if (checkSessionCookie())
-        getMyData();
-    });
     $(".release_name").html(release);
+    // what happens when the release button is clicked
+    $('button[class*="release-button"]').on('click', function(evt) {
+      var newrelease = this.id.split("-").pop();
+      if (newrelease != release) {
+        setRelease(newrelease);
+        $('#loading').show();
+        $.get('db.php', {'release': release}, function(response) {
+          setNextImage(response);
+        }, 'json')
+        .fail(function() {
+          alert('Failure when loading image');
+        });
+        clearUI();
+        setChipLayout();
+        if (checkSessionCookie())
+          getMyData();
+      }
+    });
     
     var urlparams = $.url().param();
     urlparams['release'] = release;
@@ -336,7 +341,9 @@
     .fail(function() {
       alert('Failure when loading image');
     });
-   
+    
+    // setup FoV chip layout
+    setChipLayout();
   });
   $('form').submit(function() {
     return false;
@@ -384,7 +391,7 @@
     // load FoV image from DESDM
     $('#fov-body').find('.fov-image').remove();
     $('<img class="fov-image" src="'+ $('#fov-url').html() +'" border="0" />').load(function() {
-      $(this).width(530).height(454).appendTo('#fov-body');
+      $(this).width(530).appendTo('#fov-body');
     });
     $('#ccdmap').children('.ccdshape').each(function() {
       var ccdnum = this.title.split(" ").pop();
@@ -394,12 +401,6 @@
         $(this).removeClass('ccdshape-current');
     });
     $('#fov-modal').modal('show');
-  });
-  // Connect the ccd outline in FoV image to image loading
-  $('#ccdmap').children('.ccdshape').on('click', function(evt) {
-    var ccdnum = evt.target.title.split(" ").pop();
-    sendResponse({'release': release, 'expname': expname, 'ccd': ccdnum});
-    $('#fov-modal').modal('hide');
   });
   $('#reported-button').on('click', function() {
     var elem = $($(webfits.reportCtx)[0].canvas);

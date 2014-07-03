@@ -276,3 +276,51 @@ function closeProblemModal() {
   $('#problem-name').html(problem_default);
   problem = null;
 }
+
+function setChipLayout() {
+  var WIDTH = 530., HEIGHT = 479.;
+  var GAP = [1.25, 2.];
+  var PAD = [14., 12.];
+  var ROWS = [[3,2,1], // chips per row
+              [7,6,5,4], 
+              [12,11,10,9,8], 
+              [18,17,16,15,14,13],
+              [24,23,22,21,20,19],
+              [31,30,29,28,27,26,25],
+              [38,37,36,35,34,33,32],
+              [44,43,42,41,40,39],
+              [50,49,48,47,46,45],
+              [55,54,53,52,51],
+              [59,58,57,56],
+              [62,61,60]];
+  var NROWS = ROWS.length;
+  var NCCDS = [3, 4, 5, 6, 6, 7, 7, 6, 6, 5, 4, 3];
+  var i, j, xpad, ypad;
+  if (release == "SVA1") {
+    HEIGHT = 454.;
+    GAP = [0.5,0.5];
+    PAD = [1.,0.];
+    ROWS.reverse();
+    for (i = 0; i < NROWS; i++)
+      ROWS[i].reverse();
+  }
+  var CCD_SIZE = [(WIDTH-6*GAP[0]-2*PAD[0])/7, (HEIGHT-11*GAP[1]-2*PAD[1])/NROWS];
+  
+  var html = "<style> .ccdshape { width: " + Math.round(CCD_SIZE[0]-2) + "px; height: " + Math.round(CCD_SIZE[1]-2) + "px; }</style>";
+  var xmin, ymax;
+  for (i=0; i < NROWS; i++) {
+    var ccds = ROWS[i];
+    for (j=0; j < ccds.length; j++) {
+      xmin = Math.round(PAD[0] + j*(GAP[0] + CCD_SIZE[0]) + (WIDTH - 2*PAD[0] - ccds.length*(CCD_SIZE[0]+GAP[0]))/2);
+      ymax = Math.round((PAD[1] + i*(GAP[1] + CCD_SIZE[1])));
+      html += "<div class='ccdshape' style='left:" + xmin + "px; top:" + ymax + "px' title='CCD " + ccds[j] + "'></div>";
+    }
+  }
+  $('#ccdmap').html(html);
+  // Connect the ccd outline in FoV image to image loading
+  $('#ccdmap').children('.ccdshape').on('click', function(evt) {
+    var ccdnum = evt.target.title.split(" ").pop();
+    sendResponse({'release': release, 'expname': expname, 'ccd': ccdnum});
+    $('#fov-modal').modal('hide');
+  });
+}

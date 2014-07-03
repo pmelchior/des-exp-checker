@@ -111,7 +111,7 @@ function getProblems($dbh, $fileid, $qa_id=NULL) {
     if (isset($qa_id))
         $sql .= ' AND qaid=?';
     else 
-        $sql .= ' AND problem > 0 AND problem <= 1000';
+        $sql .= ' AND problem != 0 AND problem <= 1000';
     $stmt = $dbh->prepare($sql);
     $stmt->bindParam(1, $fileid, PDO::PARAM_INT);
     if (isset($qa_id))
@@ -122,7 +122,12 @@ function getProblems($dbh, $fileid, $qa_id=NULL) {
     $problem_code = array_flip($codes);
     $problems = array();
     while($row = $res->fetch(PDO::FETCH_ASSOC)) {
-        $row['problem'] = $problem_code[$row['problem']];
+        if ($row['problem'] > 0)
+            $row['problem'] = $problem_code[$row['problem']];
+        else
+            $row['problem'] = "-" . $problem_code[-$row['problem']];
+        $row['x'] = intval($row['x']);
+        $row['y'] = intval($row['y']);
         array_push($problems, $row);
     }
     return $problems;

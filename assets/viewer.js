@@ -145,7 +145,10 @@ function completeVisualization(response) {
   expname = response.expname;
   ccd = response.ccd;
   release = response.release; // locally overwrite the default release to make sure it's from this file
-  $('#image_name').html(expname + ', CCD ' + ccd + ", " + response.band + "-band, " + release);
+  if (response.band == 'Y')
+    $('#image_name').html(release + ", " + expname + ', CCD ' + ccd + ", <span class='badge badge-important'>" + response.band + "-band</span>");
+  else
+    $('#image_name').html(release + ", " + expname + ', CCD ' + ccd + ", " + response.band + "-band");
   var newurl=window.location.pathname + '?release=' + release + '&expname=' + expname + '&ccd=' + ccd;
   // update browser url field
   window.history.replaceState(null, "Title", newurl);

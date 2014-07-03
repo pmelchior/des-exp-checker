@@ -5,7 +5,7 @@
   <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
-  <meta name="author" content="Peter Melchior, Erin Sheldon">
+  <meta name="author" content="Peter Melchior, Erin Sheldon, Alex Drlica-Wagner">
   <link rel="icon" href="assets/DES_logo_trans.png" type="image/png">
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
@@ -26,6 +26,7 @@
           <li><a href="statistics.html">Statistics</a></li>
           <li><a href="api.html">API</a></li>
           <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="hodgepodge.html">Hodge-podge</a></li>
 	</ul>
       </div> 
     </div>
@@ -37,20 +38,34 @@
     </div>
     <div class="span12">
       <p>The <a href="viewer.html">Viewer</a> displays an image from a single DECam CCD for you to inspect.
-      Two primary buttons are provided:</p>
+      Initally we show you two primary buttons:</p>
       <button id="fine-button" class="btn btn-success">Next</button>
       <!--#include file="problem_selector.shtml"-->
       <p style="margin-top:10px">
       If there are no obvious issues with the image displayed, simply press <span style="font-weight: bold; color:#46a546">Next</span>. 
       Otherwise, click the <span style="font-weight: bold; color:#9d261d">Problem</span> button and select one of the predefined problem categories. 
-      Click on the problematic location(s) to mark the image.
+      Click on the problematic location(s) to mark the image.</p>
+
+      <p>In the course of marking problem regions, two new buttons will appear:</p>
+      <div id="mark-buttons">
+        <button class="btn btn-primary" data-toggle="button">False</button>
+        <button class="btn btn-primary">Clear Last</button>
+      </div>
+      <p style="margin-top:10px">
+      With the <span style="font-weight: bold; color:#006dcc">False</span> button, you can report a non-existent problem that has been falsely flagged by DESDM,
+      e.g. a mask that covers an area that appears totally fine. 
+      From the shape of the mask you can often guess which problem was mistakenly masked.
+      If so, chose the appropriate category and click on this button to report it. 
+      When you click on the image, a mark will appear to indicate that you are reporting a false positive.
+      After you've marked the first problem, another button <span style="font-weight: bold; color:#006dcc">Clear Last</span> will appear to let you undo your mark(s).</br>
       Once you are done marking all problems, click <span style="font-weight: bold; color:#46a546">Next</span> to submit the problems and advance to the next image.
       </p>
+      
       <p>
-        Additionally, we allow you to further investigate the single CCD image using the buttons:</p>
+        Additionally, we give you the means to further investigate the single CCD image using these buttons:</p>
       <p>
       <div class="btn-group">
-      <button id="info-button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Info</span><span class="caret"></span></button>
+      <button id="info-button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Info</span><span class="caret"></span></button>
       <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
         <li><a tabindex="-1" href="#tutorial-anchor" id="share-button">Share <u>l</u>ink</a></li>
         <li><a tabindex="-1" href="#tutorial-anchor" id="desdm-button"><u>D</u>ownload image from DESDM</a></li>
@@ -58,17 +73,17 @@
         <li><a tabindex="-1" href="#tutorial-anchor" id="reported-button">Show reported <u>p</u>roblems</a></li>
       </ul>
       </div>
-      <button class="btn btn-info">Toggle <u>m</u>ask</button>
-      <button class="btn btn-info">Toggle <u>s</u>caling</button>
+      <button class="btn btn-primary">Toggle <u>m</u>ask</button>
+      <button class="btn btn-primary">Toggle <u>s</u>caling</button>
       </p>
       <p>
-        The <span style="font-weight: bold; color:#4CB1CF">Info</span> button provides a link to the image you are currently viewing, the path to the full resolution FITS file from DESDM, a PNG showing the entire focal plane, and access to problems previously reported for this image by other users.
-        The <span style="font-weight: bold; color:#4CB1CF">Toggle Mask</span> button allows you to turn on and off the image mask, while the <span style="font-weight: bold; color:#4CB1CF">Toggle Scaling</span> button lets you change the image scaling.
+        The <span style="font-weight: bold; color:#006dcc">Info</span> button opens a menu with a link to the image you are currently viewing, the path to the full resolution FITS file from DESDM, a PNG showing the entire focal plane, and access to problems previously reported for this image by other users.
+        The <span style="font-weight: bold; color:#006dcc">Toggle Mask</span> button allows you to turn on and off the image mask, while the <span style="font-weight: bold; color:#006dcc">Toggle Scaling</span> button lets you change the image scaling.
       </p>
       <p>
       You now have everything you need to start looking at images.
       If you still have questions, go the <a href="faq.html">FAQ</a> page and see if we cover it already.<br>
-      The remainder of this tutorial goes into more detail about the various imaging artifacts commonly found in the SV-A1 data set.
+      The remainder of this tutorial goes into more detail about the various imaging artifacts commonly found in the DES data set.
       </p>
     </div>
     
@@ -86,7 +101,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00157811&ccd=28" title="Click to view the original image"><img src="material/column_mask.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00157811&ccd=28" title="Click to view the original image"><img src="material/column_mask.gif" /></a>
         <small>Partially masked bad column</small>
       </p>
     </div>
@@ -97,15 +112,16 @@
       <p>Cosmic-ray contamination is unavoidable in our deep red-sensitive CCDs.
       The good thing about unmasked cosmic rays: they are easy to spot.
       Unmasked cosmic rays should become apparent when you use the
-      <button class="btn btn-small btn-info">Toggle <u>s</u>caling</button> button
+      <button class="btn btn-small btn-primary">Toggle <u>s</u>caling</button> button
       to switch to a scaling that focuses on the bright aspects of the image and the
-      <button class="btn btn-small btn-info">Toggle <u>m</u>ask</button> to blink the existing mask.
+      <button class="btn btn-small btn-primary">Toggle <u>m</u>ask</button> to blink the existing mask.
       It's perfectly fine to mark multiple cosmic rays per image,
-      including those that are only partially masked.</p>
+      including those that are only partially masked.
+      In Y1A1, cosmic-ray tracks are interpolated over after masking, so you should not see any sign of them when the mask is toggled off (in SVA1 they should still be visible).</p>
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00161501&ccd=18" title="Click to view the original image"><img src="material/cosmic_ray.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00161501&ccd=18" title="Click to view the original image"><img src="material/cosmic_ray.gif" /></a>
         <small>Several partially masked cosmic rays</small>
       </p>
     </div>
@@ -127,7 +143,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00161873&ccd=2" title="Click to view the original image"><img src="material/cross_talk.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00161873&ccd=2" title="Click to view the original image"><img src="material/cross_talk.gif" /></a>
         <small>Cross-talk from several bright stars</small>
       </p>
     </div>
@@ -142,7 +158,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00157575&ccd=9" title="Click to view the original image"><img src="material/edge_bleed.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00157575&ccd=9" title="Click to view the original image"><img src="material/edge_bleed.gif" /></a>
         <small>Edge-bleed on left side from bright star further right</small>
       </p>
     </div>
@@ -152,12 +168,14 @@
       <h3>Excessive mask</h3>
       <p> Occasionally large regions of a CCD get masked for no apparent reason.
         Sometimes this is a failure in edge-bleed masking, other times the cause is uncertain.
+        Additionally, sometimes the circular regions around bright stars are excessively masked. 
+        For more on star masking, see the <a href="faq.html#star-mask-anchor">FAQ</a>.
         Toggle the mask and flag excessive masks when you see them.
       </p>
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00170637&ccd=16" title="Click to view the original image"><img src="material/excessive_mask.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00170637&ccd=16" title="Click to view the original image"><img src="material/excessive_mask.gif" /></a>
         <small>Excessive masking likely due to a failed edge-bleed mask</small>
       </p>
     </div>
@@ -175,7 +193,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00169958&ccd=50" title="Click to view the original image"><img src="material/dark_rim.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00169958&ccd=50" title="Click to view the original image"><img src="material/dark_rim.gif" /></a>
         <small>Dark area at the top-left corner</small>
       </p>
     </div>
@@ -189,7 +207,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00168969&ccd=53" title="Click to view the original image"><img src="material/dark_halo.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00168969&ccd=53" title="Click to view the original image"><img src="material/dark_halo.gif" /></a>
         <small>A dark halo appears around the bright star in this image</small>
       </p>
     </div>
@@ -204,7 +222,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00164761&ccd=20" title="Click to view the original image"><img src="material/quilted_sky.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00164761&ccd=20" title="Click to view the original image"><img src="material/quilted_sky.gif" /></a>
         <small>Quilted sky (factor 2 downsampled)</small>
       </p>
     </div>
@@ -219,7 +237,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00163508&ccd=62" title="Click to view the original image"><img src="material/wavy_sky.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00163508&ccd=62" title="Click to view the original image"><img src="material/wavy_sky.gif" /></a>
         <small>Wavy sky (factor 2 downsampled)</small>
       </p>
     </div>
@@ -235,7 +253,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00169331&ccd=55" title="Click to view the original image"><img src="material/anti_bleed.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00169331&ccd=55" title="Click to view the original image"><img src="material/anti_bleed.gif" /></a>
         <small>Dark anti-bleed around bright stars</small>
       </p>
     </div>
@@ -254,7 +272,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00152743&ccd=31" title="Click to view the original image"><img src="material/ab_jump.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00152743&ccd=31" title="Click to view the original image"><img src="material/ab_jump.gif" /></a>
         <small>A/B bias jump characteristic of CCD 31 (factor 2 downsampled)</small>
       </p>
     </div>
@@ -269,7 +287,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00181120&ccd=49" title="Click to view the original image"><img src="material/fringing.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00181120&ccd=49" title="Click to view the original image"><img src="material/fringing.gif" /></a>
         <small>Strong fringing pattern</small>
       </p>
     </div>
@@ -285,7 +303,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00181151&ccd=16" title="Click to view the original image"><img src="material/tape_bumps.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00181151&ccd=16" title="Click to view the original image"><img src="material/tape_bumps.gif" /></a>
         <small>Tape bump at the bottom center, together with fringing</small>
       </p>
     </div>
@@ -302,7 +320,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00181154&ccd=24" title="Click to view the original image"><img src="material/tree_rings.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00181154&ccd=24" title="Click to view the original image"><img src="material/tree_rings.gif" /></a>
         <small>Strong concentric tree ring pattern</small>
       </p>
     </div>
@@ -319,7 +337,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00181033&ccd=1" title="Click to view the original image"><img src="material/vertical_jump.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00181033&ccd=1" title="Click to view the original image"><img src="material/vertical_jump.gif" /></a>
         <small>Vertical jump from bad flats</small>
       </p>
     </div>
@@ -334,7 +352,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00147580&ccd=22" title="Click to view the original image"><img src="material/vertical_stripes.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00147580&ccd=22" title="Click to view the original image"><img src="material/vertical_stripes.gif" /></a>
         <small>Vertical stripes, resulting in excessive masking</small>
       </p>
     </div>
@@ -347,14 +365,14 @@
       <h3>Bright spray</h3>
       <p> The worst scattered light features come bright off-axis stars scattering off of the wall of the shutter.
         This leads to broad bright sprays fanning out from the edge of the focal plane.
-        These features can be most easily identified on the full focal plane images via the <button class="btn btn-small btn-info">Info</button> button.
+        These features can be most easily identified on the full focal plane images via the <button class="btn btn-small btn-primary">Info</button> button.
         After Year 1, we applied an anti-reflective paint to the shutter wall and this issues should be corrected for Year 2 and beyond.
         More information can be found <a href="http://des-docdb.fnal.gov:8080/cgi-bin/ShowDocument?docid=7002">here</a>.
       </p>
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00153949&ccd=3" title="Click to view the original image"><img src="material/bright_spray.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00153949&ccd=3" title="Click to view the original image"><img src="material/bright_spray.gif" /></a>
         <small>Example of strong spray of scattered light (factor 2 downsampled)</small>
       </p>
     </div>
@@ -369,7 +387,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00158404&ccd=19" title="Click to view the original image"><img src="material/ghost.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00158404&ccd=19" title="Click to view the original image"><img src="material/ghost.gif" /></a>
         <small>Pupil ghost next to a bright star (factor 2 downsampled)</small>
       </p>
     </div>
@@ -384,7 +402,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00163439&ccd=31" title="Click to view the original image"><img src="material/brush_strokes.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00163439&ccd=31" title="Click to view the original image"><img src="material/brush_strokes.gif" /></a>
         <small>Brush strokes of scattered light</small>
       </p>
     </div>
@@ -399,7 +417,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00179358&ccd=44" title="Click to view the original image"><img src="material/bright_arc.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00179358&ccd=44" title="Click to view the original image"><img src="material/bright_arc.gif" /></a>
         <small>Bright arc of scattered light (factor 2 downsampled)</small>
       </p>
     </div>
@@ -416,11 +434,12 @@
       large, you can mark the track wherever you want. Sometimes, however, 
       the tracks are broken into segments (note: <a href="http://www.satobs.org/tumble/tumbleintro.html">rocket parts may tumble</a>),
       in which case we'd like to have marks on each of the segments.
+      In Y1A1, be sure to keep an eye out for falsely masked streaks (i.e., streak masks when no streak is present). 
       </p>
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00170663&ccd=10" title="Click to view the original image"><img src="material/satellite.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00170663&ccd=10" title="Click to view the original image"><img src="material/satellite.gif" /></a>
         <small>Satellite streak</small>
       </p>
     </div>
@@ -437,7 +456,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00162832&ccd=15" title="Click to view the original image"><img src="material/airplane.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00162832&ccd=15" title="Click to view the original image"><img src="material/airplane.gif" /></a>
         <small>An airplane trail (factor 2 downsampled)</small>
       </p>
     </div>
@@ -454,7 +473,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00176838&ccd=6" title="Click to view the original image"><img src="material/guiding.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00176838&ccd=6" title="Click to view the original image"><img src="material/guiding.gif" /></a>
         <small>A guiding error leading to blurred sources.</small>
       </p>
     </div>
@@ -469,7 +488,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00148339&ccd=21" title="Click to view the original image"><img src="material/shutter.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00148339&ccd=21" title="Click to view the original image"><img src="material/shutter.gif" /></a>
         <small>A shutter failure leading to star trails</small>
       </p>
     </div>
@@ -483,7 +502,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00146941&ccd=27" title="Click to view the original image"><img src="material/readout.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00146941&ccd=27" title="Click to view the original image"><img src="material/readout.gif" /></a>
         <small>Image with a readout glitch on the left side</small>
       </p>
     </div>
@@ -498,7 +517,7 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00176250&ccd=62" title="Click to view the original image"><img src="material/haze.gif" /></a>
+        <a href="viewer.html?release=SVA1&expname=DECam_00176250&ccd=62" title="Click to view the original image"><img src="material/haze.gif" /></a>
         <small>Image with haze around bright stars (plus dark halos)</small>
       </p>
     </div>
@@ -508,13 +527,13 @@
       <h2>Other...</h2>
       <p>Sometimes none of the existing categories fit. 
         In this case, you can describe the problem in your own words.
-        Please do so in a way that is as comprehensible and consistent as possible (e.g., if you see feature multiple times, try to use the same description). 
-        We will give you a list of free-word categories of other users so that you can see what kinds of problems have been found so far.
+        Please do so in a way that is as comprehensible and consistent as possible. To help you do that, we remember the descriptions you've used before and show them to you.
+        To get a sense of what other people have found, check out our <a href="hodgepodge.html">Hodge-podge</a> page that show you a list of free-word categories from all users.
       </p>
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00179119&ccd=58" title="Click to view the original image"><img src="material/other.gif" /></a> 
+        <a href="viewer.html?release=SVA1&expname=DECam_00179119&ccd=58" title="Click to view the original image"><img src="material/other.gif" /></a> 
         <small>Image with "bizarre PSF" (possibly a guider fault)</small>
       </p>
     </div>
@@ -532,14 +551,14 @@
     </div>
     <div class="span5">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00181220&ccd=54" title="Click to view the original image"><img src="material/awesome.gif" /></a> 
+        <a href="viewer.html?release=SVA1&expname=DECam_00181220&ccd=54" title="Click to view the original image"><img src="material/awesome.gif" /></a> 
         <small>Comet C/2010 R1</small>
       </p>
     </div>
     
     <div class="span12">
     <h2>Can I help?</h2>
-    Certainly. If you think you found a new class of artifacts, let us know. If you know where these artifacts come from, let us know. How? Go to <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Problem_classes_from_the_SV-A1_eyeball_website">the redmine wiki</a>, where we list and discuss such cases.
+    Certainly. If you think you found a new class of artifacts, let us know. If you know where these artifacts come from, let us know. How? Go to <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Feedback_from_DES_Exposure_Checker">the redmine wiki</a>, where we list and discuss such cases.
   </div>
   <div id="push"></div>
   </div>

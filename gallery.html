@@ -64,7 +64,14 @@
           <li><a href="statistics.html">Statistics</a></li>
           <li><a href="api.html">API</a></li>
           <li class="active"><a href="gallery.html">Gallery</a></li>
+          <li><a href="hodgepodge.html">Hodge-podge</a></li>
 	</ul>
+        <ul class="nav pull-right hide">
+          <div class="btn-group" id="release-switch">
+            <button class="btn btn-small release-button" id="release-button-SVA1">SVA1</button>
+            <button class="btn btn-small release-button" id="release-button-Y1A1">Y1A1</button>
+          </div>
+        </ul>
       </div> 
     </div>
     
@@ -130,15 +137,32 @@
     </div>
   </div>      
 </body>
+<script type="text/javascript" src="assets/jquery.cookie.js"></script>
+<script type="text/javascript" src="assets/common.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script>
   $(document).ready(function () {
-    $.get('gallery.php', {'output': 'html'}, function(response) {
-      $('#awesome-table').html(response);
+    // set up release
+    setRelease($.cookie('default-release'));
+    $('button[class*="release-button"]').on('click', function(evt) {
+      setRelease(this.id.split("-").pop());
+      window.location.reload(true);
     });
+
+    $.get('gallery.php', {'release': release},
+      function(response) {
+        var html = "<table class='table table-condensed table-striped'><thead><tr><th>Image</th><th>Description</th><th>Username</th><th>Timestamp</th></tr></thead><tbody>";
+        for (var i=0; i < response.length; i++) {
+          html += "<td class='imagenamecol'><a href='viewer.html?release=" + release + "&expname=" + response[i]['expname'] + "&ccd=" + response[i]['ccd'] + "&qa_id=" + response[i]['qa_id'] + "'>" + response[i]['expname'] + ", CCD " + response[i]['ccd'] + "</a></td>";
+          html += "<td>" + response[i]['detail'] + "</td><td>" + response[i]['username'] + "</td><td class='timecol'>" + response[i]['timestamp'] + "</td></tr>";
+        }
+        html += "</tbody></table>";
+        $('#awesome-table').html(html);
+    }, 'json');
     $.get('email.php', function(response) {
       $('#email-anchor').attr('href', 'mailto:' + response);
     });
+        
   });
   // coordinate togglers
   $('span[class*="coords"]').on('click', function(evt) {

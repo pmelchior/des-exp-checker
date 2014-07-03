@@ -5,7 +5,7 @@
   <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
-  <meta name="author" content="Peter Melchior, Erin Sheldon">
+  <meta name="author" content="Peter Melchior, Erin Sheldon, Alex Drlica-Wagner">
   <link rel="icon" href="assets/DES_logo_trans.png" type="image/png">
   <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
   <!--[if lt IE 9]>
@@ -26,6 +26,7 @@
           <li><a href="statistics.html">Statistics</a></li>
           <li><a href="api.html">API</a></li>
           <li><a href="gallery.html">Gallery</a></li>
+	  <li><a href="hodgepodge.html">Hodge-podge</a></li>
 	</ul>
       </div> 
     </div>
@@ -35,14 +36,16 @@
       <h1>FAQ</h1>
       <p>Things can get confusing sometimes, problems do no appear to fit into any given category, etc.
         We try to answer a couple of re-ocurring questions here and additional questions can be found on
-	the redmine forum <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Problem_classes_from_the_SV-A1_eyeball_website">here</a>.
+	the redmine forum <a href="https://cdcvs.fnal.gov/redmine/projects/desdmug/wiki/Feedback_from_DES_Exposure_Checker">here</a>.
         If you have a question that may be of broader interest to the community, post it on the redmine
 	forum or email it directly to the <a href="#" id="email-anchor">DES exposure checker folks</a>. 
         For technical requests (bugs or improvements to the website), open a
 	<a href="https://github.com/pmelchior/des-exp-checker/issues">github issue</a>.
       </p>       
     </div>
-    <div class="span10">
+
+    <div class="span12">
+      <a id="des-password-anchor"></a>
       <h3>Why doesn't the DES password work?</h3>
       <p>It does, otherwise you wouldn't be able to see this page. You can browse all pages
       and load any image in our database into the viewer. But if you want to
@@ -51,32 +54,47 @@
       And don't worry if you see something worthwhile reporting, but then have to login first:
       we'll bring you back to that image after you've logged in or signed up.
       </p>
-      
+    </div>
+    
+    <div class="span12">
+      <a id="submissions-anchor"></a>
       <h3>What happens with my submissions?</h3>
       <p>If your are logged in on this website, your submissions are recorded.
       In this case, clicking on the button <button class="btn btn-small btn-success">Next</button> without
       having marked anything tells us that you think the image is fine. It's not a problem if you
       missed something on the image or you hit the button accidentially, since we don't have to
-      be complete in finding problems, we seek to be reliable when we state that something is problematic.</p>
-      
+      be complete in finding problems, we seek to be reliable when we state that something is problematic.
+      </p>
+    </div>
+
+    <div class="span12">
+      <a id="false-positives-anchor"></a>
       <h3>False positives vs false negatives?</h3>
       <p>We would like to know about any kind of flaw in the data. Therefore, please
       mark both false negative and false positive instances of artifacts
       (e.g., use "Edge-Bleed" to mark both an edge-bleed without an edge-bleed
-      mask and a edge-bleed mask without an edge-bleed). 
+      mask and a edge-bleed mask without an edge-bleed). With the release of Y1A1 data,
+      we provide a <button class="btn btn-primary btn-small" data-toggle="button">False</button> button,
+      that allows you to report a false-positive treatment of such a problem.
       </p>
-      
+    </div>
+
+    <div class="span12">
+      <a id="underlined-letters-anchor"></a>
       <h3>What's up with the underlined letters on buttons?</h3>
       <p>Any underlined letter on a button, like these ones</p>
       <p>
-        <button class="btn btn-info">Toggle <u>m</u>ask</button>
-        <button class="btn btn-info">Toggle <u>s</u>caling</button>
+        <button class="btn btn-primary">Toggle <u>m</u>ask</button>
+        <button class="btn btn-primary">Toggle <u>s</u>caling</button>
       </p>
       <p>indicates that you can use a keyboard shortcut, namely <strong>Alt+m</strong>
       or <strong>Alt+s</strong> in these two cases.
       <span class="muted">Hint for Mac users: Alt = Opt</span>
       </p>
-      
+    </div>
+
+    <div class="span12">
+      <a id="dotted-columns-anchor"></a>
       <h3>What are those dots in the column masks?</h3>
       <p> Very hot pixels will overflow into downstream pixels during readout creatig a "bad column".
         Additionally, cross talk creates hot pixels spaced every 60 pixels upstream (towards the readout side) of the hot pixels. 
@@ -84,12 +102,47 @@
         These dots are not actually a problem class.
         For some more details see <a href="http://des-docdb.fnal.gov:8080/cgi-bin/ShowDocument?docid=6989">here</a>.
       </p>
+    </div>
       
+    <div class="span12">
+      <a id="no-image-anchor"></a>
       <h3>I can't see the images. What's wrong?</h3>
-      Very likely your browser doesn't support the way we load the images. Safari version 5
+      <p>Very likely your browser doesn't support the way we load the images. Safari version 5
       is an example for this lack of implementation of a nominally supported functionality.
       In this case, please use another/newer browser instead.
+      </p>
     </div>
+
+    <div class="span12">
+      <a id="star-mask-anchor"></a>
+      <h3>Are stars being masked properly?</h3>
+      <p> The intention of the current star masking is to mask only the most problematic pixels.
+      This includes the saturated pixels at the center of stars, a circular region surrounding bright stars,
+      and horizontal "bleed-trails" that are saturated along the readout direction. Currently diffraction
+      spikes and Y-band vertical spikes are not explicitly dealt with by the star masking software.
+      The satellite track finder has been tweaked a bit in an attempt to maske the worst diffraction spikes,
+      but the effectiveness of this remains to be seen.
+      </p>
+    </div>
+
+    <div class="span7">
+      <a id="y-band-anchor"></a>
+      <h3>What's up with Y-band?</h3>
+      <p> The Y-band DES exposures are only 45 seconds long and show a number of unique features.
+      In this band, bright stars can often be seen to have vertical spikes extending above and below
+      the saturated pixels of the star. These are an optical effect that manifests itself most strongly
+      in this band (think of these as similar to diffraction spikes).
+      These vertical star spikes do not need to be flagged.
+      </p>
+    </div>
+    <div class="span5">
+      <p class="img-polaroid">
+        <a href="viewer.html?release=Y1A1&expname=DECam_00232226&ccd=40" title="Click to view the original image"><img src="material/y_band_spikes.gif" /></a>
+        <small>Vertical star spikes on Y-band image</small>
+      </p>
+    </div>
+
+      
 
   </div>
   <div id="push"></div>

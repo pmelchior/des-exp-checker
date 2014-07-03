@@ -1,6 +1,20 @@
 <?php
 
 include_once("config.php.inc");
+/* config only defines  the variable $config:
+$config = array(
+    "adminemail" => T_STRING,   // email address used for contact and internal emails
+    "adminname" => T_STRING,    // name used for internal emails
+    "domain" => T_STRING,       // webserver domain name
+    "userdb" => T_STRING,       // path to the user sqlite database
+    "filedb" => T_SRING,        // path for file database, should contain '%s' to be replace by release
+    "fovpath" => T_ARRAY,       // path to FoV images, one entry per release
+    "release" => NULL,          // empty, set by setRelease()
+    "images_per_fp" => T_INT,   // size of focal plane, used for congrats
+    "fitspath" => T_ARRAY,      // path to get the fits files, one entry per release
+    "fovpath" => T_ARRAY        // path to FoV images, one entry per release
+);
+*/
 
 function check_or_abort($dbh) {
     if (!$dbh) {
@@ -10,38 +24,78 @@ function check_or_abort($dbh) {
     return $dbh;
 }
 
-function getDBHandle() {
-    global $config;
-    $dbh = new PDO('sqlite:'. $config['userdb']);
-    $dbh->query('ATTACH DATABASE "' . $config['filedb'].'" AS files');
-    return check_or_abort($dbh);
+function GETorPOST($param) {
+    if (isset($_GET[$param]))
+        return $_GET[$param];
+    if (isset($_POST[$param]))
+        return $_POST[$param];
+    return FALSE;
 }
 
-function getNextImage($dbh) {
+function setRelease() {
+    global $config;
+    $config['release'] = GETorPOST('release');
+    if ($config['release'] === FALSE || in_array($config['release'], array('SVA1', 'Y1A1')) === FALSE)
+        $config['release'] = "SVA1";
+}
+
+function getDBHandle() {
+    setRelease();
+    global $config;
+    $dbh = new PDO('sqlite:'. $config['userdb']);
+    $filedbfile = str_replace('%s', $config['release'], $config['filedb']);
+    if (file_exists($filedbfile)) {
+        $dbh->query('ATTACH DATABASE "' . $filedbfile .'" AS files');
+        return check_or_abort($dbh);
+    }
+    else
+        check_or_abort(FALSE);    
+}
+
+function getNextImage($dbh, $uid) {
     global $config;
     $res = null;
-    $sql = 'SELECT '.$config['release'].'.rowid as fileid, '.$config['release'].'.expname, ccd, band, name, files.runs.runname FROM '.$config['release'].' JOIN files.runs ON ('.$config['release'].'.expname = files.runs.expname)';
-    if (isset($_GET['expname']) && isset($_GET['ccd'])) {
-        $sql .= ' WHERE '.$config['release'].'.expname = ? AND ccd = ? LIMIT 1';
+    $sql = 'SELECT "' . $config['release'] . '" as release, files.fileid, files.expname, ccd, band, name, files.runs.runname FROM files JOIN files.runs ON (files.expname = files.runs.expname)';
+    $expname = GETorPOST('expname');
+    $ccd = GETorPOST('ccd');
+    if ($expname && $ccd) {
+        $sql .= ' WHERE ccd = ? AND files.expname = ? LIMIT 1';
         $stmt = $dbh->prepare($sql);
-        $stmt->bindParam(1, $_GET['expname'], PDO::PARAM_STR, 14);
-        $stmt->bindParam(2, $_GET['ccd'], PDO::PARAM_INT);
+        $stmt->bindParam(1, $ccd, PDO::PARAM_INT);
+        $stmt->bindParam(2, $expname, PDO::PARAM_STR, 14);
         $stmt->execute();
         $res = check_or_abort($stmt);
     }
     elseif (isset($_GET['problem'])) {
-        $sql .= ' JOIN qa ON ('.$config['release'].'.rowid = qa.fileid) WHERE qa.problem = ? ORDER BY RANDOM() LIMIT 1';
+        $sql .= ' JOIN qa ON (files.fileid = qa.fileid) WHERE qa.problem = ?';
+        if (isset($_GET['detail']))
+            $sql .= ' AND detail = ?';
+        $sql .= ' ORDER BY RANDOM() LIMIT 1';
         $stmt = $dbh->prepare($sql);
         $codes = getProblemCodes();
         $stmt->bindParam(1, $codes[$_GET['problem']], PDO::PARAM_INT);
+        if (isset($_GET['detail']))
+            $stmt->bindParam(2, $_GET['detail'], PDO::PARAM_STR);
         $stmt->execute();
         $res = check_or_abort($stmt);
     }
     // default query
     else {
-        // to created redundancy: make every 2nd image drawn from list with existing qa
+        // to created redundancy: make every n-th image drawn from list with existing qa
         if (rand(0,2) < 1) {
-            $sql .= ' JOIN qa ON ('.$config['release'].'.rowid = qa.fileid)';
+            $fallback = $sql;
+            $sql .= ' JOIN qa ON (files.fileid = qa.fileid)';
+            if ($uid) {
+                $sql .= ' WHERE qa.userid != ' . $uid;
+                $sql .= ' GROUP BY qa.fileid ORDER BY COUNT(distinct(qa.userid)) ASC, RANDOM() LIMIT 1';
+                // need to check if there are actually images found:
+                // only relevant for early stages of a new release
+                $res = check_or_abort($dbh->query($sql));
+                if ($row = $res->fetch(PDO::FETCH_ASSOC))
+                    return $row;
+                else
+                    $sql = $fallback;
+            }
         }
         $res = check_or_abort($dbh->query($sql.' ORDER BY RANDOM() LIMIT 1'));
     }
@@ -53,23 +107,27 @@ function getNextImage($dbh) {
 
 function getProblems($dbh, $fileid, $qa_id=NULL) {
     global $config;
-    $sql = 'SELECT problem, x, y, detail FROM qa WHERE release=? AND fileid=?';
+    $sql = 'SELECT problem, x, y, detail FROM qa WHERE fileid=?';
     if (isset($qa_id))
-        $sql .= ' AND rowid=?';
+        $sql .= ' AND qaid=?';
     else 
-        $sql .= ' AND problem != 0 AND problem >= -1';
+        $sql .= ' AND problem != 0 AND problem <= 1000';
     $stmt = $dbh->prepare($sql);
-    $stmt->bindParam(1, $config['release'], PDO::PARAM_STR, 4);
-    $stmt->bindParam(2, $fileid, PDO::PARAM_INT);
+    $stmt->bindParam(1, $fileid, PDO::PARAM_INT);
     if (isset($qa_id))
-        $stmt->bindParam(3, $qa_id, PDO::PARAM_INT);
+        $stmt->bindParam(2, $qa_id, PDO::PARAM_INT);
     $stmt->execute();
     $res = check_or_abort($stmt);
     $codes = getProblemCodes();
     $problem_code = array_flip($codes);
     $problems = array();
     while($row = $res->fetch(PDO::FETCH_ASSOC)) {
-        $row['problem'] = $problem_code[$row['problem']];
+        if ($row['problem'] > 0)
+            $row['problem'] = $problem_code[$row['problem']];
+        else
+            $row['problem'] = "-" . $problem_code[-$row['problem']];
+        $row['x'] = intval($row['x']);
+        $row['y'] = intval($row['y']);
         array_push($problems, $row);
     }
     return $problems;
@@ -127,20 +185,6 @@ function missingFilesForNextClass($total_files, $userclass) {
     }
   }
   
-function getUserData($dbh, $uid) {
-    $stmt = $dbh->prepare("SELECT username, total_files, flagged_files, (SELECT COUNT(*)+1 from users WHERE total_files > (SELECT total_files FROM users WHERE rowid = ?)) as rank FROM  users WHERE rowid = ?");
-    $stmt->bindParam(1, $uid, PDO::PARAM_INT);
-    $stmt->bindParam(2, $uid, PDO::PARAM_INT);
-    $stmt->execute();
-    if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $row['userclass'] = userClass($row['total_files']);
-        $row['missingfiles'] = missingFilesForNextClass($row['total_files'], $row['userclass']);
-        return $row;
-    }
-    else {
-        return FALSE;
-    }
-}
 
 function getActivity($dbh, $uid, $date=FALSE) {
     $activity = array();
@@ -149,38 +193,17 @@ function getActivity($dbh, $uid, $date=FALSE) {
     $sql = "SELECT COUNT(DISTINCT(fileid)) as activity FROM qa WHERE userid=".$uid." AND timestamp > '".$date."%'";
     $res = check_or_abort($dbh->query($sql));
     $activity['today'] = array_pop($res->fetch(PDO::FETCH_NUM));
-    $sql = "SELECT total_files FROM users WHERE rowid=".$uid;
+    $sql = "SELECT total_files FROM submissions WHERE userid=".$uid;
     $res = check_or_abort($dbh->query($sql));
     $activity['alltime'] = array_pop($res->fetch(PDO::FETCH_NUM));
     return $activity;
 }
 
 function giveBonusPoints($dbh, $uid, $points) {
-    $stmt = $dbh->prepare("UPDATE users SET total_files = total_files + ? WHERE rowid = ?");
+    $stmt = $dbh->prepare("UPDATE submissions SET total_files = total_files + ? WHERE userid = ?");
     $stmt->bindParam(1, $points, PDO::PARAM_INT);
     $stmt->bindParam(2, $uid, PDO::PARAM_INT);
     check_or_abort($stmt->execute());
-}
-
-// mimics json formatting
-function json_output($data) {
-    if (gettype($data) == "string")
-        return "\"". $data . "\"";
-    if (gettype($data) == "array") {
-        $chunks = array();
-        // from http://stackoverflow.com/questions/5996749/determine-whether-an-array-is-associative-hash-or-not
-        // finding a indexed = non-associative array
-        if (array_keys($data) === range(0, count($data) - 1)) {
-            foreach ($data as $d)
-                array_push($chunks, json_output($d));
-            return "[" . implode(",", $chunks) . "]";
-        } else {
-            foreach ($data as $k => $v)
-                array_push($chunks, "\"" . $k . "\":" . json_output($v));
-            return "{" . implode(",", $chunks) . "}";
-        }
-    }
-    else return $data;
 }
 
 function getProblemCodes() {
@@ -188,9 +211,10 @@ function getProblemCodes() {
       "OK" => 0,
       
       // Temporary categories, to be re-inspected
-      "Old_Readout" => -5,
-      "Old_Other" => -6,
-      "Old_Sky" => -7,
+      "Old_Readout" => 1005,
+      "Old_Other" => 1006,
+      "Old_Sky" => 1007,
+      "Mask dots" => 1008, // found unneccesary
       
       // Instrument
       "Guiding" => 11,
@@ -218,7 +242,6 @@ function getProblemCodes() {
       
       // Masking
       "Column mask" => 51,
-      // "Mask dots" => 52, // found unneccesary
       "Excessive mask" => 53,
       "Cosmic ray" => 54,
       "Cross-talk" => 55,
@@ -232,7 +255,7 @@ function getProblemCodes() {
       "Anti-bleed" => 65,
       
       "Other..." => 255,
-      "Awesome!" => -1,
+      "Awesome!" => 1000,
     );
 }
 

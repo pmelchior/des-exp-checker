@@ -26,7 +26,14 @@
           <li><a href="statistics.html">Statistics</a></li>
           <li class="active"><a href="#">API</a></li>
           <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="hodgepodge.html">Hodge-podge</a></li>
 	</ul>
+        <ul class="nav pull-right hide">
+          <div class="btn-group" id="release-switch">
+            <button class="btn btn-small release-button" id="release-button-SVA1">SVA1</button>
+            <button class="btn btn-small release-button" id="release-button-Y1A1">Y1A1</button>
+          </div>
+        </ul>
       </div> 
     </div>
     
@@ -39,9 +46,17 @@
       any programming language. If you need at different format,
       open a <a href="https://github.com/pmelchior/des-exp-checker/issues">github issue</a>.
       </p>
-      <p>Select the problem class below:</p>
+      <p>Select the problem class below for an example:</p>
       <!--#include file="problem_selector.shtml"-->
     
+      <h3>Query parameters</h3>
+      <p>
+        The basic URL for GET requests is <a href="api.php">api.php</a>. We support/require the following parameters:
+        <ul>
+          <li><code>release</code> The four-letter name of the release, e.g. Y1A1</li>
+          <li><code>problem</code> The name of the problem as it appear in the problem selector (URL encoding is required, e.g. whitespace becomes <code>%20</code>)</li>
+        </ul>
+      </p>
       <h3>Any other queries?</h3>
       The set of queries we currently allow is restricted to global queries based on the problem class.
       If you want to be able to quiery our database differently, tell us by
@@ -57,14 +72,22 @@
   </div>
 </body>
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="assets/jquery.cookie.js"></script>
+<script type="text/javascript" src="assets/common.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script>
   // initial setup
   $(document).ready(function(){
+    // set up release
+    setRelease($.cookie('default-release'));
+    $('button[class*="release-button"]').on('click', function(evt) {
+      setRelease(this.id.split("-").pop());
+    });
+    
     // connect problem selector to anchor in page
     $('a[class*="problem"]').on('click', function(evt) {
       var problem = evt.target.innerHTML;
-      window.open('api.php?problem=' + encodeURI(problem));
+      window.open('api.php?release=' + release + '&problem=' + encodeURI(problem));
     });
   });
 </script>

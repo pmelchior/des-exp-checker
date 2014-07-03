@@ -30,6 +30,7 @@
           <li><a href="statistics.html">Statistics</a></li>
           <li><a href="api.html">API</a></li>
           <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="hodgepodge.html">Hodge-podge</a></li>
 	</ul>
         <ul class="nav pull-right hide" id="user-menu" style="margin-right:-20px">
           <li id="mydata-li" class="dropdown" style="display: none">
@@ -40,6 +41,12 @@
             <ul class="dropdown-menu">
               <li><a tabindex="-1" href="#" id="mystats-anchor">My statistics</a></li>
               <li><a tabindex="-1" href="#" id="leaderboard-anchor">Leaderboard</a></li>
+              <li>
+                <div class="btn-group" id="release-switch" style="margin:0; padding:3px 20px">
+                  <button class="btn btn-small release-button" id="release-button-SVA1">SVA1</button>
+                  <button class="btn btn-small release-button" id="release-button-Y1A1">Y1A1</button>
+                </div>
+              </li>
               <li class="divider"></li>
               <li><a tabindex="-1" id="logout" href="#">Logout</a></li>
             </ul>
@@ -53,16 +60,14 @@
     <div style="margin-top:20px; position:relative;">
       <button id="fine-button" class="btn btn-success send">Next</button>
       <!--#include file="problem_selector.shtml"-->
-      <span id="problem-dialogue" class="hide" style="margin-left: 10px;font-weight:bold;">
-        Click to mark in the image
-      </span>
       <span id="mark-buttons" class="hide" style="margin-left: 10px;">
-        <button class="btn btn-info" id="clear-button">Clear Last</button>
+        <button class="btn btn-primary" id="negative-button" data-toggle="button">False</button>
+        <button class="btn btn-primary hide" id="clear-button">Clear Last</button>
       </span>
       <span style="position:absolute; right: 0px; top:0px;">
         <span class="muted" id="image_name"></span>
         <div class="btn-group" style="margin-left:10px;">
-          <button id="info-button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">Info</span>
+          <button id="info-button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Info</span>
           <span class="caret"></span>
           </button>
           <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -72,8 +77,8 @@
             <li><a tabindex="-1" href="#" id="reported-button">Show reported <u>p</u>roblems</a></li>
           </ul>
         </div>
-        <button class="btn btn-info" href="#" id="toggle-mask-button">Toggle <u>m</u>ask</button>
-        <button class="btn btn-info" href="#" id="scaling-button">Toggle <u>s</u>caling</button>
+        <button class="btn btn-primary" href="#" id="toggle-mask-button">Toggle <u>m</u>ask</button>
+        <button class="btn btn-primary" href="#" id="scaling-button">Toggle <u>s</u>caling</button>
       </span>
     </div>
     
@@ -87,8 +92,8 @@
         <button type="button" class="close" id="problem-close-button">&times;</button>
         <h3>Describe what you see</h3>
       </div>
-      <div class="modal-body">
-        <textarea style="width:516px;" type="text" id="problem-text" placeholder="Describe in your own words. Be as specific as you see fit."></textarea>
+      <div class="modal-body" style="overflow: visible">
+        <input style="width:516px;" type="text" id="problem-text" placeholder="Describe in your own words. Be as specific as you see fit.">
       </div>
       <div class="modal-footer">
         <span style="padding-right:20px">When done, click on the image to mark the problematic area</span>
@@ -101,9 +106,11 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h3>Field-of-View image</h3>
       </div>
-      <div class="modal-body" id="fov-body" style="max-height:none;">
-      <div id="fov-url" class="hide"></div>
+      <div class="modal-body" style="max-height:none;">
+        <div id="fov-body" style="position: relative"></div>
+        <div id="ccdmap"></div>
       </div>
+      <div id="fov-url" class="hide"></div>
     </div>
     
     <div class="modal hide" id="mystats-modal" tabindex="-1">
@@ -114,7 +121,7 @@
       <div class="modal-body">
         <p>You've checked a total of <strong id="total-files"></strong> images
         and found <strong id="flagged-files"></strong> of them problematic.<br />
-        You are currently at position <strong id="user-rank"></strong> of the leaderboard.
+        You are currently at position <strong id="user-rank"></strong> of the <span class="release_name"></span> leaderboard.
         </p>
         <p id="user_rank_details"></p>
       </div>
@@ -123,7 +130,7 @@
     <div class="modal hide" id="rank-modal" tabindex="-1">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Leaderboard</h3>
+        <h3>Leaderboard of <span class="release_name"></span></h3>
       </div>
       <div class="modal-body"></div>
     </div>
@@ -190,7 +197,6 @@
         <a href="#" class="btn btn-primary" data-dismiss="modal">OK</a>
       </div>
     </div>
-    
   </div>
   <div id="push"></div>
   </div>
@@ -205,6 +211,7 @@
 <script type="text/javascript" src="assets/jwerty.js"></script>
 <script type="text/javascript" src="assets/purl.js"></script>
 <script type="text/javascript" src="assets/spin.min.js"></script>
+<script type="text/javascript" src="assets/common.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script>
   // initial setup
@@ -212,15 +219,40 @@
     // define and show spinner
     spinner = new Spinner({color: "#049cdb"}).spin();
     $('#loading').append(spinner.el);
-    $('#loading').removeClass('hide');
+    $('#loading').show();
+
+    // set up release
+    setRelease($.cookie('default-release'));
+    $(".release_name").html(release);
+    // what happens when the release button is clicked
+    $('button[class*="release-button"]').on('click', function(evt) {
+      var newrelease = this.id.split("-").pop();
+      if (newrelease != release) {
+        setRelease(newrelease);
+        $('#loading').show();
+        $.get('db.php', {'release': release}, function(response) {
+          setNextImage(response);
+        }, 'json')
+        .fail(function() {
+          alert('Failure when loading image');
+        });
+        clearUI();
+        setChipLayout();
+        if (checkSessionCookie())
+          getMyData();
+      }
+    });
+    
     var urlparams = $.url().param();
+    urlparams['release'] = release;
+    
     // if user is logged in: show user dropdown
     if (checkSessionCookie()) {
       getMyData();
       setInterval(getMyData, 600000);
       $('#login-li').hide();
       $('#mydata-li').show();
-      // 
+      // return to last image the user has seen before he logged in
       if ($.cookie('lastfile') !== undefined) {
         urlparams = $.url($.cookie('lastfile')).param();
         $.removeCookie('lastfile');
@@ -238,15 +270,17 @@
         evt.preventDefault();
       });
     }
+    
     // get first image data
-    $.get('db.php', urlparams, function(data) {
-        var response = $.parseJSON(data);
+    $.get('db.php', urlparams, function(response) {
         setNextImage(response);
-      })
+      }, 'json')
     .fail(function() {
       alert('Failure when loading image');
     });
-   
+    
+    // setup FoV chip layout
+    setChipLayout();
   });
   $('form').submit(function() {
     return false;
@@ -291,9 +325,17 @@
     };
   });
   $('#fov-button').on('click', function() {
-    $('#fov-body').find('.fov-image').remove(); //<a title="Open full-size version" href="' + $('#fov-url').html() +'">
+    // load FoV image from DESDM
+    $('#fov-body').find('.fov-image').remove();
     $('<img class="fov-image" src="'+ $('#fov-url').html() +'" border="0" />').load(function() {
-      $(this).width(530).height(454).appendTo('#fov-body');
+      $(this).width(530).appendTo('#fov-body');
+    });
+    $('#ccdmap').children('.ccdshape').each(function() {
+      var ccdnum = this.title.split(" ").pop();
+      if (ccdnum == ccd)
+        $(this).addClass('ccdshape-current');
+      else
+        $(this).removeClass('ccdshape-current');
     });
     $('#fov-modal').modal('show');
   });
@@ -301,15 +343,15 @@
     var elem = $($(webfits.reportCtx)[0].canvas);
     // if new file: get reported problems
     if (has_reported_problems === false) {
-      $('#loading').removeClass('hide');
+      $('#loading').show();
       setTimeout(function() { // add a little timeout to give feedback to user
-      $.get('problems.php', {'fileid': fileid }, function(response) {
+      $.get('problems.php', {'fileid': fileid , 'release': release}, function(response) {
           if (response) {
             for (var i=0; i < response.length; i++) {
               addMark(response[i], webfits.reportCtx);
             }
           }
-          $('#loading').addClass('hide');
+          $('#loading').hide();
           has_reported_problems = true;
           elem.css('display', 'block');
         }, 'json');
@@ -334,13 +376,15 @@
   $('#problem-text-button').on('click', function() {
     $('#problem-modal').modal('hide');
     var problemName = $('#problem-text').val();
+    // update typeahead
+    var typeahead_source = $('#problem-text').typeahead().data('typeahead').source;
+    if ($.inArray(problemName, typeahead_source) == -1)
+      typeahead_source.push(problemName); 
     if (problemName.length > 11)
       problemName = problemName.substring(0,10) + "...";
     $('#problem-name').html(problemName);
   });
   $('a[class*="problem"]').on('click', function(evt) {
-    if (problem === null)
-      $("#problem-dialogue").removeClass("hide");
     problem = evt.target.innerHTML;
     $('#problem-name').html(problem);
     if (problem == "Other..." || problem == "Failure" || problem =="Awesome!") {
@@ -350,6 +394,11 @@
     } else {
       $('#problem-text').val('');
     }
+    var neg_button = $('#negative-button');
+    if (neg_button.hasClass('active')) {
+      neg_button.button('toggle');
+    }
+    $('#mark-buttons').show();
   });
   $('#problem-close-button').on('click', function() {
     closeProblemModal();
@@ -357,8 +406,7 @@
   $('#clear-button').on('click', function() {
     clearLastMark();
     if (marks.length == 0) {
-      $('#mark-buttons').addClass('hide');
-      $('#problem-dialogue').removeClass('hide');
+      $('#clear-button').hide();
     }
   });
   
@@ -368,10 +416,25 @@
     $('#mystats-modal').modal('show');
   });
   $('#leaderboard-anchor').on('click', function() {
-    $.get('ranking.php', {'output': 'html'}, function(response) {
-      $('#rank-modal').find('[class*="modal-body"]').html(response);
+    $.get('ranking.php', {'release': release}, function(response) {
+      var html = "<table class='table table-condensed table-striped'><thead><tr><th>Rank</th><th>Username</th><th>Problematic/Total</th><th># Files</th></tr></thead><tbody>";
+        var total = null, counter = 1, width_flagged, width_total;
+        for (var i=0; i < response.length; i++) {
+          if (total == null)
+            total = response[i]['total_files'];
+          width_flagged = (100*response[i]['flagged_files']/total) + "%";
+          width_total = (100*(response[i]['total_files']-response[i]['flagged_files'])/total) + "%";
+          html += "<tr><td># "+ counter +"</td><td><span class='namecol'>" + response[i]['username'] + "</span></td>";
+          html += "<td><div class='ratingcol'><span class='ratingbar bad' style='width:" + width_flagged +"'></span>";
+          html += "<span class='ratingbar good' style='left:" + width_flagged +"; width:" + width_total +"'></span></div></td>";
+          html += "<td>" + response[i]['total_files'] + "</td></tr>";
+          counter++ ;
+        }
+        html += "</tbody></table>";
+        $('#leaderboard').html(html);
+      $('#rank-modal').find('[class*="modal-body"]').html(html);
       $('#rank-modal').modal('show');
-    });
+    }, 'json');
   });
   $('#logout').on('click', function() {
     $.post('login.php',{'logout':true}, function() {

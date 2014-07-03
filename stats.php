@@ -25,12 +25,28 @@ if (isset($_GET['breakup'])) {
         if ($code >= 0 && $code < 1000) {
             $stmt->bindParam(1, $code, PDO::PARAM_INT);
             $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_NUM);
-            $stats['checked'] += $row[0];
-            if ($code == 0)
-                $stats['fine'] = intval($row[0]);
-            else
-                array_push($problems, array("name" => $name, "distinct" => intval($row[0])));
+            if ($code == 0) {
+                if($row = $stmt->fetch(PDO::FETCH_NUM)) {
+                    $stats['fine'] = intval($row[0]);
+                    $stats['checked'] += intval($row[0]);
+                }
+            }
+            else {
+                $this_problem = array("name" => $name, "all" => 0, "false_positive" => 0);
+                if($row = $stmt->fetch(PDO::FETCH_NUM)) {
+                    $stats['checked'] += intval($row[0]);
+                    $this_problem['all'] += intval($row[0]);
+                }
+                $code *= -1;
+                $stmt->bindParam(1, $code, PDO::PARAM_INT);
+                $stmt->execute();
+                if($row = $stmt->fetch(PDO::FETCH_NUM)) {
+                    $stats['checked'] += intval($row[0]);
+                    $this_problem['all'] += intval($row[0]);
+                    $this_problem['false_positive'] += intval($row[0]);
+                }
+                array_push($problems, $this_problem);       
+            }
         }
     }
     $stats['breakup'] = $problems;

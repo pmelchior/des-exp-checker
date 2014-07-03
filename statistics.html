@@ -48,9 +48,13 @@
       <p>On the right, you can see how many images have been checked so far,
         and how many of them during the last 24 hours.
         The pie chart shows how many of the checked images have been found
-        <span style="font-weight: bold; color:#46a546">Fine</span> or
-        <span style="font-weight: bold; color:#9d261d">Problematic</span>.</p>
+        <b style="color:#46a546">Fine</b> or
+        <b style="color:#9d261d">Problematic</b>.</p>
       <p>Below you find a break-up of the images that have been found problematic.
+        <b style="color: #9d261d">Red</b> areas denote the percentage of those image with a given problem,
+        while <b style="color: #006dcc">Blue</b> areas indicate the corresponding false-positive fraction
+        (see our <a href="tutorial.html">Tutorial</a> if you have questions about the
+        false positives).
         When you click on any of the pie charts, you can see examples of images
         that have been found with this kind of problem.</p>
       <small class="muted">There can be multiple problems in any given image,
@@ -92,7 +96,7 @@
     var arc2 = d3.svg.arc()
         .outerRadius(radius2)
         .innerRadius(radius2 - 24);
-    var pie = d3.layout.pie();
+    var pie = d3.layout.pie().sort(null);
     
     // get data and show stats
     d3.json("stats.php?release="+ release + "&total&today&breakup", function(error, response) {
@@ -171,20 +175,20 @@
           .attr("width", radius2 * 2)
           .attr("height", radius2 * 2);
       g = svg.selectAll(".arc")
-        .data(function(d) { return pie([d.distinct/(response.checked - response.fine), (response.checked - response.fine - d.distinct)/(response.checked - response.fine)]); })
+        .data(function(d) { return pie([(d.all-d.false_positive)/(response.checked - response.fine), d.false_positive/(response.checked - response.fine), (response.checked - response.fine - d.all)/(response.checked - response.fine)]); })
         .enter().append("g")
         .attr("transform", "translate(" + radius2 + "," + radius2 + ")")      .attr("class", "arc");    
       g.append("path")
         .attr("class", "arc")
         .attr("d", arc2)
-        .style("fill", function(d, i) { if (i == 0) return '#9d261d'; else return '#fdd'; });
+        .style("fill", function(d, i) { if (i == 0) return '#9d261d'; if (i==1) return '#006dcc'; return '#ddd'; });
       g.append("text")
         .attr("transform", function(d) { return "translate(" + arc2.centroid(d) + ")"; })
         .attr("dy", ".35em")
         .style("text-anchor", "middle")
         .style("fill", "#fff")
         .style("font-size", "10px")
-        .text(function(d, i) { if (i==0 && d.data > 0.05) return (100*d.data).toString().split(".").shift() + '%'; else return null; });
+        .text(function(d, i) { if (i<2 && d.data > 0.05) return (100*d.data).toString().split(".").shift() + '%'; else return null; });
       svg.append("a")
         .attr("xlink:href", function(d) {
           if (d.name != "Other...")

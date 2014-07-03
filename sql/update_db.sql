@@ -86,7 +86,7 @@ CREATE TABLE users (
 INSERT INTO users (userid, username, email, password, timestamp) SELECT rowid, username, email, password, timestamp FROM backup;
 DROP INDEX users_email_ids;
 DROP INDEX users_username_idx;
-CREATE UNIQUE INDEX users_email_ids ON users(email); -- enforce username & email unique
+CREATE UNIQUE INDEX users_email_idx ON users(email); -- enforce username & email unique
 CREATE UNIQUE INDEX users_username_idx ON users(username);
 DROP TABLE backup;
 DROP TABLE qa;

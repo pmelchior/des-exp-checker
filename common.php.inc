@@ -59,7 +59,7 @@ function getNextImage($dbh, $uid) {
     $expname = GETorPOST('expname');
     $ccd = GETorPOST('ccd');
     if ($expname && $ccd) {
-        $sql .= ' WHERE ccd= ? AND files.expname = ? LIMIT 1';
+        $sql .= ' WHERE ccd = ? AND files.expname = ? LIMIT 1';
         $stmt = $dbh->prepare($sql);
         $stmt->bindParam(1, $ccd, PDO::PARAM_INT);
         $stmt->bindParam(2, $expname, PDO::PARAM_STR, 14);

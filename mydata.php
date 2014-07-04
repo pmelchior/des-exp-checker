@@ -5,10 +5,11 @@ $dbh = getDBHandle();
 
 function getMyData($dbh, $uid) {
     global $config;
-    $stmt = $dbh->prepare("SELECT username, sum(total_files) as total_files, sum(flagged_files) as flagged_files, (SELECT COUNT(*)+1 from submissions WHERE release=? AND total_files > (SELECT total_files FROM submissions WHERE userid = ? and release = ?)) as rank FROM users JOIN submissions ON (users.userid = submissions.userid) WHERE users.userid = ?");
+    $stmt = $dbh->prepare("SELECT username, IFNULL(SUM(total_files),0) as total_files, IFNULL(SUM(flagged_files),0) as flagged_files, (SELECT COUNT(1)+1 FROM submissions WHERE release=? AND total_files > (SELECT IFNULL((SELECT total_files FROM submissions WHERE userid = ? and release = ?), 0))) as rank FROM users LEFT JOIN submissions ON (users.userid = submissions.userid) WHERE users.userid = ?");
     $stmt->bindParam(1, $config['release'], PDO::PARAM_STR, 4);
     $stmt->bindParam(2, $uid, PDO::PARAM_INT);
     $stmt->bindParam(3, $config['release'], PDO::PARAM_STR, 4);
+    //$stmt->bindParam(4, $config['release'], PDO::PARAM_STR, 4);
     $stmt->bindParam(4, $uid, PDO::PARAM_INT);
     $stmt->execute();
     if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {

@@ -17,7 +17,8 @@ CREATE TABLE submissions (
  total_files INT NOT NULL DEFAULT 0,
  flagged_files INT NOT NULL DEFAULT 0
 );
-CREATE UNIQUE INDEX submissions_unique_idx ON users(userid, release);
+CREATE INDEX submission_release_idx ON submissions(release);
+CREATE INDEX submission_userid_idx ON submissions(userid);
 
 CREATE TABLE users (
  userid INTEGER PRIMARY KEY ASC,

@@ -265,7 +265,7 @@ function sendEmail($email, $subject, $message) {
     $header .= "Reply-To: <". $config['adminemail'] .">\n";
     $header .= "Content-Type: text/plain; charset=UTF-8\n";
     $header .= "Content-Transfer-Encoding: 8bit\n";
-    $message .= "\n\nPeter & Erin --\nhttp://" . $config['domain'];
+    $message .= "\n\nPeter, Erin & Alex --\nhttp://" . $config['domain'];
     return mail($email,$subject,$message,$header);
 }
 ?>

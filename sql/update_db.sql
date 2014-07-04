@@ -73,7 +73,8 @@ CREATE TABLE submissions (
  flagged_files INT NOT NULL DEFAULT 0
 );
 INSERT INTO submissions (userid, release, total_files, flagged_files) SELECT rowid, "SVA1", total_files, flagged_files FROM users;
-CREATE UNIQUE INDEX submissions_unique_idx ON users(userid, release);
+CREATE INDEX submission_release_idx ON submissions(release);
+CREATE INDEX submission_userid_idx ON submissions(userid);
 
 ALTER TABLE users RENAME TO backup;
 CREATE TABLE users (

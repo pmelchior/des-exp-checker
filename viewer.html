@@ -244,7 +244,8 @@
     });
     
     var urlparams = $.url().param();
-    urlparams['release'] = release;
+    if (urlparams.hasOwnProperty('release') === false)
+      urlparams['release'] = release;
     
     // if user is logged in: show user dropdown
     if (checkSessionCookie()) {

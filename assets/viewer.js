@@ -17,7 +17,6 @@ function addMark(prob, ctx) {
     color = '#FFA500';
   ctx.beginPath();
   if (prob.problem[0] == "-") {
-    console.log(prob);
     ctx.moveTo(prob.x-28, prob.y-28);
     ctx.lineTo(prob.x+28, prob.y+28);
     ctx.moveTo(prob.x-28, prob.y+28);

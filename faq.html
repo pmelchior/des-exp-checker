@@ -119,7 +119,7 @@
       <p> The intention of the current star masking is to mask only the most problematic pixels.
       This includes the saturated pixels at the center of stars, a circular region surrounding bright stars,
       and horizontal "bleed-trails" that are saturated along the readout direction. Currently diffraction
-      spikes and Y-band vertical spikes are not explicitly dealt with by the star masking software.
+      spikes and <span class='badge badge-important'>Y-band</span> vertical spikes are not explicitly dealt with by the star masking software.
       The satellite track finder has been tweaked a bit in an attempt to maske the worst diffraction spikes,
       but the effectiveness of this remains to be seen.
       </p>
@@ -128,17 +128,18 @@
     <div class="span7">
       <a id="y-band-anchor"></a>
       <h3>What's up with Y-band?</h3>
-      <p> The Y-band DES exposures are only 45 seconds long and show a number of unique features.
+      <p> The <span class='badge badge-important'>Y-band</span> DES exposures are only 45 seconds long and show a number of unique features.
       In this band, bright stars can often be seen to have vertical spikes extending above and below
       the saturated pixels of the star. These are an optical effect that manifests itself most strongly
       in this band (think of these as similar to diffraction spikes).
       These vertical star spikes do not need to be flagged.
+      To help checkers identify issues that may be arising from the differences in the <span class='badge badge-important'>Y-band</span> exposures, <span class='badge badge-important'>Y-band</span> images have the band name highlighted in red.
       </p>
     </div>
     <div class="span5">
       <p class="img-polaroid">
         <a href="viewer.html?release=Y1A1&expname=DECam_00232226&ccd=40" title="Click to view the original image"><img src="material/y_band_spikes.gif" /></a>
-        <small>Vertical star spikes on Y-band image</small>
+        <small>Vertical star spikes on <span class='badge badge-important'>Y-band</span> image</small>
       </p>
     </div>
 

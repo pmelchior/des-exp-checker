@@ -36,7 +36,7 @@ function setRelease() {
     global $config;
     $config['release'] = GETorPOST('release');
     if ($config['release'] === FALSE || in_array($config['release'], array('SVA1', 'Y1A1')) === FALSE)
-        $config['release'] = "SVA1";
+        $config['release'] = "Y1A1";
 }
 
 function getDBHandle() {

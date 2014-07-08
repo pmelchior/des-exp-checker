@@ -222,7 +222,14 @@
     $('#loading').show();
 
     // set up release
-    setRelease($.cookie('default-release'));
+    var urlparams = $.url().param();
+    if (urlparams.hasOwnProperty('release') === false) {
+      setRelease($.cookie('default-release'));
+      urlparams['release'] = release;
+    }
+    else
+      release = urlparams['release'];
+
     $(".release_name").html(release);
     // what happens when the release button is clicked
     $('button[class*="release-button"]').on('click', function(evt) {

@@ -131,19 +131,19 @@
 	    <div class="control-group">
 	      <label class="control-label" for="username">Your username</label>
 	      <div class="controls">
-		<input id="signup-username" type="text" class="input " name="username" placeholder="flastname">
+		<input id="signup-username" type="text" class="input " name="username" required="required" placeholder="flastname">
               </div>
 	    </div>
 	    <div class="control-group">
 	      <label class="control-label" for="email">Your email</label>
 	      <div class="controls">
-		<input type="email" class="input" name="email" required="required">
+		<input id="signup-email" type="email" class="input" name="email" required="required">
               </div>
 	    </div>
 	    <div class="control-group">
 	      <label class="control-label" for="password">Pick a password</label>
 	      <div class="controls">
-		<input type="password" class="input" name="password" required="required" minlength="8">
+		<input id="signup-password" type="password" class="input" name="password" required="required" minlength="8">
               </div>
 	    </div>
 	    <div class="form-actions" style="margin-bottom: 0px;">
@@ -166,6 +166,7 @@
 <script type="text/javascript" src="assets/sha1.js"></script>
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="assets/jquery.cookie.js"></script>
+<script type="text/javascript" src="assets/jwerty.js"></script>
 <script type="text/javascript" src="assets/login.js"></script>
 <script type="text/javascript" src="assets/common.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
@@ -212,10 +213,12 @@
           $('#email-anchor').attr('href', 'mailto:' + response + '?subject=%5Bdes-exposure-checker%5D%20Please%20reset%20my%20password&body=To%20get%20your%20password%20resetted,%20simply%20send%20this%20email%20from%20the%20email%20account%20you%20used%20when%20signing%20up.');
         });
         $('#logIn').modal('show');
+        $('#username').focus();
         evt.preventDefault();
       });
       $('#open-signup-button').on('click', function(evt) {
         $('#signUp').modal('show');
+        $('#signup-name').focus();
         evt.preventDefault();
       });
       $('#signup-name').on('input', function(evt) {
@@ -280,6 +283,11 @@
         .text("today");
     });
   });
+  
+  // connect Enter in logIn and signUp modal
+  $('#logIn').bind('keydown', jwerty.event('Enter', function () { $('#login_button').trigger('click'); }));
+  $('#signUp').bind('keydown', jwerty.event('Enter', function () { $('#signup_button').trigger('click'); }));
+  
 
 </script>
 

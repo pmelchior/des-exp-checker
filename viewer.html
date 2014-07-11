@@ -328,7 +328,7 @@
       $.get('problems.php', {'fileid': fileid }, function(response) {
           if (response) {
             for (var i=0; i < response.length; i++) {
-              addMark(i+1,response[i], ReportCanvas);  //using Report Canvas
+              addMark(i+1,response[i], OverlayCanvas);  //using Report Canvas
             }
           }
           $('#loading').addClass('hide');

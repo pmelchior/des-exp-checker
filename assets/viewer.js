@@ -9,34 +9,42 @@ var has_reported_problems = false;
 var OverlayCanvas,ReportCanvas;
 // Problem Color Dictionary
 var colors = {
-  "Column mask"   : "#ee8c37",
-  "Cosmic ray"    : "#ee8c37",
-  "Cross-talk"    : "#ee8c37",
-  "Edge-bleed"    : "#ee8c37",
-  "Excessive mask": "#ee8c37",
-  "Dark rim"      : "#b7ee70",
-  "Dark halo"     : "#b7ee70",
-  "Quilted sky"   : "#b7ee70",
-  "Wavy sky"      : "#b7ee70",
-  "Anti-bleed"    : "#b7ee70",
-  "A/B jump"      : "#4569ee",
-  "Fringing"      : "#4569ee",
-  "Tape bump"     : "#4569ee",
-  "Tree rings"    : "#4569ee",
-  "Vertical jump" : "#4569ee",
-  "Vertical stripes": "#4569ee",
-  "Ghost"         : "#49e7ee",
-  "Bright spray"  : "#49e7ee",
-  "Brush strokes" : "#49e7ee",
-  "Bright arc"    : "#49e7ee",
-  "Satellite"     : "#ab95ee",
-  "Airplane"      : "#ab95ee",
-  "Guiding"       : "#eee083",
-  "Shutter"       : "#eee083",
-  "Readout"       : "#eee083",
-  "Haze"          : "#eee083",
-  "Other..."      : "#2a00ee",
-  "Awesome!"      : "#ee4b00"
+  //Masking
+  "Column mask"   : "#eeab49",
+  "Cosmic ray"    : "#eeab49",
+  "Cross-talk"    : "#eeab49",
+  "Edge-bleed"    : "#eeab49",
+  "Excessive mask": "#eeab49",
+  // Sky Estimation
+  "Dark rim"      : "#ee6327",
+  "Dark halo"     : "#ee6327",
+  "Quilted sky"   : "#ee6327",
+  "Wavy sky"      : "#ee6327",
+  "Anti-bleed"    : "#ee6327",
+  // Flat Field
+  "A/B jump"      : "#eec319",
+  "Fringing"      : "#eec319",
+  "Tape bump"     : "#eec319",
+  "Tree rings"    : "#eec319",
+  "Vertical jump" : "#eec319",
+  "Vertical stripes": "#eec319",
+  // Reflections
+  "Ghost"         : "#c6ee18",
+  "Bright spray"  : "#c6ee18",
+  "Brush strokes" : "#c6ee18",
+  "Bright arc"    : "#c6ee18",
+  // Tracks
+  "Satellite"     : "#ee486e",
+  "Airplane"      : "#ee486e",
+  // Instrument/Site
+  "Guiding"       : "#b300ee",
+  "Shutter"       : "#b300ee",
+  "Readout"       : "#b300ee",
+  "Haze"          : "#b300ee",
+  // Other
+  "Other..."      : "#1eee4e",
+  // Awesome
+  "Awesome!"      : "#bcee00"
 }
 // String for generating Cross Mark on SVG
 var cross_mark = "M24.778,21.419 19.276,15.917 24.777,10.415 21.949,7.585 16.447,13.087 10.945,7.585 8.117,10.415 13.618,15.917 8.116,21.419 10.946,24.248 16.447,18.746 21.948,24.248z";
@@ -50,7 +58,7 @@ function addMark(id, prob, ctx) {
   var color = colors[prob.problem];  //get problem color
   var cross = ctx.path(cross_mark)
   var bb = cross.getBBox(true); //get bounding box
-  var translation = "t"+(prob.x-2*bb.x)+","+(prob.y-2*bb.y);  //set translation string
+  var translation = "t"+(prob.x-2*bb.x)+","+(prob.y-2*bb.y)+"s1.5";  //set translation string
   cross.attr("fill",color).transform(translation);
   cross.node.setAttribute('id',id);
   if(glow){

@@ -92,3 +92,6 @@ CREATE UNIQUE INDEX users_username_idx ON users(username);
 DROP TABLE backup;
 DROP TABLE qa;
 VACUUM;
+
+-- This has to be done on the qa tables in all files db's to account for the flip of the y axis to show actual sky orientation
+UPDATE qa SET y=512-y WHERE problem!=0;

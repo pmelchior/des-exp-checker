@@ -105,8 +105,10 @@ function createVisualization(arr, opts) {
     onclick: overlayCallback
   };
   // Initialize the WebFITS context with a viewer of size width
-  if (webfits === null)
+  if (webfits === null) {
     webfits = new astro.WebFITS(el,width, height);
+    webfits.setupControls(callbacks, opts);
+  }
   
   // Load array representation of image
   webfits.loadImage('exposure', arr, width, height);

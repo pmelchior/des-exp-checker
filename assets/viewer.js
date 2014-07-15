@@ -217,20 +217,31 @@ function clearUI() {
   problem = null;
 }
 
-function sendResponse(new_image) {
+function sendResponse(image_props) {
+  if (image_props === undefined)
+    image_props = {'release': release};
+  image_props['fileid'] = fileid;
+  image_props['problems'] = marks;
+  getNextImage(image_props);
+  
+  // update image counters
+  if (checkSessionCookie()) {
+    var number = parseInt($('#total-files').html());
+    number += 1;
+    $('#total-files').html(number);
+  }
+}
+
+function getNextImage(image_props) {
   // show spinner
   $('#loading').show();
   $('#wicked-science-visualization').find('canvas').fadeTo(400, 0.05);
-  // update counters
-  var number = parseInt($('#total-files').html());
-  number += 1;
-  $('#total-files').html(number);
-  
+
   // send to DB
-  var params = {'fileid': fileid, 'problems': marks, 'release': release};
-  if (new_image !== undefined) {
-    for (var attr in new_image)
-      params[attr] = new_image[attr];
+  var params = {'release': release};
+  if (image_props !== undefined) {
+    for (var attr in image_props)
+      params[attr] = image_props[attr];
   }
   $.post('db.php', params,
     function(response) {
@@ -323,7 +334,11 @@ function setChipLayout() {
   // Connect the ccd outline in FoV image to image loading
   $('#ccdmap').children('.ccdshape').on('click', function(evt) {
     var ccdnum = evt.target.title.split(" ").pop();
-    sendResponse({'release': release, 'expname': expname, 'ccd': ccdnum});
+    var new_image = {'release': release, 'expname': expname, 'ccd': ccdnum};
+    if (marks.length)
+      sendResponse(new_image);
+    else
+      getNextImage(new_image);
     $('#fov-modal').modal('hide');
   });
 }

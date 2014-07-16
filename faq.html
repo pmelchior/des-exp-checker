@@ -128,11 +128,12 @@
     <div class="span7">
       <a id="y-band-anchor"></a>
       <h3>What's up with Y-band?</h3>
-      <p> The Y-band< DES exposures are only 45 seconds long and show a number of unique features.
+      <p> The Y-band DES exposures are only 45 seconds long and show a number of unique features.
       In this band, bright stars can often be seen to have vertical spikes extending above and below
-      the saturated pixels of the star. These are an optical effect that manifests itself most strongly
-      in this band (think of these as similar to diffraction spikes).
-      These vertical star spikes do not need to be flagged.
+      the saturated pixels of the star. We believe that these spikes are consistent with the 
+      diffraction of light from the gate structure of the CCD. This effect would be worse in Y-band
+      since more photons make it to the gate. More information can be found <a href="https://cdcvs.fnal.gov/redmine/projects/des-sci-verification/wiki/Mapping_of_the_PSF_to_large_radii">here</a> and 
+      these vertical star spikes do not need to be flagged.
       To help checkers identify issues that may be arising from the differences in the Y-band exposures,
       <span class='badge badge-important'>Y-band</span> images have the band name highlighted in red.
       </p>

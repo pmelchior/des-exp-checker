@@ -45,34 +45,40 @@ function logIn(evt) {
     return evt.preventDefault();
 }
 
-function showLogIn() {
-    $('#logIn').modal('show');
-    $('#log-in').find('#username').focus();
-}
-
 function signUp(evt) {
-    var button = $('#signup_button');
-    button.button('loading');
     var params = $('#sign-up-form').serializeArray();
     var p = {action: 'signup'};
-    for (i in params) {
+    var box = $('#signup_message');
+    for (var i in params) {
+        if (params[i].value == "") {
+            $('#signup-' + params[i].name).focus();
+            box.html("Please fill out all fields.");
+            box.addClass('alert-error');
+            box.show();
+            return evt.preventDefault();
+        }
         p[params[i].name] = params[i].value;
     }
     p['hash'] = hex_sha1(p.password);
     delete p.password;
-          
+    
     // send params to server and see whether account creation is good
+    var button = $('#signup_button');
+    button.button('loading');
     $.post('signup.php', p, function(data) {
-        var box = $('#signup_message');
         box.html(data.message);
-        box.removeClass('hide');
+        box.show();
         if (data.success === false) {
             box.addClass('alert-error');
             button.button('reset');
-            button.button('toggle');
+            if (button.hasClass('active'))
+                button.button('toggle');
         }
         else {
             box.removeClass('alert-error');
+            button.button('reset');
+            if (button.hasClass('active'))
+                button.button('toggle');
             setTimeout(function() {
             // force reload to get inside
                 window.location.href = "viewer.html";

@@ -219,24 +219,24 @@
     // define and show spinner
     spinner = new Spinner({color: "#049cdb"}).spin();
     $('#loading').append(spinner.el);
-    $('#loading').show();
+    //$('#loading').show();
 
     // set up release
-    setRelease($.cookie('default-release'));
+    var urlparams = $.url().param();
+    if (urlparams.hasOwnProperty('release') === false) {
+      setRelease($.cookie('default-release'));
+      urlparams['release'] = release;
+    }
+    else
+      release = urlparams['release'];
+
     $(".release_name").html(release);
     // what happens when the release button is clicked
     $('button[class*="release-button"]').on('click', function(evt) {
       var newrelease = this.id.split("-").pop();
       if (newrelease != release) {
         setRelease(newrelease);
-        $('#loading').show();
-        $.get('db.php', {'release': release}, function(response) {
-          setNextImage(response);
-        }, 'json')
-        .fail(function() {
-          alert('Failure when loading image');
-        });
-        clearUI();
+        getNextImage();
         setChipLayout();
         if (checkSessionCookie())
           getMyData();
@@ -273,12 +273,14 @@
     }
     
     // get first image data
+    getNextImage(urlparams);
+    /*
     $.get('db.php', urlparams, function(response) {
         setNextImage(response);
       }, 'json')
     .fail(function() {
       alert('Failure when loading image');
-    });
+    });*/
     
     // setup FoV chip layout
     setChipLayout();
@@ -406,9 +408,8 @@
   });
   $('#clear-button').on('click', function() {
     clearLastMark();
-    if (marks.length == 0) {
+    if (marks.length == 0)
       $('#clear-button').hide();
-    }
   });
   
   // user requests

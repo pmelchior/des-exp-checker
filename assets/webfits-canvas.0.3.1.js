@@ -106,16 +106,13 @@
 
     Api.prototype._applyTransforms = function() {
       var transforms;
-      transforms = ["scaleX(" + this.zoom + ")", "scaleY(" + (-this.zoom) + ")", "translateX(" + this.xOffset + "px)", "translateY(" + this.yOffset + "px)"].join(' ');
+      transforms = ["scaleX(" + this.zoom + ")", "scaleY(" + (this.zoom) + ")", "translateX(" + this.xOffset + "px)", "translateY(" + this.yOffset + "px)"].join(' ');
       this.canvas.style.transform = transforms;
       this.canvas.style.webkitTransform = transforms;
       return this.canvas.style.MozTransform = transforms;
     };
 
     Api.prototype.getContext = function() {
-      this.canvas.style.transform = 'scaleY(-1)';
-      this.canvas.style.webkitTransform = 'scaleY(-1)';
-      this.canvas.style.MozTransform = 'scaleY(-1)';
       this.ctx = this.canvas.getContext('2d');
       this.draw = this.drawLinear;
       return this.ctx;
@@ -147,17 +144,11 @@
         case 'logarithm':
           this.draw = this.drawLog;
           break;
-        case 'sqrt':
-          this.draw = this.drawSqrt;
-          break;
         case 'arcsinh':
           this.draw = this.drawAsinh;
           break;
         case 'peter':
           this.draw = this.drawPeter;
-          break;
-        case 'power':
-          this.draw = this.drawPower;
           break;
         default:
           this.draw = this.drawLinear;
@@ -262,30 +253,6 @@
       return this._applyTransforms();
     };
 
-    Api.prototype.drawSqrt = function() {
-      var arr, data, height, imgData, length, max, minimum, pixel, value, width;
-      data = this.images[this.currentImage].arr;
-      width = this.images[this.currentImage].width;
-      height = this.images[this.currentImage].height;
-      imgData = this.ctx.getImageData(0, 0, width, height);
-      arr = imgData.data;
-      minimum = this.minimum;
-      max = this.maximum - minimum;
-      length = arr.length;
-      while (length -= 4) {
-        pixel = data[length / 4] - minimum;
-        value = 255 * Math.sqrt(pixel / max);
-        arr[length + 0] = value;
-        arr[length + 1] = value;
-        arr[length + 2] = value;
-        arr[length + 3] = 255;
-      }
-      if (this.showMask && this.nImages % 2 == 0)
-        this.addMask(arr);
-      imgData.data = arr;
-      this.ctx.putImageData(imgData, 0, 0);
-      return this._applyTransforms();
-    };
     Api.prototype.drawAsinh = function(minval) {
       var arr, data, height, imgData, length, max, min, pixel, range, value, width;
       data = this.images[this.currentImage].arr;
@@ -319,31 +286,6 @@
       return this.drawAsinh(1);
     };
     
-    Api.prototype.drawPower = function() {
-      var arr, data, height, imgData, length, max, min, pixel, value, width;
-      data = this.images[this.currentImage].arr;
-      width = this.images[this.currentImage].width;
-      height = this.images[this.currentImage].height;
-      imgData = this.ctx.getImageData(0, 0, width, height);
-      arr = imgData.data;
-      min = this.minimum;
-      max = this.maximum - min;
-      length = arr.length;
-      while (length -= 4) {
-        pixel = data[length / 4] - min;
-        value = 255 * Math.pow(pixel / max, 2);
-        arr[length + 0] = value;
-        arr[length + 1] = value;
-        arr[length + 2] = value;
-        arr[length + 3] = 255;
-      }
-      if (this.showMask && this.nImages % 2 == 0)
-        this.addMask(arr);
-      imgData.data = arr;
-      this.ctx.putImageData(imgData, 0, 0);
-      return this._applyTransforms();
-    };
-
     Api.prototype.teardown = function() {
       this.el.removeChild(this.canvas);
       this.ctx = void 0;

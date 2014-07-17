@@ -12,7 +12,7 @@ function getCountOfProblem($dbh, $problem, $uid=NULL) {
         if (isset($uid))
             $sql .= ' AND userid=?';
         if ($code == 255)
-            $sql .= ' GROUP BY detail ORDER BY `count` DESC, detail';
+            $sql .= ' AND detail IS NOT NULL GROUP BY detail ORDER BY `count` DESC, detail';
         $stmt = $dbh->prepare($sql);
         $stmt->bindParam(1, $code, PDO::PARAM_INT);
         if (isset($uid))

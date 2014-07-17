@@ -56,26 +56,24 @@ function getNextImage($dbh, $uid) {
     global $config;
     $res = null;
     $sql = 'SELECT "' . $config['release'] . '" as release, files.fileid, files.expname, ccd, band, name, files.runs.runname FROM files JOIN files.runs ON (files.expname = files.runs.expname)';
-    $expname = GETorPOST('expname');
-    $ccd = GETorPOST('ccd');
-    if ($expname && $ccd) {
+    if (isset($_POST['expname']) && isset($_POST['ccd'])) {
         $sql .= ' WHERE ccd = ? AND files.expname = ? LIMIT 1';
         $stmt = $dbh->prepare($sql);
-        $stmt->bindParam(1, $ccd, PDO::PARAM_INT);
-        $stmt->bindParam(2, $expname, PDO::PARAM_STR, 14);
+        $stmt->bindParam(1, $_POST['ccd'], PDO::PARAM_INT);
+        $stmt->bindParam(2, $_POST['expname'], PDO::PARAM_STR, 14);
         $stmt->execute();
         $res = check_or_abort($stmt);
     }
-    elseif (isset($_GET['problem'])) {
+    elseif (isset($_POST['problem'])) {
         $sql .= ' JOIN qa ON (files.fileid = qa.fileid) WHERE qa.problem = ?';
-        if (isset($_GET['detail']))
+        if (isset($_POST['detail']))
             $sql .= ' AND detail = ?';
         $sql .= ' ORDER BY RANDOM() LIMIT 1';
         $stmt = $dbh->prepare($sql);
         $codes = getProblemCodes();
-        $stmt->bindParam(1, $codes[$_GET['problem']], PDO::PARAM_INT);
-        if (isset($_GET['detail']))
-            $stmt->bindParam(2, $_GET['detail'], PDO::PARAM_STR);
+        $stmt->bindParam(1, $codes[$_POST['problem']], PDO::PARAM_INT);
+        if (isset($_POST['detail']))
+            $stmt->bindParam(2, $_POST['detail'], PDO::PARAM_STR);
         $stmt->execute();
         $res = check_or_abort($stmt);
     }
@@ -87,7 +85,7 @@ function getNextImage($dbh, $uid) {
             $sql .= ' JOIN qa ON (files.fileid = qa.fileid)';
             if ($uid) {
                 $sql .= ' WHERE qa.userid != ' . $uid;
-                $sql .= ' GROUP BY qa.fileid ORDER BY COUNT(distinct(qa.userid)) ASC, RANDOM() LIMIT 1';
+                $sql .= ' GROUP BY qa.fileid ORDER BY RANDOM() LIMIT 1';
                 // need to check if there are actually images found:
                 // only relevant for early stages of a new release
                 $res = check_or_abort($dbh->query($sql));

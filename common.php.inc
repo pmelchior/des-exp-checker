@@ -79,22 +79,25 @@ function getNextImage($dbh, $uid) {
     }
     // default query
     else {
+        $priority = "1";
+        if ($config['release'] == "Y1A1")
+            $priority = "name LIKE 'eye_se005grizY/%'";
         // to created redundancy: make every n-th image drawn from list with existing qa
         if (rand(0,2) < 1) {
             $fallback = $sql;
             $sql .= ' JOIN qa ON (files.fileid = qa.fileid)';
             if ($uid) {
-                $sql .= ' WHERE qa.userid != ' . $uid;
+                $sql .= ' WHERE ' . $priority . ' AND qa.userid != ' . $uid;
                 $sql .= ' GROUP BY qa.fileid ORDER BY RANDOM() LIMIT 1';
                 // need to check if there are actually images found:
                 // only relevant for early stages of a new release
                 $res = check_or_abort($dbh->query($sql));
                 if ($row = $res->fetch(PDO::FETCH_ASSOC))
                     return $row;
-                $sql = $fallback;
             }
+            $sql = $fallback;
         }
-        $res = check_or_abort($dbh->query($sql.' ORDER BY RANDOM() LIMIT 1'));
+        $res = check_or_abort($dbh->query($sql.' WHERE ' . $priority . ' ORDER BY RANDOM() LIMIT 1'));
     }
     if ($row = $res->fetch(PDO::FETCH_ASSOC))
         return $row;

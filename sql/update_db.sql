@@ -95,3 +95,10 @@ VACUUM;
 
 -- This has to be done on the qa tables in all files db's to account for the flip of the y axis to show actual sky orientation
 UPDATE qa SET y=512-y WHERE problem!=0;
+
+-- To use filepath as part of the files db `name` field; no need to specify it in config
+-- in SVA1
+UPDATE files SET name="eye_se001grizt/" || name;
+-- in first batch of Y1A1
+UPDATE files SET name="eye_se004grizY/" || name;
+

@@ -31,5 +31,5 @@ CREATE TABLE runs (
 
 -- add/append information from BNL run
 ATTACH DATABASE "eye_se004grizY.db" as bnl;
-INSERT INTO files (expname, ccd, band, name) SELECT expname, ccd, band, SUBSTR(field, 50) FROM bnl.files ORDER BY bnl.files.rowid ASC;
+INSERT INTO files (expname, ccd, band, name) SELECT expname, ccd, band, SUBSTR(field, 35) FROM bnl.files ORDER BY bnl.files.rowid ASC;
 INSERT INTO runs (expname, runname) SELECT expname, run FROM bnl.files ORDER BY bnl.files.rowid ASC;

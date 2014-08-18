@@ -91,8 +91,7 @@ function getNextImage($dbh, $uid) {
                 $res = check_or_abort($dbh->query($sql));
                 if ($row = $res->fetch(PDO::FETCH_ASSOC))
                     return $row;
-                else
-                    $sql = $fallback;
+                $sql = $fallback;
             }
         }
         $res = check_or_abort($dbh->query($sql.' ORDER BY RANDOM() LIMIT 1'));

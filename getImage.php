@@ -25,7 +25,7 @@ if ($_GET['type'] == "fov") {
         download_file($path);
 }
 else {
-        $path = $config['fitspath'][$config['release']];
+        $path = $config['fitspath'];
         download_file($path.$_GET['name'], True);
 }
 ?>

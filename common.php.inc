@@ -80,8 +80,6 @@ function getNextImage($dbh, $uid) {
     // default query
     else {
         $priority = "1";
-        if ($config['release'] == "Y1A1")
-            $priority = "name LIKE 'eye_se005grizY/%'";
         // to created redundancy: make every n-th image drawn from list with existing qa
         if (rand(0,2) < 1) {
             $fallback = $sql;

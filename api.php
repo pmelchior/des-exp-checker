@@ -11,6 +11,7 @@ if (isset($_GET['problem'])) {
         $stm->execute();
         $result = array();
         while($row = $stm->fetch(PDO::FETCH_ASSOC)) {
+            $row['qa_id'] = intval($row['qa_id']);
             $row['ccd'] = intval($row['ccd']);
             $row['false_positive'] = FALSE;
             if ($row['problem'] < 0)

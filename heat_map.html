@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DES exposure checker | Heat map</title>
+  <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
+  <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
+  <meta charset="utf-8">
+  <meta name="author" content="Peter Melchior, Erin Sheldon">
+  <link rel="icon" href="assets/DES_logo_trans.png" type="image/png">
+  <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <style>
+    .hexagon { fill: none; stroke: #000; stroke-width: 0.5px; }
+    #hexagon_box { border: 1px solid #888; }
+    #problem_description { margin-left: 20px; font-weight: bold; }
+  </style>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="http://d3js.org/d3.hexbin.v0.min.js?5c6e4f0"></script>
+  <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
+</head>
+
+<body>
+  <div id="wrapper">
+  <div class='container'>
+    <div class="navbar">
+      <div class="navbar-inner">
+	<a class="brand" href="index.html">DES exposure checker</a>
+	<ul class="nav">
+          <li><a href="viewer.html">Viewer</a></li>
+	  <li><a href="tutorial.html">Tutorial</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li class="active"><a href="statistics.html">Statistics</a></li>
+          <li><a href="api.html">API</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="hodgepodge.html">Hodge-podge</a></li>
+	</ul>
+        <!--ul class="nav pull-right hide">
+          <div class="btn-group" id="release-switch">
+            <button class="btn btn-small release-button" id="release-button-SVA1">SVA1</button>
+            <button class="btn btn-small release-button" id="release-button-Y1A1">Y1A1</button>
+          </div>
+        </ul-->
+      </div> 
+    </div>
+    
+    <!-- content area -->
+    <div class="span12">
+      <h1>Problem heat maps</h1>
+      <p>The heat map show the density of problem reports aggregated over all chips. The cells cover 128 DECam pixels and the color scale goes from 0 to 20 counts per cell.
+      Select the problem class below to display the heat map.
+      <span class="muted"> (Hint: Start with the <a href="#" class="problem">A/B jump</a> or the <a href="#" class="problem">Tape bump</a>.)</span></p>
+      <!--#include file="problem_selector.shtml"-->
+      <span id="problem_description"></span>
+    </div>
+    <div id="loading" class="hide" style="position:relative; left:512px; top:400px; z-index:1000; width:48px;"></div>
+    <div class="span12" id="heat_map" style="padding-top:20px"></div>
+   </div>
+  <div id="push"></div>
+  </div>
+  <div id="foot">
+    <div class="container" style="text-align:right">
+      <div class="breadcrumb muted" style="margin: 24px 0 0 0;">Created by Peter Melchior, Erin Sheldon, Alex Drlica-Wagner</div>
+    </div>
+  </div>
+</body>
+      
+<script type="text/javascript" src="assets/jquery.cookie.js"></script>
+<script type="text/javascript" src="assets/common.js"></script>
+<script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="assets/spin.min.js"></script>
+<script>
+$(document).ready(function () {
+  // set up release
+  setRelease($.cookie('default-release'));
+  $('button[class*="release-button"]').on('click', function(evt) {
+    setRelease(this.id.split("-").pop());
+    window.location.reload(true);
+  });
+  
+  spinner = new Spinner({color: "#049cdb"}).spin();
+  $('#loading').append(spinner.el);
+  
+  var width = 1024, height = 512, max_count = 20;
+
+  var color = d3.scale.linear()
+      .domain([0, max_count])
+      .range(["white", "#9d261d"])
+      .interpolate(d3.interpolateLab);
+  
+  var hexbin = d3.hexbin()
+      .size([width, height])
+      .radius(32);
+  
+  var x = d3.scale.linear()
+      .domain([0, width])
+      .range([0, width]);
+  
+  var y = d3.scale.linear()
+      .domain([0, height])
+      .range([height, 0]);
+  
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom")
+      .tickSize(6, -height);
+  
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left")
+      .tickSize(6, -width);
+  
+  var svg = d3.select("#heat_map").append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("id", "hexagon_box")
+    .append("g");
+  
+  svg.append("clipPath")
+      .attr("id", "clip")
+    .append("rect")
+      .attr("class", "mesh")
+      .attr("width", width)
+      .attr("height", height);
+      
+  // get data and show heat map
+  function showHeatMap(problem) {
+    $('.hexagon').remove();
+    $('#loading').show();
+    d3.json('api.php?release=' + release + '&problem=' + encodeURI(problem) + '&short', function(error, response) {
+      $('#problem_description').html(problem + " (" + response.length + " reports)");
+      var points = [];
+      for (var i=0; i < response.length; i++) {
+	points.push([response[i].x/4, response[i].y/4]);
+      }
+      svg.append("g")
+	  .attr("clip-path", "url(#clip)")
+	.selectAll(".hexagon")
+	  .data(hexbin(points))
+	.enter().append("path")
+	  .attr("class", "hexagon")
+	  .attr("d", hexbin.hexagon())
+	  .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+	  .style("fill", function(d) { return color(Math.min(d.length, max_count)); });
+      $('#loading').hide();
+    });
+  }
+ 
+  // connect problem selector to anchor in page
+  $('a[class*="problem"]').on('click', function(evt) {
+      evt.preventDefault();
+      var problem = evt.target.innerHTML;
+      showHeatMap(problem);
+      return true;
+    });
+  });
+
+</script>
+</html>

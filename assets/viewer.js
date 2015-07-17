@@ -152,7 +152,7 @@ function completeVisualization(response) {
   // update browser url field
   window.history.replaceState(null, "Title", newurl);
   $('#share-url').val('http://' + window.location.host + newurl);
-  $('#desdm-url').val('https://desar2.cosmology.illinois.edu/DESFiles/desardata/OPS/red/' + response.runname + '/red/' + expname + '/' + expname + '_' + ccd +'.fits.fz');
+  $('#desdm-url').val('https://desar2.cosmology.illinois.edu/DESFiles/desardata/OPS/red/' + response.runname + '/red/' + expname + '/' + expname + '_' + ("0" + ccd).slice(-2) +'.fits.fz');
   $('#fov-url').html('getImage.php?type=fov&release=' + release + "&runname=" + response.runname + "&expname=" + expname);
   // after both image and mask are drawn: remove loading spinner
   $('#loading').hide();

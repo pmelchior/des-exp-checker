@@ -2,7 +2,7 @@ var release = null;
 
 function setRelease(release_) {
     if (release_ == null) {
-        release_ = "Y1A1";
+        release_ = "SVA1";
     }
     release = release_;
     $.cookie('default-release', release, {expires: 365});

@@ -1,0 +1,10 @@
+# Hide files starting with a dot
+<Files .*>
+order allow,deny
+deny from all
+</Files>
+
+# Enable Serve Side Includes
+Options +Includes
+AddType text/html .shtml
+AddOutputFilter INCLUDES .html

@@ -36,7 +36,7 @@ function setRelease() {
     global $config;
     $config['release'] = GETorPOST('release');
     if ($config['release'] === FALSE || in_array($config['release'], array('SVA1', 'Y1A1')) === FALSE)
-        $config['release'] = "Y1A1";
+        $config['release'] = "SVA1";
 }
 
 function getDBHandle() {
@@ -266,4 +266,5 @@ function sendEmail($email, $subject, $message) {
     $message .= "\n\nPeter, Erin & Alex --\nhttp://" . $config['domain'];
     return mail($email,$subject,$message,$header);
 }
+
 ?>

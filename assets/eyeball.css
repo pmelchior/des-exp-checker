@@ -20,3 +20,4 @@ body,html { height: 100%; }
 .ccdshape { position: absolute; border: 1px solid transparent;}
 .ccdshape-current { border: 1px solid red}
 .ccdshape:hover { border: 1px solid #46a546; cursor: pointer;}
+#demo {position: fixed; width: 1024px; text-align: center; margin-top: 300px; z-index: 100; font-size: 120px; color: #9d261d; opacity: 0.5; -ms-transform: rotate(-35deg); -webkit-transform: rotate(-35deg); transform: rotate(-35deg);}

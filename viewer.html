@@ -19,6 +19,7 @@
 <body>
   <div id="wrapper">
   <div class='container'>
+    <div id="demo">DEMO</div>
     <!-- NAVBAR -->
     <div class="navbar">
       <div class="navbar-inner">
@@ -41,17 +42,17 @@
             <ul class="dropdown-menu">
               <li><a tabindex="-1" href="#" id="mystats-anchor">My statistics</a></li>
               <li><a tabindex="-1" href="#" id="leaderboard-anchor">Leaderboard</a></li>
-              <li>
+              <!--li>
                 <div class="btn-group" id="release-switch" style="margin:0; padding:3px 20px">
                   <button class="btn btn-small release-button" id="release-button-SVA1">SVA1</button>
                   <button class="btn btn-small release-button" id="release-button-Y1A1">Y1A1</button>
                 </div>
-              </li>
+              </li-->
               <li class="divider"></li>
               <li><a tabindex="-1" id="logout" href="#">Logout</a></li>
             </ul>
           </li>
-          <li id="login-li"><a href="index.html" class="login-trigger">Log in ...</a></li>
+          <!--li id="login-li"><a href="index.html" class="login-trigger">Log in ...</a></li-->
         </ul>
       </div> 
     </div>
@@ -219,7 +220,6 @@
     // define and show spinner
     spinner = new Spinner({color: "#049cdb"}).spin();
     $('#loading').append(spinner.el);
-    //$('#loading').show();
 
     // set up release
     var urlparams = $.url().param();
@@ -247,40 +247,9 @@
     if (urlparams.hasOwnProperty('release') === false)
       urlparams['release'] = release;
     
-    // if user is logged in: show user dropdown
-    if (checkSessionCookie()) {
-      getMyData();
-      setInterval(getMyData, 600000);
-      $('#login-li').hide();
-      $('#mydata-li').show();
-      // return to last image the user has seen before he logged in
-      if ($.cookie('lastfile') !== undefined) {
-        urlparams = $.url($.cookie('lastfile')).param();
-        $.removeCookie('lastfile');
-      }
-    }
-    else {
-      $('#login-modal').modal({"backdrop": true, "show":false, "keyboard": true});
-      $('a[class*="login-trigger"]').on('click', function(evt) {
-        $.cookie('lastfile', $('#share-url').val(), {expires: 1});
-        window.location.href=this.attr('href');
-      });
-      // is not: show message when user clicks on the problem button
-      $('#problem-button').on('click', function(evt) {
-        $('#login-modal').modal('show');
-        evt.preventDefault();
-      });
-    }
     
     // get first image data
     getNextImage(urlparams);
-    /*
-    $.get('db.php', urlparams, function(response) {
-        setNextImage(response);
-      }, 'json')
-    .fail(function() {
-      alert('Failure when loading image');
-    });*/
     
     // setup FoV chip layout
     setChipLayout();
@@ -299,7 +268,6 @@
   $('#mystats-modal').modal({"backdrop": false, "show":false, "keyboard": true});
   $('#congrats-modal').modal({"backdrop": false, "show":false, "keyboard": true});
   $('#message-modal').modal({"backdrop": true, "show":false, "keyboard": false});
-  //$('#login-modal').modal({"backdrop": true, "show":false, "keyboard": false});
   
   // button actions
   $('button[class*="send"]').on('click', function(evt) {

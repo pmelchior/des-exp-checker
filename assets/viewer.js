@@ -152,7 +152,7 @@ function completeVisualization(response) {
   // update browser url field
   window.history.replaceState(null, "Title", newurl);
   $('#share-url').val('http://' + window.location.host + newurl);
-  $('#desdm-url').val('https://desar2.cosmology.illinois.edu/DESFiles/desardata/OPS/red/' + response.runname + '/red/' + expname + '/' + expname + '_' + ccd +'.fits.fz');
+  $('#desdm-url').val('https://desar2.cosmology.illinois.edu/DESFiles/desardata/OPS/red/' + response.runname + '/red/' + expname + '/' + expname + '_' + ("0" + ccd).slice(-2) +'.fits.fz');
   $('#fov-url').html('getImage.php?type=fov&release=' + release + "&runname=" + response.runname + "&expname=" + expname);
   // after both image and mask are drawn: remove loading spinner
   $('#loading').hide();
@@ -174,12 +174,17 @@ function setNextImage(response) {
 
 function userClass(uc) {
   // frequent users: color badge acording to # of focal planes done
+  // http://getbootstrap.com/2.3.2/components.html#labels-badges
   switch (uc) {
     case 1: return {class: 1, style: 'badge-success', title: 'Rookie'}; break;
-    case 2: return {class: 2, style: 'badge-warning', title: 'Frequent checker'}; break;
-    case 3: return {class: 3, style: 'badge-important', title: 'Top performer'}; break;
+    case 2: return {class: 2, style: 'badge-warning', title: 'Frequent Checker'}; break;
+    case 3: return {class: 3, style: 'badge-important', title: 'Top Performer'}; break;
     case 4: return {class: 4, style: 'badge-info', title: 'Veteran'}; break;
-    case 5: return {class: 5, style: 'badge-inverse', title: 'Chief inspector'}; break;
+    case 5: return {class: 5, style: 'badge-inverse', title: 'Chief Inspector'}; break;
+    // Should do default badge (silver)
+    case 6: return {class: 6, style: '', title: 'Inspector General'}; break;
+    case 7: return {class: 7, style: '', title: 'Season Inspector'}; break;
+    case 8: return {class: 8, style: '', title: 'Survey Inspector'}; break;
     default: return {class: 0}; break;
   }
 }

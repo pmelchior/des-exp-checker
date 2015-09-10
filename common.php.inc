@@ -158,6 +158,12 @@ function numberSuffix($num) {
 
 function userClass($total_files) {
     global $config;
+    if ($total_files / $config['images_per_fp'] >= 100000)
+      return 8;
+    if ($total_files / $config['images_per_fp'] >= 10000)
+      return 7;
+    if ($total_files / $config['images_per_fp'] >= 1000)
+      return 6;
     if ($total_files / $config['images_per_fp'] >= 100)
       return 5;
     if ($total_files / $config['images_per_fp'] >= 10)
@@ -180,6 +186,9 @@ function missingFilesForNextClass($total_files, $userclass) {
       case 3: return 10*$config['images_per_fp'] - $total_files; break;
       case 4: return 100*$config['images_per_fp'] - $total_files; break;
       case 5: return 1000*$config['images_per_fp'] - $total_files; break;
+      case 6: return 10000*$config['images_per_fp'] - $total_files; break;
+      case 7: return 100000*$config['images_per_fp'] - $total_files; break;
+      case 8: return 0; break;
     }
   }
   

@@ -1,7 +1,7 @@
 body,html { height: 100%; }
 #wrapper {min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -60px;}
 #foot, #push { height: 60px; clear: both; }
-.container { width:1024px; }
+.container { position: relative; width:1024px; }
 .coords { cursor: pointer; min-width:180px; position: relative;}
 .sex2deg-toogle { position: absolute; right: 2px; top: 1px;}
 .img-polaroid {margin-top:16px;}
@@ -20,4 +20,5 @@ body,html { height: 100%; }
 .ccdshape { position: absolute; border: 1px solid transparent;}
 .ccdshape-current { border: 1px solid red}
 .ccdshape:hover { border: 1px solid #46a546; cursor: pointer;}
-#demo {position: fixed; width: 1024px; text-align: center; margin-top: 300px; z-index: 100; font-size: 120px; color: #9d261d; opacity: 0.5; -ms-transform: rotate(-35deg); -webkit-transform: rotate(-35deg); transform: rotate(-35deg);}
+#demo {position: fixed; width: 1024px; text-align: center; margin-top: 300px; z-index: 100; font-size: 120px; color: #9d261d; opacity: 0.5; -ms-transform: rotate(-35deg); -webkit-transform: rotate(-35deg); transform: rotate(-35deg); }
+.github-ribbon { position: absolute; top: 0; right: 0; border: 0; z-index: 100 }

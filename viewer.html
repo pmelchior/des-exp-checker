@@ -18,8 +18,9 @@
 
 <body>
   <div id="wrapper">
-  <div class='container'>
+  <div class="container">
     <div id="demo">DEMO</div>
+    
     <!-- NAVBAR -->
     <div class="navbar">
       <div class="navbar-inner">
@@ -33,27 +34,6 @@
           <li><a href="gallery.html">Gallery</a></li>
           <li><a href="hodgepodge.html">Hodge-podge</a></li>
 	</ul>
-        <ul class="nav pull-right hide" id="user-menu" style="margin-right:-20px">
-          <li id="mydata-li" class="dropdown" style="display: none">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <span id="username">Username</span> <span class="badge" id="userrank">#1</span>
-            <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu">
-              <li><a tabindex="-1" href="#" id="mystats-anchor">My statistics</a></li>
-              <li><a tabindex="-1" href="#" id="leaderboard-anchor">Leaderboard</a></li>
-              <!--li>
-                <div class="btn-group" id="release-switch" style="margin:0; padding:3px 20px">
-                  <button class="btn btn-small release-button" id="release-button-SVA1">SVA1</button>
-                  <button class="btn btn-small release-button" id="release-button-Y1A1">Y1A1</button>
-                </div>
-              </li-->
-              <li class="divider"></li>
-              <li><a tabindex="-1" id="logout" href="#">Logout</a></li>
-            </ul>
-          </li>
-          <!--li id="login-li"><a href="index.html" class="login-trigger">Log in ...</a></li-->
-        </ul>
       </div> 
     </div>
     
@@ -378,38 +358,6 @@
     clearLastMark();
     if (marks.length == 0)
       $('#clear-button').hide();
-  });
-  
-  // user requests
-  $('#mystats-anchor').on('click', function() {
-    getMyData();
-    $('#mystats-modal').modal('show');
-  });
-  $('#leaderboard-anchor').on('click', function() {
-    $.get('ranking.php', {'release': release}, function(response) {
-      var html = "<table class='table table-condensed table-striped'><thead><tr><th>Rank</th><th>Username</th><th>Problematic/Total</th><th># Files</th></tr></thead><tbody>";
-        var total = null, counter = 1, width_flagged, width_total;
-        for (var i=0; i < response.length; i++) {
-          if (total == null)
-            total = response[i]['total_files'];
-          width_flagged = (100*response[i]['flagged_files']/total) + "%";
-          width_total = (100*(response[i]['total_files']-response[i]['flagged_files'])/total) + "%";
-          html += "<tr><td># "+ counter +"</td><td><span class='namecol'>" + response[i]['username'] + "</span></td>";
-          html += "<td><div class='ratingcol'><span class='ratingbar bad' style='width:" + width_flagged +"'></span>";
-          html += "<span class='ratingbar good' style='left:" + width_flagged +"; width:" + width_total +"'></span></div></td>";
-          html += "<td>" + response[i]['total_files'] + "</td></tr>";
-          counter++ ;
-        }
-        html += "</tbody></table>";
-        $('#leaderboard').html(html);
-      $('#rank-modal').find('[class*="modal-body"]').html(html);
-      $('#rank-modal').modal('show');
-    }, 'json');
-  });
-  $('#logout').on('click', function() {
-    $.post('login.php',{'logout':true}, function() {
-      window.location.href="index.html";
-      });
   });
   
   // key bindings

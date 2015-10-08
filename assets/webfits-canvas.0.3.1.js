@@ -193,7 +193,7 @@
       var value;
       while (length -= 4) {
         value = data[length / 4];
-        if (value != 65536 && value != 32768) {// issue with fits.js, compression and Uint16
+          if (value % 32768 != 0) { // issue with fits.js, compression and Uint16
           arr[length + 0] = 0;
           arr[length + 1] = 0;
           arr[length+2] = 255;

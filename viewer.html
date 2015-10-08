@@ -317,9 +317,10 @@
     };
   });
   $('#desdm-button').on('click', function() {
-    $('#desdm-modal').modal('show');
+  $('#desdm-modal').modal('show');
+    var dm_url="getImage.php?type=dm&release="+release+"&expname="+expname+"&ccd="+ccd;
     var textBox = $('#desdm-url');
-    textBox.select();
+    textBox.load(dm_url).select();
     // Work around Chrome's little problem
     textBox.onmouseup = function() {
       // Prevent further mouseup intervention
@@ -330,7 +331,8 @@
   $('#fov-button').on('click', function() {
     // load FoV image from DESDM
     $('#fov-body').find('.fov-image').remove();
-    $('<img class="fov-image" src="'+ $('#fov-url').html() +'" border="0" />').load(function() {
+    var fov_url = "getImage.php?type=fov&release="+release+"&expname="+expname;
+    $('<img class="fov-image" src="' + fov_url +'" border="0" />').load(function() {
       $(this).width(530).appendTo('#fov-body');
     });
     $('#ccdmap').children('.ccdshape').each(function() {

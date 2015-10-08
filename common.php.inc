@@ -56,11 +56,7 @@ function getDBHandle() {
 function getNextImage($dbh, $uid) {
     global $config;
     $res = null;
-    $sql = "";
-    if ($config['release'] == "SVA1" || $config['release'] == "Y1A1")
-       $sql = 'SELECT "' . $config['release'] . '" as release, files.fileid, files.expname, ccd, band, name, files.runs.runname FROM files JOIN files.runs ON (files.expname = files.runs.expname)';
-    else
-	$sql = 'SELECT "' . $config['release'] . '" as release, files.fileid, files.expname, ccd, band, name FROM files';
+    $sql = 'SELECT "' . $config['release'] . '" as release, files.fileid, expname, ccd, band, name FROM files';
 	
     if (isset($_POST['expname']) && isset($_POST['ccd'])) {
         $sql .= ' WHERE ccd = ? AND files.expname = ? LIMIT 1';

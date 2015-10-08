@@ -43,6 +43,7 @@
       this.el.appendChild(this.overlay);
       this.el.appendChild(this.report);
       this.nImages = 0;
+	this.rescaling = 1.;	
       if (!this.getContext()) {
         return null;
       }
@@ -114,7 +115,7 @@
 
     Api.prototype.getContext = function() {
       this.ctx = this.canvas.getContext('2d');
-      this.draw = this.drawLinear;
+      this.draw = this.drawPeter;
       return this.ctx;
     };
 
@@ -141,9 +142,6 @@
 
     Api.prototype.setStretch = function(stretch) {
       switch (stretch) {
-        case 'logarithm':
-          this.draw = this.drawLog;
-          break;
         case 'arcsinh':
           this.draw = this.drawAsinh;
           break;
@@ -151,7 +149,7 @@
           this.draw = this.drawPeter;
           break;
         default:
-          this.draw = this.drawLinear;
+          this.draw = this.drawPeter;
       }
       return this.draw();
     };
@@ -162,6 +160,11 @@
       return this.draw();
     };
 
+    Api.prototype.setRescaling = function(value) {
+      this.rescaling = value;
+      return this.draw();	
+    };
+      
     Api.prototype.setScales = function(r, g, b) {
       this.scales.r = r;
       this.scales.g = g;
@@ -201,58 +204,6 @@
       }
     };
 
-    Api.prototype.drawLinear = function() {
-      var arr, data, height, imgData, length, max, min, range, value, width;
-      data = this.images[this.currentImage].arr;
-      width = this.images[this.currentImage].width;
-      height = this.images[this.currentImage].height;
-      imgData = this.ctx.getImageData(0, 0, width, height);
-      arr = imgData.data;
-      min = this.minimum;
-      max = this.maximum;
-      range = max - min;
-      length = arr.length;
-      while (length -= 4) {
-        value = 255 * (data[length / 4] - min) / range;
-        arr[length + 0] = value;
-        arr[length + 1] = value;
-        arr[length + 2] = value;
-        arr[length + 3] = 255;
-      }
-      if (this.showMask && this.nImages % 2 == 0)
-        this.addMask(arr);
-      imgData.data = arr;
-      this.ctx.putImageData(imgData, 0, 0);
-      return this._applyTransforms();
-    };
-
-    Api.prototype.drawLog = function() {
-      var arr, data, height, imgData, length, max, min, minimum, pixel, range, value, width;
-      data = this.images[this.currentImage].arr;
-      width = this.images[this.currentImage].width;
-      height = this.images[this.currentImage].height;
-      imgData = this.ctx.getImageData(0, 0, width, height);
-      arr = imgData.data;
-      minimum = this.minimum;
-      min = 0;
-      max = this.logarithm(this.maximum - this.minimum);
-      range = max - min;
-      length = arr.length;
-      while (length -= 4) {
-        pixel = this.logarithm(data[length / 4] - minimum);
-        value = 255 * (pixel - min) / range;
-        arr[length + 0] = value;
-        arr[length + 1] = value;
-        arr[length + 2] = value;
-        arr[length + 3] = 255;
-      }
-      if (this.showMask && this.nImages % 2 == 0)
-        this.addMask(arr);
-      imgData.data = arr;
-      this.ctx.putImageData(imgData, 0, 0);
-      return this._applyTransforms();
-    };
-
     Api.prototype.drawAsinh = function(minval) {
       var arr, data, height, imgData, length, max, min, pixel, range, value, width;
       data = this.images[this.currentImage].arr;
@@ -283,7 +234,7 @@
     };
     
     Api.prototype.drawPeter = function() {
-      return this.drawAsinh(1);
+      return this.drawAsinh(1 * this.rescaling);
     };
     
     Api.prototype.teardown = function() {
@@ -292,16 +243,12 @@
       return this._reset();
     };
 
-    Api.prototype.logarithm = function(value) {
-      return Math.log(value / 0.05 + 1.0) / Math.log(1.0 / 0.05 + 1.0);
-    };
-
     Api.prototype.arcsinh = function(value) {
       return Math.log(value + Math.sqrt(1 + value * value));
     };
 
     Api.prototype.scaledArcsinh = function(value) {
-      return this.arcsinh(value / -0.033) / this.arcsinh(1.0 / -0.033);
+      return this.arcsinh(value / -0.033 / this.rescaling) / this.arcsinh(1.0 / -0.033 / this.rescaling);
     };
 
     return Api;

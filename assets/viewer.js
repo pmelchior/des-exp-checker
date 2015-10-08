@@ -96,8 +96,7 @@ function createVisualization(arr, opts) {
   var dataunit = opts.dataunit;
   var width = dataunit.width;
   var height = dataunit.height;
-  var extent = [-1, 1000]; // default values to prevent crazy pixels ruining min/max values
-  
+      
   // Get the DOM element
   var el = $('#wicked-science-visualization').get(0);
   
@@ -113,8 +112,11 @@ function createVisualization(arr, opts) {
   // Load array representation of image
   webfits.loadImage('exposure', arr, width, height);
   // Set the intensity range and stretch
-  webfits.setExtent(extent[0], extent[1]);
+  if (opts.release == "Y2A1")
+      webfits.setRescaling(4.);	
+  webfits.setExtent(-1, 1000);  // to prevent crazy values in min/max
   webfits.setStretch(stretch);
+    
   
   // add weight/bad-pixel map
   var dataunit = opts.f.getDataUnit(3);

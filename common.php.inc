@@ -9,6 +9,7 @@ $config = array(
     "userdb" => T_STRING,       // path to the user sqlite database
     "filedb" => T_SRING,        // path for file database, should contain '%s' to be replace by release
     "fovpath" => T_ARRAY,       // path to FoV images, one entry per release
+    "releases" => T_ARRAY,	// list of available releases
     "release" => NULL,          // empty, set by setRelease()
     "images_per_fp" => T_INT,   // size of focal plane, used for congrats
     "fitspath" => T_ARRAY,      // path to get the fits files, one entry per release
@@ -35,8 +36,8 @@ function GETorPOST($param) {
 function setRelease() {
     global $config;
     $config['release'] = GETorPOST('release');
-    if ($config['release'] === FALSE || in_array($config['release'], array('SVA1', 'Y1A1')) === FALSE)
-        $config['release'] = "Y2T1";
+    if ($config['release'] === FALSE || in_array($config['release'], $config['releases']) === FALSE)
+        $config['release'] = "Y2A1";
 }
 
 function getDBHandle() {

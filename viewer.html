@@ -14,6 +14,9 @@
   <script type="text/javascript" src="assets/fits.js"></script>
   <script type="text/javascript" src="assets/webfits-canvas.0.3.1.js"></script>
   <script type="text/javascript" src="assets/viewer.js"></script>
+  <style>
+    #release-switch { margin:0; padding:3px 20px; }
+  </style>
 </head>
 
 <body>
@@ -42,11 +45,7 @@
               <li><a tabindex="-1" href="#" id="mystats-anchor">My statistics</a></li>
               <li><a tabindex="-1" href="#" id="leaderboard-anchor">Leaderboard</a></li>
               <li>
-                <div class="btn-group" id="release-switch" style="margin:0; padding:3px 20px">
-                  <button class="btn btn-small release-button" id="release-button-SVA1">SVA1</button>
-                  <button class="btn btn-small release-button" id="release-button-Y1A1">Y1A1</button>
-		  <button class="btn btn-small release-button" id="release-button-Y2T1">Y2T1</button>
-                </div>
+                <!--#include file="release_selector.shtml"-->
               </li>
               <li class="divider"></li>
               <li><a tabindex="-1" id="logout" href="#">Logout</a></li>

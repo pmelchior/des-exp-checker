@@ -21,7 +21,7 @@ if ($uid && isset($_POST['fileid']) && $_POST['fileid'] != '') {
             $problem['y'] = (int) $problem['y'];
             if ($problem['detail'] == '')
                $problem['detail'] = null;
-            // stores x,y, and (occasionally a free-form comment)
+            // stores x,y, and (occasionally) a free-form comment
             $sth->execute(array($_POST['fileid'], $uid, $code, $problem['x'], $problem['y'], $problem['detail']));
         }
         // update attached user database to reflect user action

@@ -31,7 +31,6 @@
               <li><a class="problem" tabindex="-1" href="#">Tape bump</a></li>
               <li><a class="problem" tabindex="-1" href="#">Tree rings</a></li>
               <li><a class="problem" tabindex="-1" href="#">Vertical jump</a></li>
-              <li><a class="problem" tabindex="-1" href="#">Vertical stripes</a></li>
             </ul>
           </li>
           <li class="dropdown-submenu">
@@ -56,6 +55,7 @@
               <li><a class="problem" tabindex="-1" href="#">Shutter</a></li>
               <li><a class="problem" tabindex="-1" href="#">Readout</a></li>
               <li><a class="problem" tabindex="-1" href="#">Haze</a></li>
+              <li><a class="problem" tabindex="-1" href="#">Vertical stripes</a></li>
             </ul>
           </li>
           <li class="divider"></li>

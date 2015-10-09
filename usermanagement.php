@@ -9,10 +9,15 @@ class UserManagement {
   function __destruct() {
     $this->conn = null;
   }
+  function getHash() {
+    // random has
+    $time = time();
+    $hash = sha1(strval(rand()).strval($time));
+    return $hash;
+  }
   function setSeed() {
     // create one-time seed and store it in DB
-    $time = time();
-    $seed = sha1(strval(rand()).strval($time));
+    $seed = $this->getHash();
     $query = "INSERT INTO `seeds` (`seed`) VALUES ('" . $seed ."')";
     $this->conn->query($query);
     // clean up seed table of outdated seeds
@@ -86,7 +91,6 @@ class UserManagement {
   }
   public function logout() {
     global $config;
-    $answer = array();
     $stmt = $this->conn->prepare("DELETE FROM `sessions` WHERE sid = ?");
     if (in_array('sid',array_keys($_COOKIE))) {
       $stmt->bindParam(1, $_COOKIE['sid'], PDO::PARAM_STR, 40);
@@ -95,7 +99,26 @@ class UserManagement {
       // clear cookies
       setcookie("sid", "", time() - 3600, "/", $config['domain']);
     }
-    return $answer;
+  }
+  public function resetPassword($email) {
+    // use first 10 letters of hash as new password
+    $hash = $this->getHash();
+    $password = substr($hash, 0, 10);
+    $pw_encrypted = sha1($password);
+    $stmt = $this->conn->prepare("UPDATE `users` SET password=? WHERE email=?");
+    $stmt->execute(array($pw_encrypted, $email));
+    if ($stmt->rowCount()) {
+      $stmt->closeCursor();
+      // this was a valid email address, get username
+      $stmt = $this->conn->prepare("SELECT username FROM `users` WHERE email=? LIMIT 1");
+      $stmt->bindParam(1, $email, PDO::PARAM_STR);
+      $stmt->execute();
+      if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+	$row['password'] = $password;
+	return $row;
+      }
+    } else
+      return FALSE;
   }
 }
 

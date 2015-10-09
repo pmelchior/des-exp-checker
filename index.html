@@ -102,14 +102,37 @@
 	</form>
       </div>
       <div class="modal-footer">
-        <!--div class="form-actions" style="margin-bottom: 0px;"-->
-          <button class="btn btn-success" id="login_button" data-toggle="button" data-loading-text="Authenticating...">Log in</button>
-          &nbsp;&nbsp;
-          <a id="email-anchor" title="How to get your password reset" href="#">Forgot password?</a>
-        <!--/div-->
+        <button class="btn btn-success" id="login_button" data-toggle="button" data-loading-text="Authenticating...">Log in</button>
+        &nbsp;&nbsp;
+        <a id="email-anchor" title="How to get your password reset" href="#">Forgot password?</a>
       </div>
     </div>
+
+    <!-- Reset password modal -->
+    <div class="modal hide" id="resetPW">
+      <div class="modal-header">
+	<a class="close" data-dismiss="modal">x</a>
+	<h3>Reset password</h3>
+      </div>
+      <div class="modal-body">
+	<form id="reset-pw-form" class="form-horizontal" style="margin-bottom: 0px;">
+	  <fieldset>
+	    <div class="control-group">
+	      <label class="control-label" for="email">Email address</label>
+	      <div class="controls">
+		<input type="text" class="input" id="reset-email" name="email">
+	      </div>
+            </div>
+	  </fieldset>
+	</form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success" id="reset_button" data-toggle="button" data-loading-text="Submitting...">Send</button>
+      </div>
+      <div class="alert alert-success hide" id="reset_message">Reset request submitted. Check you email!</div>
+    </div>
     
+    <!-- Sign up modal -->
     <div class="modal hide" id="signUp">
       <div class="modal-header">
 	<a class="close" data-dismiss="modal">x</a>
@@ -202,13 +225,12 @@
     }
     else {
       $('#logIn').modal({"show": false });
+      $('#signUp').modal({"show": false });		  
+      $('#resetPW').modal({"show": false });		  
       $('#login_button').on('click', logIn).button();
       $('#signup_button').on('click', signUp).button();
-      $('#signUp').modal({"show": false });
+      $('#reset_button').on('click', resetPW).button();
       $('#open-login-button').on('click', function(evt) {
-        $.get('email.php', function(response) {
-          $('#email-anchor').attr('href', 'mailto:' + response + '?subject=%5Bdes-exposure-checker%5D%20Please%20reset%20my%20password&body=To%20get%20your%20password%20resetted,%20simply%20send%20this%20email%20from%20the%20email%20account%20you%20used%20when%20signing%20up.');
-        });
         $('#logIn').modal('show');
         $('#username').focus();
         evt.preventDefault();
@@ -218,6 +240,12 @@
         $('#signup-name').focus();
         evt.preventDefault();
       });
+      $('#email-anchor').on('click', function(evt) {
+	$('#logIn').modal('hide');
+	$('#resetPW').modal('show');
+	$('#reset-email').focus();
+      });
+			  
       $('#signup-name').on('input', function(evt) {
         var name = $(evt.target).val();
         if (name.length) {

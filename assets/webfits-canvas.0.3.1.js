@@ -248,7 +248,7 @@
     };
 
     Api.prototype.scaledArcsinh = function(value) {
-      return this.arcsinh(value / -0.033 / this.rescaling) / this.arcsinh(1.0 / -0.033 / this.rescaling);
+      return this.arcsinh(value / -0.033) / this.arcsinh(1.0 / -0.033);
     };
 
     return Api;

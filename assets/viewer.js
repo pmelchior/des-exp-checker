@@ -112,7 +112,7 @@ function createVisualization(arr, opts) {
   // Load array representation of image
   webfits.loadImage('exposure', arr, width, height);
   // Set the intensity range and stretch
-  if (opts.release == "Y2A1")
+  if (opts.release != "Y1A1" && opts.release != "SVA1")
       webfits.setRescaling(4.);	
   webfits.setExtent(-1, 1000);  // to prevent crazy values in min/max
   webfits.setStretch(stretch);

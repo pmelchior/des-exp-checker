@@ -219,7 +219,7 @@
       range = max - min;
       length = arr.length;
       while (length -= 4) {
-        pixel = this.scaledArcsinh(data[length / 4]);
+        pixel = this.scaledArcsinh(data[length / 4] / this.rescaling);
         value = 255 * (pixel - min) / range;
         arr[length + 0] = value;
         arr[length + 1] = value;
@@ -234,7 +234,7 @@
     };
     
     Api.prototype.drawPeter = function() {
-      return this.drawAsinh(1 * this.rescaling);
+      return this.drawAsinh(1);
     };
     
     Api.prototype.teardown = function() {

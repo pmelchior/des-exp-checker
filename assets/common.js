@@ -1,6 +1,6 @@
 var release = null;
 
-function setRelease(release_) {
+function setRelease(release_, attach_listener) {
   if (release_ != null) {
     // check if release is still present in the list
     var found = false;
@@ -22,10 +22,12 @@ function setRelease(release_) {
 
   $.cookie('default-release', release, {expires: 365});
   $('.release_name').html(release);
-  $('a[class*="release-button"]').on('click', function(evt) {
-    setRelease(this.id.split("-").pop());
-    window.location.reload(true);
-  });
+  if (attach_listener === undefined) {
+    $('a[class*="release-button"]').on('click', function(evt) {
+      setRelease(this.id.split("-").pop());
+      window.location.reload(true);
+    });
+  }
 }
 
 function checkSessionCookie() {

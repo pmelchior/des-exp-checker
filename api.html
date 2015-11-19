@@ -77,9 +77,6 @@
   $(document).ready(function(){
     // set up release
     setRelease($.cookie('default-release'));
-    $('button[class*="release-button"]').on('click', function(evt) {
-      setRelease(this.id.split("-").pop());
-    });
     
     // connect problem selector to anchor in page
     $('a[class*="problem"]').on('click', function(evt) {

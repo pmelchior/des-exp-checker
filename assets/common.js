@@ -1,22 +1,19 @@
 var release = null;
 
 function setRelease(release_) {
-    // provisional conversion from Y2A1 to Y2T2
-    if (release_ == "Y2A1") {
-        release_ = "Y2T2";
-    }
-    if (release_ == null) {
-        release_ = "Y2T2";
-    }
+  if (release_ == null) {
+    var node = $('#release-switch').find('.release-button').last();
+    release = node.id;
+  }
+  else
     release = release_;
-    $.cookie('default-release', release, {expires: 365});
-    $('#release-switch').find('button').each(function(){
-        release_ = this.id.split("-").pop();
-        if (release_ == release)
-            $(this).addClass('btn-primary');
-        else
-            $(this).removeClass('btn-primary');
-    });
+  $.cookie('default-release', release, {expires: 365});
+  $('.release_name').html(release);
+
+  $('a[class*="release-button"]').on('click', function(evt) {
+    setRelease(this.id.split("-").pop());
+    window.location.reload(true);
+  });
 }
 
 function checkSessionCookie() {

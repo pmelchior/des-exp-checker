@@ -37,7 +37,7 @@ function setRelease() {
     global $config;
     $config['release'] = GETorPOST('release');
     if ($config['release'] === FALSE || in_array($config['release'], $config['releases']) === FALSE)
-        $config['release'] = "Y2T2";
+        $config['release'] = array_pop($config['releases']);
 }
 
 function getDBHandle() {

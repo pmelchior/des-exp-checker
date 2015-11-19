@@ -194,11 +194,6 @@
   $(document).ready(function () {
     // set up release
     setRelease($.cookie('default-release'));
-    $('button[class*="release-button"]').on('click', function(evt) {
-      setRelease(this.id.split("-").pop());
-      window.location.reload(true);
-    });
-    $(".release_name").html(release);
     
     $.get('ranking.php', {'release': release, 'limit': 15, },
       function(response) {

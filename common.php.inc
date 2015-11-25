@@ -9,6 +9,7 @@ $config = array(
     "userdb" => T_STRING,       // path to the user sqlite database
     "filedb" => T_SRING,        // path for file database, should contain '%s' to be replace by release
     "fovpath" => T_ARRAY,       // path to FoV images, one entry per release
+    "releases" => T_ARRAY,	// list of available releases
     "release" => NULL,          // empty, set by setRelease()
     "images_per_fp" => T_INT,   // size of focal plane, used for congrats
     "fitspath" => T_ARRAY,      // path to get the fits files, one entry per release
@@ -35,8 +36,8 @@ function GETorPOST($param) {
 function setRelease() {
     global $config;
     $config['release'] = GETorPOST('release');
-    if ($config['release'] === FALSE || in_array($config['release'], array('SVA1', 'Y1A1')) === FALSE)
-        $config['release'] = "Y1A1";
+    if ($config['release'] === FALSE || in_array($config['release'], $config['releases']) === FALSE)
+        $config['release'] = array_pop($config['releases']);
 }
 
 function getDBHandle() {
@@ -55,7 +56,8 @@ function getDBHandle() {
 function getNextImage($dbh, $uid) {
     global $config;
     $res = null;
-    $sql = 'SELECT "' . $config['release'] . '" as release, files.fileid, files.expname, ccd, band, name, files.runs.runname FROM files JOIN files.runs ON (files.expname = files.runs.expname)';
+    $sql = 'SELECT "' . $config['release'] . '" as release, files.fileid, expname, ccd, band, name FROM files';
+	
     if (isset($_POST['expname']) && isset($_POST['ccd'])) {
         $sql .= ' WHERE ccd = ? AND files.expname = ? LIMIT 1';
         $stmt = $dbh->prepare($sql);

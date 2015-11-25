@@ -67,10 +67,7 @@
           <li><a href="hodgepodge.html">Hodge-podge</a></li>
 	</ul>
         <ul class="nav pull-right hide">
-          <div class="btn-group" id="release-switch">
-            <button class="btn btn-small release-button" id="release-button-SVA1">SVA1</button>
-            <button class="btn btn-small release-button" id="release-button-Y1A1">Y1A1</button>
-          </div>
+          <!--#include file="release_selector.shtml"-->
         </ul>
       </div> 
     </div>
@@ -108,7 +105,7 @@
     </div>
     <div class="span6">
       <p class="img-polaroid">
-        <a href="viewer.html?expname=DECam_00181220&ccd=54" title="Click to view the original image">
+        <a href="viewer.html?release=SVA1&expname=DECam_00181220&ccd=54" title="Click to view the original image">
           <img src="material/comet_animated.gif"/></a>
         <small>First reported by: beckermr on 2013-10-07 17:48:40</small>
       </p>
@@ -144,10 +141,6 @@
   $(document).ready(function () {
     // set up release
     setRelease($.cookie('default-release'));
-    $('button[class*="release-button"]').on('click', function(evt) {
-      setRelease(this.id.split("-").pop());
-      window.location.reload(true);
-    });
 
     $.get('gallery.php', {'release': release},
       function(response) {

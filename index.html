@@ -11,7 +11,6 @@
   <!--[if lt IE 9]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
-  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 </head>
 
 <body>
@@ -30,17 +29,14 @@
           <li><a href="hodgepodge.html">Hodge-podge</a></li>
 	</ul>
         <ul class="nav pull-right hide">
-          <div class="btn-group" id="release-switch">
-            <button class="btn btn-small release-button" id="release-button-SVA1">SVA1</button>
-            <button class="btn btn-small release-button" id="release-button-Y1A1">Y1A1</button>
-          </div>
+	  <!--#include file="release_selector.shtml"-->
         </ul>
       </div>
     </div>
     <div class="hero-unit" id="des-hero">
     <div style="width: 700px">
     <h1>DES exposure checker</h1>
-    <p>See how real DES images look. Discover flaws we would otherwise have missed.<br>Make our data better!</p>
+    <p>Look at real DES images. Discover flaws we would otherwise have missed.<br>Make our data better!</p>
     <p id="getin-buttons" style="display: none">
       <a href="viewer.html" class="btn btn-primary btn-large">Let's go</a>
     </p>
@@ -106,14 +102,37 @@
 	</form>
       </div>
       <div class="modal-footer">
-        <!--div class="form-actions" style="margin-bottom: 0px;"-->
-          <button class="btn btn-success" id="login_button" data-toggle="button" data-loading-text="Authenticating...">Log in</button>
-          &nbsp;&nbsp;
-          <a id="email-anchor" title="How to get your password reset" href="#">Forgot password?</a>
-        <!--/div-->
+        <button class="btn btn-success" id="login_button" data-toggle="button" data-loading-text="Authenticating...">Log in</button>
+        &nbsp;&nbsp;
+        <a id="email-anchor" title="How to get your password reset" href="#">Forgot password?</a>
       </div>
     </div>
+
+    <!-- Reset password modal -->
+    <div class="modal hide" id="resetPW">
+      <div class="modal-header">
+	<a class="close" data-dismiss="modal">x</a>
+	<h3>Reset password</h3>
+      </div>
+      <div class="modal-body">
+	<form id="reset-pw-form" class="form-horizontal" style="margin-bottom: 0px;">
+	  <fieldset>
+	    <div class="control-group">
+	      <label class="control-label" for="email">Email address</label>
+	      <div class="controls">
+		<input type="text" class="input" id="reset-email" name="email">
+	      </div>
+            </div>
+	  </fieldset>
+	</form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success" id="reset_button" data-toggle="button" data-loading-text="Submitting...">Send</button>
+      </div>
+      <div class="alert alert-success hide" id="reset_message">Reset request submitted. Check you email!</div>
+    </div>
     
+    <!-- Sign up modal -->
     <div class="modal hide" id="signUp">
       <div class="modal-header">
 	<a class="close" data-dismiss="modal">x</a>
@@ -166,6 +185,7 @@
 <script type="text/javascript" src="assets/sha1.js"></script>
 <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="assets/jquery.cookie.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="assets/jwerty.js"></script>
 <script type="text/javascript" src="assets/login.js"></script>
 <script type="text/javascript" src="assets/common.js"></script>
@@ -174,11 +194,6 @@
   $(document).ready(function () {
     // set up release
     setRelease($.cookie('default-release'));
-    $('button[class*="release-button"]').on('click', function(evt) {
-      setRelease(this.id.split("-").pop());
-      window.location.reload(true);
-    });
-    $(".release_name").html(release);
     
     $.get('ranking.php', {'release': release, 'limit': 15, },
       function(response) {
@@ -205,13 +220,12 @@
     }
     else {
       $('#logIn').modal({"show": false });
+      $('#signUp').modal({"show": false });		  
+      $('#resetPW').modal({"show": false });		  
       $('#login_button').on('click', logIn).button();
       $('#signup_button').on('click', signUp).button();
-      $('#signUp').modal({"show": false });
+      $('#reset_button').on('click', resetPW).button();
       $('#open-login-button').on('click', function(evt) {
-        $.get('email.php', function(response) {
-          $('#email-anchor').attr('href', 'mailto:' + response + '?subject=%5Bdes-exposure-checker%5D%20Please%20reset%20my%20password&body=To%20get%20your%20password%20resetted,%20simply%20send%20this%20email%20from%20the%20email%20account%20you%20used%20when%20signing%20up.');
-        });
         $('#logIn').modal('show');
         $('#username').focus();
         evt.preventDefault();
@@ -221,6 +235,12 @@
         $('#signup-name').focus();
         evt.preventDefault();
       });
+      $('#email-anchor').on('click', function(evt) {
+	$('#logIn').modal('hide');
+	$('#resetPW').modal('show');
+	$('#reset-email').focus();
+      });
+			  
       $('#signup-name').on('input', function(evt) {
         var name = $(evt.target).val();
         if (name.length) {

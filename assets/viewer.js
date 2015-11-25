@@ -96,8 +96,7 @@ function createVisualization(arr, opts) {
   var dataunit = opts.dataunit;
   var width = dataunit.width;
   var height = dataunit.height;
-  var extent = [-1, 1000]; // default values to prevent crazy pixels ruining min/max values
-  
+      
   // Get the DOM element
   var el = $('#wicked-science-visualization').get(0);
   
@@ -113,8 +112,11 @@ function createVisualization(arr, opts) {
   // Load array representation of image
   webfits.loadImage('exposure', arr, width, height);
   // Set the intensity range and stretch
-  webfits.setExtent(extent[0], extent[1]);
+  if (opts.release != "Y1A1" && opts.release != "SVA1")
+      webfits.setRescaling(4.);	
+  webfits.setExtent(-1, 1000);  // to prevent crazy values in min/max
   webfits.setStretch(stretch);
+    
   
   // add weight/bad-pixel map
   var dataunit = opts.f.getDataUnit(3);
@@ -132,7 +134,7 @@ function addMaskLayer(arr, opts) {
 
 // to be done once all elements of webfits are in place
 function completeVisualization(response) {
-    // add marks if present in response
+  // add marks if present in response
   if (response.marks !== undefined) {
     for (var i=0; i < response.marks.length; i++) {
       addMark(response.marks[i], webfits.reportCtx);
@@ -144,16 +146,18 @@ function completeVisualization(response) {
   expname = response.expname;
   ccd = response.ccd;
   release = response.release; // locally overwrite the default release to make sure it's from this file
+
+  // the image label, colored badge for Y-band
   if (response.band == 'Y')
     $('#image_name').html(release + ", " + expname + ', CCD ' + ccd + ", <span class='badge badge-important'>" + response.band + "-band</span>");
   else
     $('#image_name').html(release + ", " + expname + ', CCD ' + ccd + ", " + response.band + "-band");
-  var newurl=window.location.pathname + '?release=' + release + '&expname=' + expname + '&ccd=' + ccd;
+
   // update browser url field
+  var newurl=window.location.pathname + '?release=' + release + '&expname=' + expname + '&ccd=' + ccd;
   window.history.replaceState(null, "Title", newurl);
   $('#share-url').val('http://' + window.location.host + newurl);
-  $('#desdm-url').val('https://desar2.cosmology.illinois.edu/DESFiles/desardata/OPS/red/' + response.runname + '/red/' + expname + '/' + expname + '_' + ("0" + ccd).slice(-2) +'.fits.fz');
-  $('#fov-url').html('getImage.php?type=fov&release=' + release + "&runname=" + response.runname + "&expname=" + expname);
+
   // after both image and mask are drawn: remove loading spinner
   $('#loading').hide();
   $('#wicked-science-visualization').find('canvas').fadeTo(200, 1);

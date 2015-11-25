@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>DES exposure checker | Gallery</title>
+  <title>DES exposure checker | Hodge-podge</title>
   <link rel="stylesheet" media="screen" href="assets/bootstrap/css/bootstrap.min.css" type="text/css" charset="utf-8">
   <link rel="stylesheet" media="screen" href="assets/eyeball.css" type="text/css" charset="utf-8">
   <meta charset="utf-8">
@@ -31,10 +31,7 @@
           <li class="active"><a href="#">Hodge-podge</a></li>
 	</ul>
         <ul class="nav pull-right hide">
-          <div class="btn-group" id="release-switch">
-            <button class="btn btn-small release-button" id="release-button-SVA1">SVA1</button>
-            <button class="btn btn-small release-button" id="release-button-Y1A1">Y1A1</button>
-          </div>
+          <!--#include file="release_selector.shtml"-->
         </ul>
       </div> 
     </div>
@@ -88,10 +85,6 @@
   $(document).ready(function () {
     // set up release
     setRelease($.cookie('default-release'));
-    $('button[class*="release-button"]').on('click', function(evt) {
-      setRelease(this.id.split("-").pop());
-      window.location.reload(true);
-    });
 
     $.get('problems.php', {'output': 'html', 'release': release, 'problem':'Other...'},
       function(response) {

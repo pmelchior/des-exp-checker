@@ -57,7 +57,7 @@ if ($_POST['action'] == "signup" && (isset($_POST['username']) && isset($_POST['
       $message .= "so please tell us if you like the website, if something isn't working as expected, ";
       $message .= "how we can improve it, what feature we should add ...";
       sendEmail($_POST['email'], $subject, $message);
-}
+  }
   echo json_encode($answer);
 }
 ?>

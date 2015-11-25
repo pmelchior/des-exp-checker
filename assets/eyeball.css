@@ -2,6 +2,8 @@ body,html { height: 100%; }
 #wrapper {min-height: 100%; height: auto !important; height: 100%; margin: 0 auto -60px;}
 #foot, #push { height: 60px; clear: both; }
 .container { width:1024px; }
+.dropdown-menu { min-width: initial; }
+.navbar .nav.pull-right { margin-right: -20px; }
 .coords { cursor: pointer; min-width:180px; position: relative;}
 .sex2deg-toogle { position: absolute; right: 2px; top: 1px;}
 .img-polaroid {margin-top:16px;}

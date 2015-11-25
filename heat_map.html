@@ -16,9 +16,6 @@
     #hexagon_box { border: 1px solid #888; }
     #problem_description { margin-left: 20px; font-weight: bold; }
   </style>
-  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-  <script src="http://d3js.org/d3.hexbin.v0.min.js?5c6e4f0"></script>
-  <script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
 </head>
 
 <body>
@@ -37,10 +34,7 @@
           <li><a href="hodgepodge.html">Hodge-podge</a></li>
 	</ul>
         <ul class="nav pull-right hide">
-          <div class="btn-group" id="release-switch">
-            <button class="btn btn-small release-button" id="release-button-SVA1">SVA1</button>
-            <button class="btn btn-small release-button" id="release-button-Y1A1">Y1A1</button>
-          </div>
+	  <!--#include file="release_selector.shtml"-->
         </ul>
       </div> 
     </div>
@@ -65,7 +59,10 @@
     </div>
   </div>
 </body>
-      
+
+<script type="text/javascript" src="assets/jquery-1.9.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="assets/d3.hexbin.min.js"></script>
 <script type="text/javascript" src="assets/jquery.cookie.js"></script>
 <script type="text/javascript" src="assets/common.js"></script>
 <script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
@@ -74,10 +71,6 @@
 $(document).ready(function () {
   // set up release
   setRelease($.cookie('default-release'));
-  $('button[class*="release-button"]').on('click', function(evt) {
-    setRelease(this.id.split("-").pop());
-    window.location.reload(true);
-  });
   
   spinner = new Spinner({color: "#049cdb"}).spin();
   $('#loading').append(spinner.el);

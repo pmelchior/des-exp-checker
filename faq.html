@@ -161,12 +161,22 @@
       <h3>What's up with missing CCDs in the FoV image?</h3>
       <p> Sometimes good CCDs go bad. 
         Half of CCD31 is known to suffer from non-linear gain effects. 
-        CCD62 was over-exposed during SV (??/??/2012) and now has a low saturation point.  
-        CCD2 was lost during Y1 (11/28/2014) likely due to an electrostatic shock. 
+        CCD62 was over-exposed during SV (2012-11-07) and now has a low saturation point.  
+        CCD2 was lost during Y1 (2014-11-28) likely due to an electrostatic shock. 
         For Y1A1 CCD2, CCD31, and CCD62 have been removed from the DES exposure checker. 
         Clicking on these CCDs in the FoV image will return a "File Missing" error and occasionally they appear blacked out on the FoV image.
       </p>
     </div>
+
+    <div class="span12">
+      <a id="rectangular-masks"></a>
+      <h3>What is the large rectangular mask on CCD57?</h3>
+      <p> For the Y2 processing, a new mask bit was added to flag 'SUSPECT' pixels. These are pixels that are fine for most scientific uses, but are probably not well-enough characterized for weak lensing analyses. These bits are currently flattened into the MASK plane displayed by the exposure checker and can be seen as rectangular masked regions. 
+
+The most pronounced example of this feature occurs on CCD57, where there is a fairly large region on the left side of the image that has high readout noise. This masked region appears on all Y2+ images and should <b>not</b> be flagged as a problem. There are several other examples of 'SUSPECT' bits including the masking of tape bumps, which appear as six small squares around the edges of each image.
+      </p>
+    </div>
+
 
   </div>
   <div id="push"></div>

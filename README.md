@@ -8,3 +8,5 @@ http://arxiv.org/abs/1511.03391
 A live demo version of the exposure checker in action can be found here:
 
 http://des-exp-checker.pmelchior.net
+
+The license is MIT.

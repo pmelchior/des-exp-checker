@@ -9,12 +9,16 @@ function getMyData($dbh, $uid) {
     $stmt->bindParam(1, $config['release'], PDO::PARAM_STR, 4);
     $stmt->bindParam(2, $uid, PDO::PARAM_INT);
     $stmt->bindParam(3, $config['release'], PDO::PARAM_STR, 4);
-    //$stmt->bindParam(4, $config['release'], PDO::PARAM_STR, 4);
     $stmt->bindParam(4, $uid, PDO::PARAM_INT);
     $stmt->execute();
     if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $row['userclass'] = userClass($row['total_files']);
         $row['missingfiles'] = missingFilesForNextClass($row['total_files'], $row['userclass']);
+        // convert to integers
+        $row['flagged_files'] = (int)$row['flagged_files'];
+        $row['total_files'] = (int)$row['total_files'];
+        $row['rank'] = (int)$row['rank'];
+      
         return $row;
     }
     else {

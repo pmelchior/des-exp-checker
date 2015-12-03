@@ -272,11 +272,10 @@ function getMyData() {
       $('#problem-text').typeahead().data('typeahead').source = response.problems;
     
     $('#username').html(response.username);
-    $('#userrank').html("#"+response.rank);
-    $('#user-rank').html("#"+response.rank);
+    $('.userrank').html("#"+response.rank);
     var uc = userClass(response.userclass);
     if (uc.class > 0)
-      $('#userrank').addClass(uc.style);
+      $('.badge').addClass(uc.style);
     $('#total-files').html(response.total_files);
     $('#flagged-files').html(response.flagged_files);
     $('#user-menu').removeClass('hide');
@@ -290,6 +289,31 @@ function getMyData() {
     }
     $('#user_rank_details').html(rankDetails);
 
+  }, 'json');
+}
+
+function getLeaderboard() {
+  $.get('ranking.php', {'release': release}, function(response) {
+    var html = "<table class='table table-condensed table-striped'><thead><tr><th>Rank</th><th>Username</th><th>Problematic/Total</th><th># Files</th></tr></thead><tbody>";
+    var total = null, counter = 1, width_flagged, width_total;
+    var username = $('#username').html();
+    for (var i=0; i < response.length; i++) {
+      if (total == null)
+        total = response[i]['total_files'];
+      width_flagged = (100*response[i]['flagged_files']/total) + "%";
+      width_total = (100*(response[i]['total_files']-response[i]['flagged_files'])/total) + "%";
+      html += "<tr><td># "+ counter +"</td><td><span class='namecol'>" + response[i]['username'] + "</span></td>";
+      html += "<td><div class='ratingcol'><span class='ratingbar bad' style='width:" + width_flagged +"'></span>";
+      html += "<span class='ratingbar good' style='left:" + width_flagged +"; width:" + width_total +"'></span></div></td>";
+      html += "<td>" + response[i]['total_files'] + "</td></tr>";
+      // get rank update if the username matches
+      if (response[i]['username'] == username)
+	$('.userrank').html("#"+counter);
+      counter++ ;
+    }
+    html += "</tbody></table>";
+    $('#leaderboard').html(html);
+    $('#rank-modal').find('[class*="modal-body"]').html(html);
   }, 'json');
 }
 

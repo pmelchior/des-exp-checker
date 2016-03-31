@@ -102,18 +102,18 @@ The parameter `release` needs to be from `$config['releases']` and problem needs
 
 The API returns JSON of the following form:
 
-```json
+```javascript
 [
-  {"qa_id": int,
-  "expname":string,
-  "ccd":int,
-  "band":string,
-  "problem":string,
-  "x":int,
-  "y":int
-  "detail": [null, string]
-  "false_positive":bool,
-  "release":string
+  {"qa_id": number,
+  "expname": string,
+  "ccd": number,
+  "band": string,
+  "problem": string,
+  "x": number,
+  "y": number,
+  "detail": null or string,
+  "false_positive": true or false,
+  "release": string
   }
 ]
 ```

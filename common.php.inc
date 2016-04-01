@@ -29,7 +29,7 @@ function getDBHandle() {
     setRelease();
     global $config;
     $dbh = new PDO('sqlite:'. $config['userdb']);
-    $filedbfile = str_replace('%s', $config['release'], $config['filedb']);
+    $filedbfile = $config['filedb'][$config['release']];
     if (file_exists($filedbfile)) {
         $dbh->query('ATTACH DATABASE "' . $filedbfile .'" AS files');
         return check_or_abort($dbh);

@@ -33,7 +33,7 @@ The app requires a webserver (tested on apache and nginx) with PHP and SQLite su
    ````
 
 4. Copy `config.php.template` to `config.php.inc` and edit as needed (see below).
-5. On a production environment: Remove `.git`, `htaccess-minimum.txt`, `config.php.sample`.
+5. On a production environment: Remove `.git`, `htaccess-minimum.txt`, `config.php.template`, and `README.md`.
 
 ## Configuration
 
@@ -85,8 +85,8 @@ The problem classes are defined in two different locations: As textual labels fo
    ```php
    $config['problem_code'] = array(
    "OK" => 0, // DO NOT CHANGE!
-       "Other..." => 999, // DO NOT CHANGE!
-       "Awesome!" => 1000,  // DO NOT CHANGE!
+       "Other..." => 999,  // DO NOT CHANGE!
+       "Awesome!" => 1000, // DO NOT CHANGE!
        "Column mask" => 1,
        ...
        )

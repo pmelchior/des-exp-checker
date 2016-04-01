@@ -32,8 +32,20 @@ The app requires a webserver (tested on apache and nginx) with PHP and SQLite su
    mv files.db users.db .db/
    ````
 
-4. Copy `config.php.template` to `config.php.inc` and edit as needed (see below).
-5. On a production environment: Remove `.git`, `htaccess-minimum.txt`, `config.php.template`, and `README.md`.
+   Once there, make sure that the webserver user can read from and write to those files. 
+4. Load information about the test images into the file database. As you can see from the schema in `sql/files.sql`,  each image needs to have 4 items of information:
+
+   ```sql lite
+   expname TEXT,
+   ccd INT,
+   band TEXT,
+   name TEXT
+   ```
+
+   `ccd` and `band` should be obvious, `expname` is the short but unique name of the exposure, and `name` (is a bit of a misnomer) is actually the filename of the FITS file in question. No full paths are needed, you'll set them in the `$config['fitspath']` next.
+
+5. Copy `config.php.template` to `config.php.inc` and edit as needed (see below).
+6. On a production environment: Remove `.git`, `htaccess-minimum.txt`, `config.php.template`, and `README.md`.
 
 ## Configuration
 
@@ -92,7 +104,7 @@ Problem classes are defined in two different locations: As textual labels for fr
 
    ```php
    $config['problem_code'] = array(
-   "OK" => 0, // DO NOT CHANGE!
+   	"OK" => 0, // DO NOT CHANGE!
        "Other..." => 999,  // DO NOT CHANGE!
        "Awesome!" => 1000, // DO NOT CHANGE!
        "Column mask" => 1,

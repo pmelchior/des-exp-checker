@@ -4,7 +4,6 @@ include "common.php.inc";
 $dbh = getDBHandle();
 
 if (isset($_GET['problem'])) {
-    $codes = getProblemCodes();
     if (array_search($_GET['problem'], array_keys($config['problem_code'])) !== FALSE) {
         $code = $config['problem_code'][$_GET['problem']];
         $sql = 'SELECT qa.qaid as qa_id, expname, ccd, band, problem, x, y, detail FROM qa JOIN files ON (files.fileid=qa.fileid)';

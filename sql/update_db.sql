@@ -1,3 +1,5 @@
+-- This file is not needed for new installations !!!
+
 -- Update the database structure
 ATTACH DATABASE "users.db" as old;
 DROP TABLE qa;
@@ -101,4 +103,3 @@ UPDATE qa SET y=512-y WHERE problem!=0;
 UPDATE files SET name="eye_se001grizt/" || name;
 -- in first batch of Y1A1
 UPDATE files SET name="eye_se004grizY/" || name;
-

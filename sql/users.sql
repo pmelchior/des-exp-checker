@@ -1,14 +1,14 @@
 -- users database structure
 CREATE TABLE seeds (
  seed TEXT PRIMARY KEY,
- timestamp TEXT NOT NULL DEFAULT current_timestamp,
+ timestamp TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE sessions (
   sid TEXT PRIMARY KEY,
   uid INT NOT NULL,
   ip TEXT NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  timestamp TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE submissions (

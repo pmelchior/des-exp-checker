@@ -35,7 +35,7 @@ The app requires a webserver (tested on apache and nginx) with PHP and SQLite su
    Once there, make sure that the webserver user can read from and write to those files. 
 4. Load information about the test images into the file database. As you can see from the schema in `sql/files.sql`,  each image needs to have 4 items of information:
 
-   ```sql lite
+   ```sql
    expname TEXT,
    ccd INT,
    band TEXT,

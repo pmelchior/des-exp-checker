@@ -9,13 +9,13 @@ if ($uid && isset($_POST['fileid']) && $_POST['fileid'] != '') {
     // parse POST data and store each element in table qa
     $sth = $dbh->prepare('INSERT INTO qa (fileid, userid, problem, x, y, detail) VALUES (?, ?, ?, ?, ?, ?)');
     if (isset($_POST['problems'])) {
-        $codes = getProblemCodes();
+        $codes = $config['problem_code'];
         foreach ($_POST['problems'] as $problem) {
             if ($problem['problem'][0] == "-") {
                 $problem['problem'] = substr($problem['problem'], 1);
                 $code = -$codes[$problem['problem']];
             }
-            else 
+            else
                 $code = $codes[$problem['problem']];
             $problem['x'] = (int) $problem['x'];
             $problem['y'] = (int) $problem['y'];
@@ -42,7 +42,7 @@ if ($uid && isset($_POST['fileid']) && $_POST['fileid'] != '') {
         }
     }
     $activity = getActivity($dbh, $uid);
-    
+
     // badge of honor:
     $uc = userClass($activity['alltime']);
     $old_uc = userClass($activity['alltime']-1);

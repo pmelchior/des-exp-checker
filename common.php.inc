@@ -103,8 +103,7 @@ function getProblems($dbh, $fileid, $qa_id=NULL) {
         $stmt->bindParam(2, $qa_id, PDO::PARAM_INT);
     $stmt->execute();
     $res = check_or_abort($stmt);
-    $codes = getProblemCodes();
-    $problem_code = array_flip($codes);
+    $problem_code = array_flip($config['problem_code']);
     $problems = array();
     while($row = $res->fetch(PDO::FETCH_ASSOC)) {
         if ($row['problem'] > 0)
@@ -165,20 +164,19 @@ function userClass($total_files) {
 }
 
 function missingFilesForNextClass($total_files, $userclass) {
-    global $config;
-    switch($userclass) {
-      case 0: return 10 - $total_files; break;
-      case 1: return $config['images_per_fp'] - $total_files; break;
-      case 2: return 5*$config['images_per_fp'] - $total_files; break;
-      case 3: return 10*$config['images_per_fp'] - $total_files; break;
-      case 4: return 100*$config['images_per_fp'] - $total_files; break;
-      case 5: return 1000*$config['images_per_fp'] - $total_files; break;
-      case 6: return 10000*$config['images_per_fp'] - $total_files; break;
-      case 7: return 100000*$config['images_per_fp'] - $total_files; break;
-      case 8: return 0; break;
-    }
+  global $config;
+  switch($userclass) {
+    case 0: return 10 - $total_files; break;
+    case 1: return $config['images_per_fp'] - $total_files; break;
+    case 2: return 5*$config['images_per_fp'] - $total_files; break;
+    case 3: return 10*$config['images_per_fp'] - $total_files; break;
+    case 4: return 100*$config['images_per_fp'] - $total_files; break;
+    case 5: return 1000*$config['images_per_fp'] - $total_files; break;
+    case 6: return 10000*$config['images_per_fp'] - $total_files; break;
+    case 7: return 100000*$config['images_per_fp'] - $total_files; break;
+    case 8: return 0; break;
   }
-
+}
 
 function getActivity($dbh, $uid, $date=FALSE) {
     $activity = array();
@@ -198,59 +196,6 @@ function giveBonusPoints($dbh, $uid, $points) {
     $stmt->bindParam(1, $points, PDO::PARAM_INT);
     $stmt->bindParam(2, $uid, PDO::PARAM_INT);
     check_or_abort($stmt->execute());
-}
-
-function getProblemCodes() {
-    return array(
-      "OK" => 0,
-
-      // Temporary categories, to be re-inspected
-      "Old_Readout" => 1005,
-      "Old_Other" => 1006,
-      "Old_Sky" => 1007,
-      "Mask dots" => 1008, // found unneccesary
-
-      // Instrument
-      "Guiding" => 11,
-      "Shutter" => 12,
-      "Readout" => 13,
-      "Haze" => 14,
-
-      // Flat fielding
-      "A/B jump" => 21,
-      "Fringing" => 22,
-      "Tape bump" => 23,
-      "Tree rings" => 24,
-      "Vertical jump" => 25,
-      "Vertical stripes" => 26,
-
-      // Reflections
-      "Ghost" => 32,
-      "Bright spray" => 31,
-      "Brush strokes" => 33,
-      "Bright arc" => 34,
-
-      // Tracks
-      "Satellite" => 41,
-      "Airplane" => 42,
-
-      // Masking
-      "Column mask" => 51,
-      "Excessive mask" => 53,
-      "Cosmic ray" => 54,
-      "Cross-talk" => 55,
-      "Edge-bleed" => 56,
-
-      // Sky estimation
-      "Dark rim" => 61,
-      "Dark halo" => 62,
-      "Quilted sky" => 63,
-      "Wavy sky" => 64,
-      "Anti-bleed" => 65,
-
-      "Other..." => 255,
-      "Awesome!" => 1000,
-    );
 }
 
 function sendEmail($email, $subject, $message) {

@@ -5,8 +5,8 @@ $dbh = getDBHandle();
 
 if (isset($_GET['problem'])) {
     $codes = getProblemCodes();
-    if (array_search($_GET['problem'], array_keys($codes)) !== FALSE) {
-        $code = $codes[$_GET['problem']];
+    if (array_search($_GET['problem'], array_keys($config['problem_code'])) !== FALSE) {
+        $code = $config['problem_code'][$_GET['problem']];
         $sql = 'SELECT qa.qaid as qa_id, expname, ccd, band, problem, x, y, detail FROM qa JOIN files ON (files.fileid=qa.fileid)';
         if (isset($_GET['short']))
             $sql = 'SELECT qa.qaid as qa_id, ccd, band, problem, x, y FROM qa JOIN files ON (files.fileid=qa.fileid)';
@@ -28,7 +28,7 @@ if (isset($_GET['problem'])) {
                 $row['false_positive'] = FALSE;
                 if ($row['problem'] < 0)
                     $row['false_positive'] = TRUE;
-                $row['problem'] = $_GET['problem'];            
+                $row['problem'] = $_GET['problem'];
                 $row['release'] = $config['release'];
             }
             else

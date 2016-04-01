@@ -18,10 +18,9 @@ if (isset($_GET['today'])) {
 if (isset($_GET['breakup'])) {
     // how many have problems
     $stmt = $dbh->prepare('SELECT COUNT(DISTINCT(fileid)) from qa WHERE problem = ?');
-    $codes = getProblemCodes();
     $problems = array();
     $stats['checked'] = 0;
-    foreach ($codes as $name => $code) {
+    foreach ($config['problem_code'] as $name => $code) {
         if ($code >= 0 && $code < 1000) {
             $stmt->bindParam(1, $code, PDO::PARAM_INT);
             $stmt->execute();
@@ -45,7 +44,7 @@ if (isset($_GET['breakup'])) {
                     $this_problem['all'] += intval($row[0]);
                     $this_problem['false_positive'] += intval($row[0]);
                 }
-                array_push($problems, $this_problem);       
+                array_push($problems, $this_problem);
             }
         }
     }

@@ -5,9 +5,8 @@ $dbh = getDBHandle();
 
 function getCountOfProblem($dbh, $problem, $uid=NULL) {
     global $config;
-    $codes = getProblemCodes();
-    if (in_array($problem, array_keys($codes))) {
-        $code = $codes[$problem];
+    if (in_array($problem, array_keys($config['problem_code']))) {
+        $code = $config['problem_code'][$problem];
         $sql = 'SELECT problem, detail, COUNT(DISTINCT(fileid)) as count FROM qa WHERE problem=?';
         if (isset($uid))
             $sql .= ' AND userid=?';

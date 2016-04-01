@@ -42,7 +42,7 @@ The app requires a webserver (tested on apache and nginx) with PHP and SQLite su
    name TEXT
    ```
 
-   `ccd` and `band` should be obvious, `expname` is the short but unique name of the exposure, and `name` (is a bit of a misnomer) is actually the filename of the FITS file in question. No full paths are needed, you'll set them in the `$config['fitspath']` next.
+   `ccd` and `band` should be obvious, `expname` is the short but unique name of the exposure, and `name` (as a bit of a misnomer) is actually the filename of the FITS file in question. No full paths are needed, you'll set them in  `$config['fitspath']` next.
 
 5. Copy `config.php.template` to `config.php.inc` and edit as needed (see below).
 6. On a production environment: Remove `.git`, `htaccess-minimum.txt`, `config.php.template`, and `README.md`.

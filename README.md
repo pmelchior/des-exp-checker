@@ -32,7 +32,7 @@ The app requires a webserver (tested on apache and nginx) with PHP and SQLite su
    mv files.db users.db .db/
    ````
 
-4. Copy `config.php.sample` to `config.php.inc` and edit as needed (see below).
+4. Copy `config.php.template` to `config.php.inc` and edit as needed (see below).
 5. On a production environment: Remove `.git`, `htaccess-minimum.txt`, `config.php.sample`.
 
 ## Configuration
@@ -55,17 +55,6 @@ $config = array(
     "release" => NULL,          // empty, set later
     "problem_code" => T_ARRAY   // problem label => numeric code
 );
-
-function sendEmail($email, $subject, $message) {
-    global $config;
-    $header = "From: " . $config['adminname'] . " <". $config['adminemail'] .">\n";
-    $header .= "Reply-To: <". $config['adminemail'] .">\n";
-    $header .= "Content-Type: text/plain; charset=UTF-8\n";
-    $header .= "Content-Transfer-Encoding: 8bit\n";
-    $message .= "\n\n" . $config['adminname'] ." --";
-    $message .= "\nhttp://" . $config['domain'];
-    return mail($email,$subject,$message,$header);
-}
 ```
 
 The code has a mechanism to swich between data releases. For that define a list of releases, e.g. 

@@ -1,0 +1,13 @@
+$config = array(
+    "adminemail" => T_STRING,   // email address used for contact
+    "adminname" => T_STRING,    // name used for admin emails
+    "domain" => T_STRING,       // webserver domain name (no http:// or https://)
+    "releases" => T_ARRAY,      // list of available releases
+    "userdb" => T_STRING,       // path to the user database
+    "filedb" => T_ARRAY,        // release => path to file database
+    "fovpath" => T_ARRAY,       // release => path to FoV images
+    "fitspath" => T_ARRAY       // release => path to fits files
+    "images_per_fp" => T_INT,   // size of focal plane, used for congrats
+    "release" => NULL,          // empty, set later
+    "problem_code" => T_ARRAY   // problem label => numeric code
+);

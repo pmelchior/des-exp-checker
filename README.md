@@ -70,11 +70,19 @@ The code has a mechanism to swich between data releases. For that define a list 
                   "Y1A1" => ".db/files.y1a1.db")
 ```
 
+###Releases
+
+Open the file `release_selector.shtml` and modify as needed. The name of each release must be the content of HTML node of `class="release-button"` like
+
+```html
+<a class="release-button" href="#">SVA1</a>
+```
+
 ###Problem classes
 
-The problem classes are defined in two different locations: As textual labels for frontend users and as numbers for the server (the reduce overhead and storage requirements in the file databases).
+Problem classes are defined in two different locations: As textual labels for frontend users and as numbers for the server (the reduce overhead and storage requirements in the file databases).
 
-1. Open `problem_selector.shtml` and modify as needed. For a label to be working as intended, it needs to be in an HTML environment with `class="problem"`, e.g.
+1. Open `problem_selector.shtml` and modify as needed. For a label to be working as intended, it needs to be the content of an HTML node of `class="problem"`, e.g.
 
    ```html
    <a class="problem" href="#">Column mask</a>

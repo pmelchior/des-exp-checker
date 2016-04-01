@@ -57,8 +57,7 @@ function getNextImage($dbh, $uid) {
             $sql .= ' AND detail = ?';
         $sql .= ' ORDER BY RANDOM() LIMIT 1';
         $stmt = $dbh->prepare($sql);
-        $codes = getProblemCodes();
-        $stmt->bindParam(1, $codes[$_POST['problem']], PDO::PARAM_INT);
+        $stmt->bindParam(1, $config['problem_code'][$_POST['problem']], PDO::PARAM_INT);
         if (isset($_POST['detail']))
             $stmt->bindParam(2, $_POST['detail'], PDO::PARAM_STR);
         $stmt->execute();

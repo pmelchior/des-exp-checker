@@ -17,8 +17,21 @@ The license is MIT. Feel free to use and modify, but please cite our paper if yo
 The app requires a webserver (tested on apache and nginx) with PHP and SQLite support. Then:
 
 1. Clone the repository and go into the new directory.
-2. Copy `htaccess-minimum.txt` to `.htaccess` and append as needed for your installation. Make sure not to overwrite an existing file.
-3. Execute `sqlite3 sql/files.sql` and `sqlite3 sql/users.sql`. This step creates two files `files.db` and `users.db`, move them into a directory the webserver can access but that is hidden from direct access. Because of `.htaccess`, files and directories that start with a `.` are inaccessible when requested through the webserver, so you can e.g. choose `.db`.
+2. Copy `htaccess.txt` to `.htaccess` and append whatever else may be needed for your installation.
+3. Execute 
+
+   ```
+   sqlite3 files.db < sql/files.sql
+   sqlite3 users.db < sql/users.sql
+   ```
+
+   This step creates two empty database files `files.db` and `users.db`, move them into a directory the webserver can access but that is hidden from direct access. Because of `.htaccess`, files and directories that start with a `.` are inaccessible when requested through the webserver, so you do:
+
+   ````
+   mkdir .db
+   mv files.db users.db .db/
+   ````
+
 4. Copy `config.php.sample` to `config.php.inc` and edit as needed (see below).
 5. On a production environment: Remove `.git`, `htaccess-minimum.txt`, `config.php.sample`.
 
@@ -82,7 +95,7 @@ The problem classes are defined in two different locations: As textual labels fo
 
    ```php
    $config['problem_code'] = array(
-   	"OK" => 0, // DO NOT CHANGE!
+   "OK" => 0, // DO NOT CHANGE!
        "Other..." => 999, // DO NOT CHANGE!
        "Awesome!" => 1000,  // DO NOT CHANGE!
        "Column mask" => 1,

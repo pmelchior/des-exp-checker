@@ -1,21 +1,6 @@
 <?php
 
 include_once("config.php.inc");
-/* config only defines  the variable $config:
-$config = array(
-    "adminemail" => T_STRING,   // email address used for contact and internal emails
-    "adminname" => T_STRING,    // name used for internal emails
-    "domain" => T_STRING,       // webserver domain name
-    "userdb" => T_STRING,       // path to the user sqlite database
-    "filedb" => T_SRING,        // path for file database, should contain '%s' to be replace by release
-    "fovpath" => T_ARRAY,       // path to FoV images, one entry per release
-    "releases" => T_ARRAY,	// list of available releases
-    "release" => NULL,          // empty, set by setRelease()
-    "images_per_fp" => T_INT,   // size of focal plane, used for congrats
-    "fitspath" => T_ARRAY,      // path to get the fits files, one entry per release
-    "fovpath" => T_ARRAY        // path to FoV images, one entry per release
-);
-*/
 
 function check_or_abort($dbh) {
     if (!$dbh) {
@@ -50,14 +35,14 @@ function getDBHandle() {
         return check_or_abort($dbh);
     }
     else
-        check_or_abort(FALSE);    
+        check_or_abort(FALSE);
 }
 
 function getNextImage($dbh, $uid) {
     global $config;
     $res = null;
     $sql = 'SELECT "' . $config['release'] . '" as release, files.fileid, expname, ccd, band, name FROM files';
-	
+
     if (isset($_POST['expname']) && isset($_POST['ccd'])) {
         $sql .= ' WHERE ccd = ? AND files.expname = ? LIMIT 1';
         $stmt = $dbh->prepare($sql);
@@ -110,7 +95,7 @@ function getProblems($dbh, $fileid, $qa_id=NULL) {
     $sql = 'SELECT problem, x, y, detail FROM qa WHERE fileid=?';
     if (isset($qa_id))
         $sql .= ' AND qaid=?';
-    else 
+    else
         $sql .= ' AND problem != 0 AND problem <= 1000';
     $stmt = $dbh->prepare($sql);
     $stmt->bindParam(1, $fileid, PDO::PARAM_INT);
@@ -154,7 +139,7 @@ function numberSuffix($num) {
     switch($num) {
         case 1: return '1st'; break;
         case 2: return '2nd'; break;
-        default: return $num.'th'; break; 
+        default: return $num.'th'; break;
     }
 }
 
@@ -193,7 +178,7 @@ function missingFilesForNextClass($total_files, $userclass) {
       case 8: return 0; break;
     }
   }
-  
+
 
 function getActivity($dbh, $uid, $date=FALSE) {
     $activity = array();
@@ -218,19 +203,19 @@ function giveBonusPoints($dbh, $uid, $points) {
 function getProblemCodes() {
     return array(
       "OK" => 0,
-      
+
       // Temporary categories, to be re-inspected
       "Old_Readout" => 1005,
       "Old_Other" => 1006,
       "Old_Sky" => 1007,
       "Mask dots" => 1008, // found unneccesary
-      
+
       // Instrument
       "Guiding" => 11,
       "Shutter" => 12,
       "Readout" => 13,
       "Haze" => 14,
-      
+
       // Flat fielding
       "A/B jump" => 21,
       "Fringing" => 22,
@@ -238,31 +223,31 @@ function getProblemCodes() {
       "Tree rings" => 24,
       "Vertical jump" => 25,
       "Vertical stripes" => 26,
-      
+
       // Reflections
       "Ghost" => 32,
       "Bright spray" => 31,
       "Brush strokes" => 33,
       "Bright arc" => 34,
-      
+
       // Tracks
       "Satellite" => 41,
       "Airplane" => 42,
-      
+
       // Masking
       "Column mask" => 51,
       "Excessive mask" => 53,
       "Cosmic ray" => 54,
       "Cross-talk" => 55,
       "Edge-bleed" => 56,
-      
+
       // Sky estimation
       "Dark rim" => 61,
       "Dark halo" => 62,
       "Quilted sky" => 63,
       "Wavy sky" => 64,
       "Anti-bleed" => 65,
-      
+
       "Other..." => 255,
       "Awesome!" => 1000,
     );
@@ -270,11 +255,12 @@ function getProblemCodes() {
 
 function sendEmail($email, $subject, $message) {
     global $config;
-    $header = "From: DES exposure checker <". $config['adminemail'] .">\n";
+    $header = "From: " . $config['adminname'] . " <". $config['adminemail'] .">\n";
     $header .= "Reply-To: <". $config['adminemail'] .">\n";
     $header .= "Content-Type: text/plain; charset=UTF-8\n";
     $header .= "Content-Transfer-Encoding: 8bit\n";
-    $message .= "\n\nPeter, Erin & Alex --\nhttp://" . $config['domain'];
+    $message .= "\n\n" . $config['adminname'] ." --";
+    $message .= "\nhttp://" . $config['domain'];
     return mail($email,$subject,$message,$header);
 }
 ?>

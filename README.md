@@ -2,9 +2,7 @@
 
 Crowdsourced image quality control for the Dark Energy Survey (DES). The code available here is for a web-app that asks users to identify flaws in survey images. The app loads and displays FITS image directly in the browser and works on desktop and mobile devices.
 
-More details can be found in the associated paper (submitted to Astronomy & Computing): 
-
-http://arxiv.org/abs/1511.03391
+More details can be found in the associated paper ([Astronomy & Computing](http://adsabs.harvard.edu/abs/2016A%26C....16...99M), [arXiv](http://arxiv.org/abs/1511.03391)).
 
 A live demo version of the exposure checker in action can be found here:
 

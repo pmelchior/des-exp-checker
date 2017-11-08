@@ -49,7 +49,7 @@ The app requires a webserver (tested on apache and nginx) with PHP and SQLite su
 
 ## Configuration
 
-###Config.php.inc
+### Config.php.inc
 
 This file contains almost all of the particular configuration for the server and the location of files. Its content is:
 
@@ -69,7 +69,7 @@ $config = array(
 );
 ```
 
-The code has a mechanism to swich between data releases. For that define a list of releases, e.g. 
+The code has a mechanism to switch between data releases. For that define a list of releases, e.g. 
 
 ```php
  "releases" => array("SVA1", "Y1A1")
@@ -82,7 +82,7 @@ The code has a mechanism to swich between data releases. For that define a list 
                   "Y1A1" => ".db/files.y1a1.db")
 ```
 
-###Releases
+### Releases
 
 Open the file `release_selector.shtml` and modify as needed. The name of each release must be the content of HTML node of `class="release-button"` like
 
@@ -90,7 +90,7 @@ Open the file `release_selector.shtml` and modify as needed. The name of each re
 <a class="release-button" href="#">SVA1</a>
 ```
 
-###Problem classes
+### Problem classes
 
 Problem classes are defined in two different locations: As textual labels for frontend users and as numbers for the server (the reduce overhead and storage requirements in the file databases).
 

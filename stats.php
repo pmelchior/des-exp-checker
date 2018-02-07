@@ -11,6 +11,9 @@ if (isset($_GET['total'])) {
     $stats['total'] = intval($stmt->fetchColumn());
 }
 if (isset($_GET['today'])) {
+    if( ! ini_get('date.timezone') ) {
+        date_default_timezone_set('GMT');
+    }
     $date = date('Y-m-d H:i:s', strtotime('-1 day'));
     $stmt = $dbh->query("SELECT COUNT(DISTINCT(timestamp)) FROM qa WHERE timestamp > '".$date."%'");
     $stats['today'] = intval($stmt->fetchColumn());
